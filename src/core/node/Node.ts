@@ -26,7 +26,7 @@ module hh{
             return this._visible;
         }
 
-        _setValueOrPercent(value:any, valueFunc, percentFunc){
+        _setValueOrPercent(value:any, valueFunc, percentFunc):boolean{
             var type:string = typeof value;
             var self = this;
             if(type == "number"){
@@ -34,12 +34,14 @@ module hh{
             }else if(type == "string"){
                 if(type.match(/^((\d+)|(\d+.\d*))%$/)){
                     percentFunc.call(self, parseFloat(type.substring(0, type.length - 1))/100);
+                    return true;
                 }else if(type.match(/^((\d+)|(\d+.\d*))$/)){
                     valueFunc.call(self, parseFloat(type)/100);
                 }
             }else{
                 error(logCode.e_2);
             }
+            return false;
         }
 
         /**
@@ -47,6 +49,14 @@ module hh{
          */
         _x:number;
         _xDirty:boolean;
+        _xPercent:number;//x坐标百分比。
+        _xPercentDirty:boolean;
+        _xPercentEnabled:boolean;
+        _setXPercent(xPercent:number){
+            var self = this;
+            if(self._xPercent != xPercent) self._xPercentDirty = true;
+            self._xPercent = xPercent;
+        }
         _setX(x:number){
             var self = this;
             if(self._x != x) self._xDirty = true;
@@ -54,10 +64,24 @@ module hh{
         }
         public set x(x:number){
             var self = this;
-            self._setValueOrPercent(x, self._setX, self._setXPercent);
+            var flag = self._xPercentEnabled;
+            self._xPercentEnabled = self._setValueOrPercent(x, self._setX, self._setXPercent);
+            if(self._xPercentEnabled && !flag){
+                self._xPercentDirty = true;
+            }else if(!self._xPercentEnabled){
+                self._xPercentDirty = false;
+            }
+
         }
         public get x():number{
             return this._x;
+        }
+        _onXPercentDirty():void{
+            var self = this;
+            var parent = self._parent;
+            if(parent){
+                self._setX(parent._width * self._xPercent);
+            }
         }
         _onXDirty():void{}
         /**
@@ -144,24 +168,6 @@ module hh{
         public get posePercentEnabled():boolean{
             return this._posePercentEnabled;
         }
-
-        /**
-         * x坐标百分比。
-         */
-        _xPercent:number;
-        _xPercentDirty:boolean;
-        _setXPercent(xPercent:number){
-            var self = this;
-            if(self._xPercent != xPercent) self._xPercentDirty = true;
-            self._xPercent = xPercent;
-        }
-        public set xPercent(xPercent:number){
-            this._setXPercent(xPercent);
-        }
-        public get xPercent():number{
-            return this._xPercent;
-        }
-        _onXPercentDirty():void{}
 
         /**
          * y坐标百分比
@@ -610,18 +616,24 @@ module hh{
 
             if(!self._visible) return;
 
+            var parent = self._parent;
             if(self._childrenDirty) self.sortChildren();//需要重新对子节点排序
-            if(self._sizePercentEnabled && self._widthPercentDirty) self._onWidthPercentDirty();
-            if(self._sizePercentEnabled && self._heightPercentDirty) self._onHeightPercentDirty();
-            if(self._posePercentEnabled && self._xPercentDirty) self._onXPercentDirty();
-            if(self._posePercentEnabled && self._yPercentDirty) self._onYPercentDirty();
-            if(self._xDirty) self._onXDirty();
-            if(self._yDirty) self._onYDirty();
+            if(parent){//只有有父节点的时候，百分比才起作用
+                if(self._widthPercentDirty) self._onWidthPercentDirty();
+                if(self._heightPercentDirty) self._onHeightPercentDirty();
+                if(self._xPercentDirty) self._onXPercentDirty();
+                if(self._yPercentDirty) self._onYPercentDirty();
+            }
             if(self._widthDirty) self._onWidthDirty();
             if(self._heightDirty) self._onHeightDirty();
+            if(self._xDirty) self._onXDirty();
+            if(self._yDirty) self._onYDirty();
 
             self._onBeforeVisit(preVisibleSibling, nextSibling);
-            self._doLayoutInParent(preVisibleSibling, nextSibling);//布局
+
+            if(parent && parent._layoutEnabled)
+                self._doLayoutInParent(preVisibleSibling, nextSibling);//在父节点内部进行布局布局
+
             self._onVisit(preVisibleSibling, nextSibling);
             self._onUpdateView();
             var children:Node[] = self._children, index:number = 0, length:number = children.length
@@ -650,17 +662,20 @@ module hh{
         _onBeforeVisit(preVisibleSibling:Node, nextSibling:Node):void{}
         _onVisit(preVisibleSibling:Node, nextSibling:Node):void{}
         _onAfterVisit(preVisibleSibling:Node, nextSibling:Node):void{
-            var self = this;
+            var self = this, parent = self._parent;
+            if(parent){
+                //只有有父节点的时候，百分比相关dirty才设置为false。
+                self._xPercentDirty = false;
+                self._yPercentDirty = false;
+                self._widthPercentDirty = false;
+                self._heightPercentDirty = false;
+            }
             self._xDirty = false;
             self._yDirty = false;
             self._widthDirty = false;
             self._heightDirty = false;
             self._childrenDirty = false;
-            self._xPercentDirty = false;
-            self._yPercentDirty = false;
-            self._widthPercentDirty = false;
-            self._heightPercentDirty = false;
-            self._layoutTypeDirty = false;
+            if(self._layoutEnabled) self._layoutTypeDirty = false;//只有开启了布局功能才需要设置dirty为false
         }
         _onUpdateView():void{}
         _draw(renderCtx):void{}
