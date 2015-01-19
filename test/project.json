@@ -1,0 +1,6 @@
+{
+    "engine" : {
+        "dir" : "../src",
+        "modules" : ["core"]
+    }
+}

@@ -1,0 +1,11 @@
+{
+    "jsList" : [
+        "const/logCode.js",
+        "const/const.js",
+        "base/Class.js",
+        "base/logger.js",
+        "event/Event.js",
+        "event/EventDispatcher.js",
+        "node/Node.js"
+    ]
+}
