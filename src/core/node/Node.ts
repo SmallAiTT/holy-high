@@ -1,4 +1,3 @@
-/// <reference path="../const/const.ts" />
 /// <reference path="../event/EventDispatcher.ts" />
 
 module hh{
@@ -27,6 +26,22 @@ module hh{
             return this._visible;
         }
 
+        _setValueOrPercent(value:any, valueFunc, percentFunc){
+            var type:string = typeof value;
+            var self = this;
+            if(type == "number"){
+                valueFunc.call(self, value);
+            }else if(type == "string"){
+                if(type.match(/^((\d+)|(\d+.\d*))%$/)){
+                    percentFunc.call(self, parseFloat(type.substring(0, type.length - 1))/100);
+                }else if(type.match(/^((\d+)|(\d+.\d*))$/)){
+                    valueFunc.call(self, parseFloat(type)/100);
+                }
+            }else{
+                error(logCode.e_2);
+            }
+        }
+
         /**
          * x坐标
          */
@@ -38,13 +53,13 @@ module hh{
             self._x = x;
         }
         public set x(x:number){
-            this._setX(x);
+            var self = this;
+            self._setValueOrPercent(x, self._setX, self._setXPercent);
         }
         public get x():number{
             return this._x;
         }
         _onXDirty():void{}
-
         /**
          * y坐标
          */
@@ -56,7 +71,8 @@ module hh{
             self._y = y;
         }
         public set y(y:number){
-            this._setY(y);
+            var self = this;
+            self._setValueOrPercent(y, self._setY, self._setYPercent);
         }
         public get y():number{
             return this._y;
@@ -74,7 +90,8 @@ module hh{
             self._width = width;
         }
         public set width(width:number){
-            this._setWidth(width);
+            var self = this;
+            self._setValueOrPercent(width, self._setWidth, self._setWidthPercent);
         }
         public get width():number{
             return this._width;
@@ -92,7 +109,8 @@ module hh{
             self._height = height;
         }
         public set height(height:number){
-            this._setHeight(height);
+            var self = this;
+            self._setValueOrPercent(height, self._setHeight, self._setHeightPercent);
         }
         public get height():number{
             return this._height;
@@ -529,6 +547,10 @@ module hh{
             if(!self._parent) return false;
             return self._parent.removeChild(self);
         }
+
+        /**
+         * 对子节点进行排序（按照zIndex进行排序，zIndex越大则排在越后面）。
+         */
         public sortChildren():void{
             this._children.sort(function(a:Node, b:Node){
                 if(a._zIndex > b._zIndex) return 1;
@@ -537,9 +559,30 @@ module hh{
             });
         }
 
-        _doLayout(preVisibleSibling:Node, nextSibling:Node):void{
+        /**
+         * 是否开启布局功能。
+         */
+        _layoutEnabled:boolean;
+        _setLayoutEnabled(layoutEnabled:boolean){
+            this._layoutEnabled = layoutEnabled;
+        }
+        public set layoutEnabled(layoutEnabled:boolean){
+            this._setLayoutEnabled(layoutEnabled);
+        }
+        public get layoutEnabled():boolean{
+            return this._layoutEnabled;
+        }
+
+        /**
+         * 设置在父节点中的布局情况
+         * @param preVisibleSibling
+         * @param nextSibling
+         * @private
+         */
+        _doLayoutInParent(preVisibleSibling:Node, nextSibling:Node):void{
             var self = this, parent = self._parent;
             if(!parent) return;//没有父亲则直接返回
+            if(!parent._layoutEnabled) return;//父节点未开启布局功能
             var pLayoutType = parent._layoutType, pLayoutTypeDirty = parent._layoutTypeDirty;
             if(pLayoutType == LAYOUT_ABSOLUTE){//绝对布局则不做处理
                 //do nothing
@@ -578,7 +621,7 @@ module hh{
             if(self._heightDirty) self._onHeightDirty();
 
             self._onBeforeVisit(preVisibleSibling, nextSibling);
-            self._doLayout(preVisibleSibling, nextSibling);//布局
+            self._doLayoutInParent(preVisibleSibling, nextSibling);//布局
             self._onVisit(preVisibleSibling, nextSibling);
             self._onUpdateView();
             var children:Node[] = self._children, index:number = 0, length:number = children.length
