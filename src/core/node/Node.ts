@@ -456,6 +456,7 @@ module hh{
         _initProp(){
             super._initProp();
             var self = this;
+            self._visible = true;
             self._x = 0;
             self._y = 0;
             self._width = 0;
@@ -465,6 +466,7 @@ module hh{
             self._yPercent = 0;
             self._widthPercent = 0;
             self._heightPercent = 0;
+            self._children = [];
         }
 
         _children:Node[];
@@ -569,7 +571,7 @@ module hh{
         }
 
 
-        public visit(renderCtx, preVisibleSibling:Node, nextSibling:Node):void{
+        public visit(renderCtx, preVisibleSibling?:Node, nextSibling?:Node):void{
             var self = this;
 
             if(!self._visible) return;
@@ -639,6 +641,40 @@ module hh{
             }
         }
         _onUpdateView():void{}
-        _draw(renderCtx):void{}
+        _transX:number;
+        _transY:number;
+        _draw(renderCtx:CanvasRenderingContext2D):void{
+            var self = this, parent = self._parent;
+            var transX = 0, transY = 0;
+            if(parent){
+                transX += parent._transX || 0;
+                transY += parent._transY || 0;
+            }
+            transX = self._transX = transX + self._x;
+            transY = self._transY = transY + self._y;
+            var transW = self._width, transH = self._height;
+
+
+            renderCtx.beginPath();
+            renderCtx.fillStyle = 'yellow';
+            renderCtx.fillRect(transX, transY, self._width, self._height);
+
+
+            console.log(transX, transY, transW, transH);
+
+            renderCtx.beginPath();
+            renderCtx.fillStyle = 'yellow';
+            renderCtx.fillRect(transX, transY, transW, transH);
+
+            renderCtx.fillStyle = 'red';
+            renderCtx.moveTo(transX, transY); // 设置路径起点，坐标为(20,20)
+            renderCtx.lineTo(transX + transW, transY); // 绘制一条到(200,20)的直线
+            renderCtx.lineTo(transX + transW, transY + transH); // 绘制一条到(200,20)的直线
+            renderCtx.lineTo(transX, transY + transH); // 绘制一条到(200,20)的直线
+            renderCtx.closePath();
+            renderCtx.lineWidth = 1.0; // 设置线宽
+            renderCtx.strokeStyle = "#CC0000"; // 设置线的颜色
+            renderCtx.stroke(); // 进行线的着色，这时整条线才变得可见
+        }
     }
 }
