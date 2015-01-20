@@ -20,5 +20,21 @@ hh.boot(function(){
     node.addChild(node2);
 
 
-    node.visit(renderCtx);
+    var count = 0;
+    var flag = 1;
+    var a = 1;
+    setInterval(function(){
+        if(count >= 200){
+            flag = -1;
+        }else if(count <=0){
+            flag = 1;
+        }
+        count += a*flag;
+        node.x = count;
+    }, 10);
+
+    hh.mainLoop(function(){
+        renderCtx.clearRect(0, 0, canvas.width, canvas.height);
+        node.visit(renderCtx);
+    })
 });

@@ -2,11 +2,17 @@
     "jsList" : [
         "const/logCode.js",
         "const/const.js",
-        "base/Class.js",
+
         "base/logger.js",
+        "base/Class.js",
+        "base/async.js",
+        "base/mainLoop.js",
+
         "utils/utils.js",
+
         "event/Event.js",
         "event/EventDispatcher.js",
+
         "node/Node.js",
         "node/ColorNode.js"
     ]

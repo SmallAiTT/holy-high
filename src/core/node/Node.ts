@@ -135,7 +135,7 @@ module hh{
         }
         _onWidthPercentDirty():void{}
         _onWidthDirty():void{}
-        public set width(width:number){
+        public set width(width:any){
             var self = this;
             var flag = self._widthPercentEnabled;
             self._widthPercentEnabled = self._setValueOrPercent(width, self._setWidth, self._setWidthPercent);
@@ -145,7 +145,7 @@ module hh{
                 self._widthPercentDirty = false;
             }
         }
-        public get width():number{
+        public get width():any{
             return this._width;
         }
 
@@ -499,6 +499,7 @@ module hh{
                 }
             }
             children.splice(indexToInsert, 0, child);
+            child.parent = self;
             return true;
         }
 
