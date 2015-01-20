@@ -62,166 +62,124 @@ module hh{
             if(self._x != x) self._xDirty = true;
             self._x = x;
         }
+        _onXPercentDirty():void{}
+        _onXDirty():void{}
         public set x(x:number){
             var self = this;
             var flag = self._xPercentEnabled;
             self._xPercentEnabled = self._setValueOrPercent(x, self._setX, self._setXPercent);
             if(self._xPercentEnabled && !flag){
                 self._xPercentDirty = true;
-            }else if(!self._xPercentEnabled){
+            }else if(!self._xPercentDirty){
                 self._xPercentDirty = false;
             }
-
         }
         public get x():number{
             return this._x;
         }
-        _onXPercentDirty():void{
-            var self = this;
-            var parent = self._parent;
-            if(parent){
-                self._setX(parent._width * self._xPercent);
-            }
-        }
-        _onXDirty():void{}
+
         /**
          * y坐标
          */
         _y:number;
         _yDirty:boolean;
+        _yPercent:number;//y坐标百分比
+        _yPercentDirty:boolean;//y坐标百分比dirty
+        _yPercentEnabled:boolean;
+        _setYPercent(yPercent:number){
+            var self = this;
+            if(self._yPercent != yPercent) self._yPercentDirty = true;
+            self._yPercent = yPercent;
+        }
         _setY(y:number){
             var self = this;
             if(self._y != y) self._yDirty = true;
             self._y = y;
         }
+        _onYPercentDirty():void{}
+        _onYDirty():void{}
         public set y(y:number){
             var self = this;
-            self._setValueOrPercent(y, self._setY, self._setYPercent);
+            var flag = self._yPercentEnabled;
+            self._yPercentEnabled = self._setValueOrPercent(y, self._setY, self._setYPercent);
+            if(self._yPercentEnabled && !flag){
+                self._yPercentDirty = true;
+            }else if(!self._yPercentEnabled){
+                self._yPercentDirty = false;
+            }
         }
         public get y():number{
             return this._y;
         }
-        _onYDirty():void{}
 
         /**
          * 宽度
          */
         _width:number;
         _widthDirty:boolean;
+        _widthPercent:number;//宽度百分比
+        _widthPercentDirty:boolean;//宽度百分比dirty
+        _widthPercentEnabled:boolean;
+        _setWidthPercent(widthPercent:number){
+            var self = this;
+            if(self._widthPercent != widthPercent) self._widthPercentDirty = true;
+            self._widthPercent = widthPercent;
+        }
         _setWidth(width:number){
             var self = this;
             if(self._width != width) self._widthDirty = true;
             self._width = width;
         }
+        _onWidthPercentDirty():void{}
+        _onWidthDirty():void{}
         public set width(width:number){
             var self = this;
-            self._setValueOrPercent(width, self._setWidth, self._setWidthPercent);
+            var flag = self._widthPercentEnabled;
+            self._widthPercentEnabled = self._setValueOrPercent(width, self._setWidth, self._setWidthPercent);
+            if(self._widthPercentEnabled && !flag){
+                self._widthPercentDirty = true;
+            }else if(!self._widthPercentEnabled){
+                self._widthPercentDirty = false;
+            }
         }
         public get width():number{
             return this._width;
         }
-        _onWidthDirty():void{}
 
         /**
          * 高度
          */
         _height:number;
         _heightDirty:boolean;
-        _setHeight(height:number){
-            var self = this;
-            if(self._height != height) self._heightDirty = true;
-            self._height = height;
-        }
-        public set height(height:number){
-            var self = this;
-            self._setValueOrPercent(height, self._setHeight, self._setHeightPercent);
-        }
-        public get height():number{
-            return this._height;
-        }
-        _onHeightDirty():void{}
-
-        /**
-         * 是否启用百分比尺寸。
-         */
-        _sizePercentEnabled:boolean;
-        _setSizePercentEnabled(sizePercentEnabled:boolean){
-            this._sizePercentEnabled = sizePercentEnabled;
-        }
-        public set sizePercentEnabled(sizePercentEnabled:boolean){
-            this._setSizePercentEnabled(sizePercentEnabled);
-        }
-        public get sizePercentEnabled():boolean{
-            return this._sizePercentEnabled;
-        }
-
-        /**
-         * 是否启用百分比位置
-         */
-        _posePercentEnabled:boolean;
-        _setPosePercentEnabled(posePercentEnabled:boolean){
-            this._posePercentEnabled = posePercentEnabled;
-        }
-        public set posePercentEnabled(posePercentEnabled:boolean){
-            this._setPosePercentEnabled(posePercentEnabled);
-        }
-        public get posePercentEnabled():boolean{
-            return this._posePercentEnabled;
-        }
-
-        /**
-         * y坐标百分比
-         */
-        _yPercent:number;
-        _yPercentDirty:boolean;
-        _setYPercent(yPercent:number){
-            var self = this;
-            if(self._yPercent != yPercent) self._yPercentDirty = true;
-            self._yPercent = yPercent;
-        }
-        public set yPercent(yPercent:number){
-            this._setYPercent(yPercent);
-        }
-        public get yPercent():number{
-            return this._yPercent;
-        }
-        _onYPercentDirty():void{}
-
-        /**
-         * 宽度百分比。
-         */
-        _widthPercent:number;
-        _widthPercentDirty:boolean;
-        _setWidthPercent(widthPercent:number){
-            var self = this;
-            if(self._widthPercent != widthPercent) self._widthPercentDirty = true;
-            self._widthPercent = widthPercent;
-        }
-        public set widthPercent(widthPercent:number){
-            this._setWidthPercent(widthPercent);
-        }
-        public get widthPercent():number{
-            return this._widthPercent;
-        }
-        _onWidthPercentDirty():void{}
-
-        /**
-         * 高度百分比。
-         */
-        _heightPercent:number;
-        _heightPercentDirty:boolean;
+        _heightPercent:number;//高度百分比
+        _heightPercentDirty:boolean;//高度百分比dirty
+        _heightPercentEnabled:boolean;
         _setHeightPercent(heightPercent:number){
             var self = this;
             if(self._heightPercent != heightPercent) self._heightPercentDirty = true;
             self._heightPercent = heightPercent;
         }
-        public set heightPercent(heightPercent:number){
-            this._setHeightPercent(heightPercent);
-        }
-        public get heightPercent():number{
-            return this._heightPercent;
+        _setHeight(height:number){
+            var self = this;
+            if(self._height != height) self._heightDirty = true;
+            self._height = height;
         }
         _onHeightPercentDirty():void{}
+        _onHeightDirty():void{}
+        public set height(height:number){
+            var self = this;
+            var flag = self._heightPercentEnabled;
+            self._heightPercentEnabled = self._setValueOrPercent(height, self._setHeight, self._setHeightPercent);
+            if(self._heightPercentEnabled && !flag){
+                self._heightPercentDirty = true;
+            }else if(!self._heightPercentEnabled){
+                self._heightPercentDirty = false;
+            }
+        }
+        public get height():number{
+            return this._height;
+        }
+
 
         /**
          * z轴堆叠顺序，按照html命名
@@ -270,6 +228,20 @@ module hh{
         }
         public get layoutType():number{
             return this._layoutType;
+        }
+
+        /**
+         * 是否开启布局功能。
+         */
+        _layoutEnabled:boolean;
+        _setLayoutEnabled(layoutEnabled:boolean){
+            this._layoutEnabled = layoutEnabled;
+        }
+        public set layoutEnabled(layoutEnabled:boolean){
+            this._setLayoutEnabled(layoutEnabled);
+        }
+        public get layoutEnabled():boolean{
+            return this._layoutEnabled;
         }
 
         /**
@@ -566,20 +538,6 @@ module hh{
         }
 
         /**
-         * 是否开启布局功能。
-         */
-        _layoutEnabled:boolean;
-        _setLayoutEnabled(layoutEnabled:boolean){
-            this._layoutEnabled = layoutEnabled;
-        }
-        public set layoutEnabled(layoutEnabled:boolean){
-            this._setLayoutEnabled(layoutEnabled);
-        }
-        public get layoutEnabled():boolean{
-            return this._layoutEnabled;
-        }
-
-        /**
          * 设置在父节点中的布局情况
          * @param preVisibleSibling
          * @param nextSibling
@@ -615,28 +573,29 @@ module hh{
             var self = this;
 
             if(!self._visible) return;
-
             var parent = self._parent;
+
             if(self._childrenDirty) self.sortChildren();//需要重新对子节点排序
-            if(parent){//只有有父节点的时候，百分比才起作用
+            if(parent){
+                //百分比设置需要父节点存在
                 if(self._widthPercentDirty) self._onWidthPercentDirty();
                 if(self._heightPercentDirty) self._onHeightPercentDirty();
                 if(self._xPercentDirty) self._onXPercentDirty();
                 if(self._yPercentDirty) self._onYPercentDirty();
             }
-            if(self._widthDirty) self._onWidthDirty();
-            if(self._heightDirty) self._onHeightDirty();
             if(self._xDirty) self._onXDirty();
             if(self._yDirty) self._onYDirty();
+            if(self._widthDirty) self._onWidthDirty();
+            if(self._heightDirty) self._onHeightDirty();
 
             self._onBeforeVisit(preVisibleSibling, nextSibling);
 
-            if(parent && parent._layoutEnabled)
-                self._doLayoutInParent(preVisibleSibling, nextSibling);//在父节点内部进行布局布局
+            if(parent && parent._layoutEnabled)//当存在父节点并且父节点开启布局管理的时候才进行
+                self._doLayoutInParent(preVisibleSibling, nextSibling);//在父节点内部进行布局
 
             self._onVisit(preVisibleSibling, nextSibling);
             self._onUpdateView();
-            var children:Node[] = self._children, index:number = 0, length:number = children.length
+            var children:Node[] = self._children, index:number = 0, length:number = children.length;
             //先遍历zIndex<0的部分
             var preVisibleSiblingTemp:Node;//上一个可见的兄弟节点
             for (; index < length; index++) {
@@ -663,19 +622,21 @@ module hh{
         _onVisit(preVisibleSibling:Node, nextSibling:Node):void{}
         _onAfterVisit(preVisibleSibling:Node, nextSibling:Node):void{
             var self = this, parent = self._parent;
-            if(parent){
-                //只有有父节点的时候，百分比相关dirty才设置为false。
-                self._xPercentDirty = false;
-                self._yPercentDirty = false;
-                self._widthPercentDirty = false;
-                self._heightPercentDirty = false;
-            }
             self._xDirty = false;
             self._yDirty = false;
             self._widthDirty = false;
             self._heightDirty = false;
             self._childrenDirty = false;
-            if(self._layoutEnabled) self._layoutTypeDirty = false;//只有开启了布局功能才需要设置dirty为false
+            if(parent){
+                //只有当父节点存在是，才将百分比dirty重置
+                self._xPercentDirty = false;
+                self._yPercentDirty = false;
+                self._widthPercentDirty = false;
+                self._heightPercentDirty = false;
+            }
+            if(self._layoutEnabled) {//只有当开启布局管理时，才需要将布局类型dirty重置
+                self._layoutTypeDirty = false;
+            }
         }
         _onUpdateView():void{}
         _draw(renderCtx):void{}
