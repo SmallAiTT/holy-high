@@ -45,11 +45,11 @@ module hh{
             self._init();
         }
 
-        public _initProp(...args:any[]):void{
+        _initProp():void{
             var self = this;
         }
 
-        public _init(...args:any[]):void{
+        _init():void{
             var self = this;
         }
 

@@ -3,6 +3,9 @@
 module hh{
     export class Node extends Class{
         static __className:string = "Node";
+        static debug:boolean;
+
+        public debug:boolean;
 
         _name:string;
         _setName(name:string){
@@ -453,7 +456,7 @@ module hh{
         _onHorizontalAlignDirty():void{}
 
         //@override
-        _initProp(){
+        _initProp():void{
             super._initProp();
             var self = this;
             self._visible = true;
@@ -608,8 +611,12 @@ module hh{
                     preVisibleSiblingTemp = child;
                 }
             }
-            //进行自身视图的绘制
-            self._draw(renderCtx);
+
+            self._transform();//转化
+            renderCtx.save();
+            self._draw(renderCtx);//进行自身视图的绘制
+            renderCtx.restore();
+
             //再遍历zIndex>=0的部分
             for (; index < length; index++) {
                 var child = children[index];
@@ -641,40 +648,39 @@ module hh{
             }
         }
         _onUpdateView():void{}
+
         _transX:number;
         _transY:number;
-        _draw(renderCtx:CanvasRenderingContext2D):void{
+        _transWidth:number;
+        _transHeight:number;
+        _transform(){
             var self = this, parent = self._parent;
             var transX = 0, transY = 0;
             if(parent){
                 transX += parent._transX || 0;
                 transY += parent._transY || 0;
             }
-            transX = self._transX = transX + self._x;
-            transY = self._transY = transY + self._y;
-            var transW = self._width, transH = self._height;
+            self._transX = transX + self._x;
+            self._transY = transY + self._y;
+            self._transWidth = self._width;
+            self._transHeight = self._height;
+        }
+        _draw(renderCtx:CanvasRenderingContext2D):void{
+            var self = this, clazz = self.__class;
+            var transX = self._transX, transY = self._transY;
+            var transWidth = self._transWidth, transHeight = self._transHeight;
 
-
-            renderCtx.beginPath();
-            renderCtx.fillStyle = 'yellow';
-            renderCtx.fillRect(transX, transY, self._width, self._height);
-
-
-            console.log(transX, transY, transW, transH);
-
-            renderCtx.beginPath();
-            renderCtx.fillStyle = 'yellow';
-            renderCtx.fillRect(transX, transY, transW, transH);
-
-            renderCtx.fillStyle = 'red';
-            renderCtx.moveTo(transX, transY); // 设置路径起点，坐标为(20,20)
-            renderCtx.lineTo(transX + transW, transY); // 绘制一条到(200,20)的直线
-            renderCtx.lineTo(transX + transW, transY + transH); // 绘制一条到(200,20)的直线
-            renderCtx.lineTo(transX, transY + transH); // 绘制一条到(200,20)的直线
-            renderCtx.closePath();
-            renderCtx.lineWidth = 1.0; // 设置线宽
-            renderCtx.strokeStyle = "#CC0000"; // 设置线的颜色
-            renderCtx.stroke(); // 进行线的着色，这时整条线才变得可见
+            if(clazz.debug || self.debug){
+                renderCtx.beginPath();
+                renderCtx.moveTo(transX, transY); // 设置路径起点，坐标为(20,20)
+                renderCtx.lineTo(transX + transWidth, transY); // 绘制一条到(200,20)的直线
+                renderCtx.lineTo(transX + transWidth, transY + transHeight); // 绘制一条到(200,20)的直线
+                renderCtx.lineTo(transX, transY + transHeight); // 绘制一条到(200,20)的直线
+                renderCtx.closePath();
+                renderCtx.lineWidth = 1.0; // 设置线宽
+                renderCtx.strokeStyle = "#ff0000"; // 设置线的颜色
+                renderCtx.stroke(); // 进行线的着色，这时整条线才变得可见
+            }
         }
     }
 }
