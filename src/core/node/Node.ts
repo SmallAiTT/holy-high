@@ -576,7 +576,7 @@ module hh{
 
 
         public visit(renderCtx, preVisibleSibling?:Node, nextSibling?:Node):void{
-            var self = this;
+            var self = this, clazz = self.__class;
 
             if(!self._visible) return;
             var parent = self._parent;
@@ -603,7 +603,7 @@ module hh{
             self._onUpdateView();
             var children:Node[] = self._children, index:number = 0, length:number = children.length;
             //先遍历zIndex<0的部分
-            var preVisibleSiblingTemp:Node;//上一个可见的兄弟节点
+            var preVisibleSiblingTemp:Node = null;//上一个可见的兄弟节点
             for (; index < length; index++) {
                 var child = children[index];
                 if(child._zIndex >= 0) break;
@@ -616,6 +616,7 @@ module hh{
             self._transform();//转化
             renderCtx.save();
             self._draw(renderCtx);//进行自身视图的绘制
+            if(clazz.debug || self.debug) self._drawDebug(renderCtx);
             renderCtx.restore();
 
             //再遍历zIndex>=0的部分
@@ -667,21 +668,21 @@ module hh{
             self._transHeight = self._height;
         }
         _draw(renderCtx:CanvasRenderingContext2D):void{
-            var self = this, clazz = self.__class;
+        }
+        _drawDebug(renderCtx:CanvasRenderingContext2D):void{
+            var self = this;
             var transX = self._transX, transY = self._transY;
             var transWidth = self._transWidth, transHeight = self._transHeight;
 
-            if(clazz.debug || self.debug){
-                renderCtx.beginPath();
-                renderCtx.moveTo(transX, transY); // 设置路径起点，坐标为(20,20)
-                renderCtx.lineTo(transX + transWidth, transY); // 绘制一条到(200,20)的直线
-                renderCtx.lineTo(transX + transWidth, transY + transHeight); // 绘制一条到(200,20)的直线
-                renderCtx.lineTo(transX, transY + transHeight); // 绘制一条到(200,20)的直线
-                renderCtx.closePath();
-                renderCtx.lineWidth = 1.0; // 设置线宽
-                renderCtx.strokeStyle = "#ff0000"; // 设置线的颜色
-                renderCtx.stroke(); // 进行线的着色，这时整条线才变得可见
-            }
+            renderCtx.beginPath();
+            renderCtx.moveTo(transX, transY); // 设置路径起点，坐标为(20,20)
+            renderCtx.lineTo(transX + transWidth, transY); // 绘制一条到(200,20)的直线
+            renderCtx.lineTo(transX + transWidth, transY + transHeight); // 绘制一条到(200,20)的直线
+            renderCtx.lineTo(transX, transY + transHeight); // 绘制一条到(200,20)的直线
+            renderCtx.closePath();
+            renderCtx.lineWidth = 1.0; // 设置线宽
+            renderCtx.strokeStyle = "#ff0000"; // 设置线的颜色
+            renderCtx.stroke(); // 进行线的着色，这时整条线才变得可见
         }
     }
 }

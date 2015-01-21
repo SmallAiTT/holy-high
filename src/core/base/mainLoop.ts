@@ -1,4 +1,5 @@
 /// <reference path="Class.ts" />
+/// <reference path="profile.ts" />
 module hh{
     var _isRunning:boolean = false;
     export function mainLoop(cb, ctx?:any){
@@ -14,23 +15,22 @@ module hh{
             window["msRequestAnimationFrame"];
 
         var preTime = Date.now();
+        var loop = function(){
+            var curTime = Date.now();
+            var frameTime = curTime - preTime;
+            preTime = curTime;
+            cb.call(ctx, frameTime);
+            profile(frameTime);
+        };
+
         if (requestAnimFrame != null) {
             var callback = function () {
-                var curTime = Date.now();
-                var frameTime = curTime - preTime;
-                preTime = curTime;
-                cb.call(ctx, frameTime);
+                loop();
                 requestAnimFrame(callback);
             };
             requestAnimFrame(callback);
         } else {
-            var callback = function () {
-                var curTime = Date.now();
-                var frameTime = curTime - preTime;
-                preTime = curTime;
-                cb.call(ctx, frameTime);
-            };
-            setInterval(callback, (1/60) * 1000);
+            setInterval(loop, (1/60) * 1000);
         }
     }
 }

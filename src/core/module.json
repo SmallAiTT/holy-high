@@ -6,6 +6,7 @@
         "base/logger.js",
         "base/Class.js",
         "base/async.js",
+        "base/profile.js",
         "base/mainLoop.js",
 
         "utils/utils.js",
