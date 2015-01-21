@@ -17,24 +17,19 @@ hh.boot(function(){
     node2.width = 100;
     node2.height = 100;
     node2.color = "blue";
-    node.addChild(node2);
+    //node.addChild(node2);
 
+    var tempCanvas1:any = document.createElement("canvas");
+    tempCanvas1.width = 100;
+    tempCanvas1.height = 100;
+    var renderCtx1:CanvasRenderingContext2D = tempCanvas1.getContext("2d");
+    node.visit(renderCtx1);
 
-    var count = 0;
-    var flag = 1;
-    var a = 1;
-    setInterval(function(){
-        if(count >= 200){
-            flag = -1;
-        }else if(count <=0){
-            flag = 1;
-        }
-        count += a*flag;
-        node.x = count;
-    }, 10);
+    renderCtx.drawImage(tempCanvas1, 0, 0, tempCanvas1.width, tempCanvas1.height);
+
 
     hh.mainLoop(function(){
-        renderCtx.clearRect(0, 0, canvas.width, canvas.height);
-        node.visit(renderCtx);
+        //renderCtx.clearRect(0, 0, canvas.width, canvas.height);
+        //node.visit(renderCtx);
     })
 });

@@ -666,6 +666,8 @@ module hh{
             self._transY = transY + self._y;
             self._transWidth = self._width;
             self._transHeight = self._height;
+            self._transX = 0;
+            self._transY = 0;
         }
         _draw(renderCtx:CanvasRenderingContext2D):void{
         }
