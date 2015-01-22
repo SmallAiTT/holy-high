@@ -35,14 +35,18 @@ module hh{
             var self = this, clazz = self.__class;
             var transX = self._transX, transY = self._transY;
             var transWidth = self._transWidth, transHeight = self._transHeight;
-            renderCtx.fillStyle = self._color;
-            console.log(transX, transY, transX + transWidth, transY + transHeight);
-            renderCtx.fillRect(transX, transY, transX + transWidth, transY + transHeight);
 
+
+            renderCtx.beginPath();
             var arcX = transX + transWidth/2, arcY = transY + transHeight/2;
             renderCtx.arc(arcX, arcY, transWidth/2, 0, 2*Math.PI);
             renderCtx.fillStyle = "green";
             renderCtx.fill();
+
+            renderCtx.globalCompositeOperation = "source-in";
+
+            renderCtx.fillStyle = self._color;
+            renderCtx.fillRect(transX, transY, transX + transWidth, transY + transHeight);
         }
 
     }

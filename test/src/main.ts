@@ -25,11 +25,11 @@ hh.boot(function(){
     var renderCtx1:CanvasRenderingContext2D = tempCanvas1.getContext("2d");
     node.visit(renderCtx1);
 
-    renderCtx.drawImage(tempCanvas1, 0, 0, tempCanvas1.width, tempCanvas1.height);
 
 
     hh.mainLoop(function(){
-        //renderCtx.clearRect(0, 0, canvas.width, canvas.height);
+        renderCtx.clearRect(0, 0, canvas.width, canvas.height);
         //node.visit(renderCtx);
+        renderCtx.drawImage(tempCanvas1, 0, 0, tempCanvas1.width, tempCanvas1.height);
     })
 });

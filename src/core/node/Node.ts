@@ -613,7 +613,7 @@ module hh{
                 }
             }
 
-            self._transform();//转化
+            self._transform(renderCtx);//转化
             renderCtx.save();
             self._draw(renderCtx);//进行自身视图的绘制
             if(clazz.debug || self.debug) self._drawDebug(renderCtx);
@@ -628,6 +628,7 @@ module hh{
                 }
             }
             self._onAfterVisit(preVisibleSibling, nextSibling);
+            renderCtx["enterFromRoot"] = false;
         }
         _onBeforeVisit(preVisibleSibling:Node, nextSibling:Node):void{}
         _onVisit(preVisibleSibling:Node, nextSibling:Node):void{}
@@ -655,19 +656,23 @@ module hh{
         _transY:number;
         _transWidth:number;
         _transHeight:number;
-        _transform(){
+        _transform(renderCtx:CanvasRenderingContext2D){
             var self = this, parent = self._parent;
             var transX = 0, transY = 0;
             if(parent){
                 transX += parent._transX || 0;
                 transY += parent._transY || 0;
             }
-            self._transX = transX + self._x;
-            self._transY = transY + self._y;
+            if(renderCtx["enterFromRoot"]){
+                self._transX = transX + self._x;
+                self._transY = transY + self._y;
+            }else{
+                self._transX = 0;
+                self._transY = 0;
+                renderCtx["enterFromRoot"] = true;
+            }
             self._transWidth = self._width;
             self._transHeight = self._height;
-            self._transX = 0;
-            self._transY = 0;
         }
         _draw(renderCtx:CanvasRenderingContext2D):void{
         }
