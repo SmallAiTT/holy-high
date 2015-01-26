@@ -1,6 +1,7 @@
-/// <reference path="logger.ts" />
 /// <reference path="../const/logCode.ts" />
 /// <reference path="../const/const.ts" />
+/// <reference path="logger.ts" />
+/// <reference path="path.ts" />
 module hh{
     export class Class{
         static __className:string = "Class";

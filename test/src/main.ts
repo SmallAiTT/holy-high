@@ -17,19 +17,14 @@ hh.boot(function(){
     node2.width = 100;
     node2.height = 100;
     node2.color = "blue";
-    //node.addChild(node2);
+    node.addChild(node2);
 
-    var tempCanvas1:any = document.createElement("canvas");
-    tempCanvas1.width = 100;
-    tempCanvas1.height = 100;
-    var renderCtx1:CanvasRenderingContext2D = tempCanvas1.getContext("2d");
-    node.visit(renderCtx1);
+//    var tempCanvas1:any = document.createElement("canvas");
+//    tempCanvas1.width = 100;
+//    tempCanvas1.height = 100;
+//    var renderCtx1:CanvasRenderingContext2D = tempCanvas1.getContext("2d");
+//    node.visit(renderCtx1);
 
+    hh.root.addChild(node);
 
-
-    hh.mainLoop(function(){
-        renderCtx.clearRect(0, 0, canvas.width, canvas.height);
-        //node.visit(renderCtx);
-        renderCtx.drawImage(tempCanvas1, 0, 0, tempCanvas1.width, tempCanvas1.height);
-    })
 });

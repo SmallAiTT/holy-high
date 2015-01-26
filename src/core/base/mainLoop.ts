@@ -2,6 +2,7 @@
 /// <reference path="profile.ts" />
 module hh{
     var _isRunning:boolean = false;
+
     export function mainLoop(cb, ctx?:any){
         if(_isRunning){
             warn(logCode.w_1);

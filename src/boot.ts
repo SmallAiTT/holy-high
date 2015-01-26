@@ -162,7 +162,8 @@ module hh{
         s.addEventListener('error',function(){
             cb.call(ctx, "Load " + jsPath + " failed!");
         },false);
-        d.body.appendChild(s);
+        var scriptParent = d.body || d.head;
+        scriptParent.appendChild(s);
     }
 
     export function onEngineReady(cb, ctx){
@@ -188,9 +189,31 @@ module hh{
                 var jsList = moduleJson["jsList"];
                 var asyncPool = new AsyncPool(jsList, 0, function(jsPath, index, cb1){
                     loadJs(coreRoot + jsPath, cb1);
-                }, cb, ctx);
+                }, function(){
+                    (<any>hh).initRoot();
+                    cb.call(ctx);
+                });
                 asyncPool.flow(true);
             });
         })
     }
+
+    /**
+     * 获取入口js。
+     * @private
+     */
+    export function _getMainScriptUrl():string{
+        var main = null;
+        if(document){
+            var scripts = document.getElementsByTagName("script");
+            var curScript:HTMLElement = scripts[scripts.length - 1];
+            main = curScript.getAttribute("main") || "src/main.js";
+        }
+        return main;
+    }
+
+    export var _mainScriptUrl = _getMainScriptUrl();
+    loadJs(_mainScriptUrl, function(){
+
+    });
 }

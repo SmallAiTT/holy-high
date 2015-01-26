@@ -3,6 +3,7 @@
         "const/logCode.js",
         "const/const.js",
 
+        "base/path.js",
         "base/logger.js",
         "base/Class.js",
         "base/async.js",
@@ -15,6 +16,10 @@
         "event/EventDispatcher.js",
 
         "node/Node.js",
-        "node/ColorNode.js"
+        "node/Root.js",
+        "node/Scene.js",
+        "node/ColorNode.js",
+
+        "gui/UIImage.js"
     ]
 }
