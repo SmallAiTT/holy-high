@@ -12,6 +12,8 @@
 ///<reference path="event/Event.ts" />
 ///<reference path="event/EventDispatcher.ts" />
 
+///<reference path="res/res.ts" />
+
 ///<reference path="node/Node.ts" />
 ///<reference path="node/Root.ts" />
 ///<reference path="node/Scene.ts" />

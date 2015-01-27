@@ -1,7 +1,7 @@
 /// <reference path="../utils/utils.ts" />
 /// <reference path="Node.ts" />
 module hh{
-    export class ColorNode extends Node{
+    export class ColorNode extends hh.Node{
         static __className:string = "ColorNode";
 
         //@override
@@ -36,17 +36,8 @@ module hh{
             var transX = self._transX, transY = self._transY;
             var transWidth = self._transWidth, transHeight = self._transHeight;
 
-
-            renderCtx.beginPath();
-            var arcX = transX + transWidth/2, arcY = transY + transHeight/2;
-            renderCtx.arc(arcX, arcY, transWidth/2, 0, 2*Math.PI);
-            renderCtx.fillStyle = "green";
-            renderCtx.fill();
-
-            renderCtx.globalCompositeOperation = "source-in";
-
             renderCtx.fillStyle = self._color;
-            renderCtx.fillRect(transX, transY, transX + transWidth, transY + transHeight);
+            renderCtx.fillRect(0, 0, transWidth, transHeight);
         }
 
     }

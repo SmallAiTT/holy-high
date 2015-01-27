@@ -1,7 +1,7 @@
 ///<reference path="../node/Node.ts" />
 
 module hh{
-    export class UIImage extends Node{
+    export class UIImage extends hh.Node{
 
         /**
          * 纹理
@@ -19,7 +19,11 @@ module hh{
 
         //@override
         _draw(renderCtx:CanvasRenderingContext2D):void{
-
+            var self = this;
+            var texture = self._texture;
+            if(texture){
+                renderCtx.drawImage(texture, 0, 0);
+            }
         }
     }
 }

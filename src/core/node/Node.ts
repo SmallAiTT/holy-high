@@ -203,6 +203,62 @@ module hh{
         }
 
         /**
+         * x轴缩放
+         */
+        _scaleX:number;
+        _setScaleX(scaleX:number){
+            this._scaleX = scaleX;
+        }
+        public set scaleX(scaleX:number){
+            this._setScaleX(scaleX);
+        }
+        public get scaleX():number{
+            return this._scaleX;
+        }
+
+        /**
+         * y轴缩放
+         */
+        _scaleY:number;
+        _setScaleY(scaleY:number){
+            this._scaleY = scaleY;
+        }
+        public set scaleY(scaleY:number){
+            this._setScaleY(scaleY);
+        }
+        public get scaleY():number{
+            return this._scaleY;
+        }
+
+
+        /**
+         * 缩放
+         */
+        _setScale(scale:number){
+            this._setScaleX(scale);
+            this._setScaleY(scale);
+        }
+        public set scale(scale:number){
+            this._setScale(scale);
+        }
+
+
+        /**
+         * 旋转
+         */
+        _rotation:number;
+        _setRotation(rotation:number){
+            this._rotation = rotation;
+        }
+        public set rotation(rotation:number){
+            this._setRotation(rotation);
+        }
+        public get rotation():number{
+            return this._rotation;
+        }
+
+
+        /**
          * 父亲节点
          */
         _parent:Node;
@@ -494,8 +550,10 @@ module hh{
                 if(child == cNode) {//已经添加了
                     return false;
                 }else if(child._zIndex < cNode._zIndex){//算出需要插入的位置
-                    indexToInsert = i - 1;
+                    indexToInsert = i;
                     break;
+                }else{
+                    indexToInsert = i+1;
                 }
             }
             children.splice(indexToInsert, 0, child);
@@ -615,6 +673,9 @@ module hh{
 
             self._transform(renderCtx);//转化
             renderCtx.save();
+            renderCtx.translate(self._transX, self._transY);
+            renderCtx.rotate(self._rotation);
+            renderCtx.scale(self._scaleX, self._scaleY);
             self._draw(renderCtx);//进行自身视图的绘制
             if(clazz.debug || self.debug) self._drawDebug(renderCtx);
             renderCtx.restore();
@@ -678,14 +739,13 @@ module hh{
         }
         _drawDebug(renderCtx:CanvasRenderingContext2D):void{
             var self = this;
-            var transX = self._transX, transY = self._transY;
             var transWidth = self._transWidth, transHeight = self._transHeight;
 
             renderCtx.beginPath();
-            renderCtx.moveTo(transX, transY); // 设置路径起点，坐标为(20,20)
-            renderCtx.lineTo(transX + transWidth, transY); // 绘制一条到(200,20)的直线
-            renderCtx.lineTo(transX + transWidth, transY + transHeight); // 绘制一条到(200,20)的直线
-            renderCtx.lineTo(transX, transY + transHeight); // 绘制一条到(200,20)的直线
+            renderCtx.moveTo(0, 0); // 设置路径起点，坐标为(20,20)
+            renderCtx.lineTo(transWidth, 0); // 绘制一条到(200,20)的直线
+            renderCtx.lineTo(transWidth, transHeight); // 绘制一条到(200,20)的直线
+            renderCtx.lineTo(0, transHeight); // 绘制一条到(200,20)的直线
             renderCtx.closePath();
             renderCtx.lineWidth = 1.0; // 设置线宽
             renderCtx.strokeStyle = "#ff0000"; // 设置线的颜色

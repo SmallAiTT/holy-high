@@ -1,30 +1,39 @@
 ///<reference path="../../src/boot.ts" />
 ///<reference path="../../src/core/reference-core.ts" />
 hh.boot(function(){
-    var canvas:any = document.getElementById("canvas");
-    var renderCtx:CanvasRenderingContext2D = canvas.getContext("2d");
-
-    //hh.Node.debug = true;
-    var node:hh.ColorNode = new hh.ColorNode();
-    node.width = 100;
-    node.height = 100;
-    node.x = 10;
-    node.y = 10;
+    //hh.ColorNode.debug = true;
+    var node1:hh.ColorNode = new hh.ColorNode();
+    node1.name = "node1";
+    node1.width = 100;
+    node1.height = 100;
+    node1.x = 10;
+    node1.y = 10;
+    hh.root.addChild(node1);
 
     var node2:hh.ColorNode = new hh.ColorNode();
+    node2.name = "node2";
     node2.x = 20;
     node2.y = 20;
     node2.width = 100;
     node2.height = 100;
     node2.color = "blue";
-    node.addChild(node2);
+    node2.rotation = 50;
+    hh.root.addChild(node2);
 
-//    var tempCanvas1:any = document.createElement("canvas");
-//    tempCanvas1.width = 100;
-//    tempCanvas1.height = 100;
-//    var renderCtx1:CanvasRenderingContext2D = tempCanvas1.getContext("2d");
-//    node.visit(renderCtx1);
+    var node3:hh.ColorNode = new hh.ColorNode();
+    node3.x = 40;
+    node3.y = 40;
+    node3.width = 100;
+    node3.height = 100;
+    node3.color = "#444444";
+    node1.addChild(node3);
 
-    hh.root.addChild(node);
+    hh.loadImage("res/item_00001.png", function(err, texture){
+        var image = new hh.UIImage();
+        image.scale = 0.5;
+        image.rotation = 50;
+        image.texture = texture;
+        hh.root.addChild(image);
+    });
 
 });
