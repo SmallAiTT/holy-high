@@ -30,8 +30,6 @@ hh.boot(function(){
 
     hh.loadImage("res/item_00001.png", function(err, texture){
         var image = new hh.UIImage();
-        image.scale = 0.5;
-        image.rotation = 50;
         image.texture = texture;
         hh.root.addChild(image);
     });
