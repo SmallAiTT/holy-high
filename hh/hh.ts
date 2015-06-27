@@ -1,6 +1,7 @@
 /**
  * Created by SmallAiTT on 2015/6/26.
  */
+///<reference path="canvas.d.ts" />
 var _thisGlobal:any = this;
 _thisGlobal.__extends = _thisGlobal.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -349,6 +350,7 @@ module hh.project {
     export var logLvl:any = {};
     /** 渲染模式，1为webgl，否则为canvas */
     export var renderMode:number = 1;
+    export var canvas:string;
     /** 是否显示FPS */
     export var showFPS:boolean = false;
     /** 帧率 */
@@ -377,6 +379,7 @@ module hh.project {
         setValue(data, 'resolution');
         setValue(data, 'option');
         setValue(data, 'scaleMode');
+        setValue(data, 'canvas');
     });
 }
 module hh {
@@ -1569,15 +1572,28 @@ module hh {
         static __MAIN:string = '__main';
         /** 绘制之后的循环，外部不要轻易使用，而是通过tt.nextTick进行注册 */
         static __TICK_AFTER_DRAW:string = "__tickAfterDraw";
+        /** 初始化引擎，外部不要轻易使用 */
+        static __INIT_ENGINE:string = "__initEngine";
 
-        static AFTER_ENGINE:string = 'afterEngine';
+        /** 配置文件初始化后监听 */
         static AFTER_CONFIG:string = 'afterConfig';
-        static AFTER_MAIN:string = 'afterMain';
+        /** 引擎初始化后监听 */
+        static AFTER_ENGINE:string = 'afterEngine';
+        /** 启动后监听 */
+        static AFTER_BOOT:string = 'afterBoot';
 
+        /** 开始时间戳 */
         _startTime:number;
+        /** 上一次时间戳 */
         _time:number;
+        /** requestAnimationFrameId */
         _reqAniFrameId:number;
+        /** 主循环是否已经执行 */
         _isMainLooping:boolean;
+        /** canvas对象 */
+        _canvas:any;
+        /** canvas对应的context，注意这个不一定是最终的renderContext，因为引擎中还可能会根据具体需求定义renderContext */
+        canvasContext:RenderingContext2D;
 
         //执行主循环
         run(){
@@ -1587,19 +1603,38 @@ module hh {
             self._time = 0;
             self._isMainLooping = false;
             var _mainLoop = function () {
-                if(self._isMainLooping) _emit4NextTick();// nextTick相关事件的分发
+                // nextTick相关事件的分发
+                if(self._isMainLooping) _emit4NextTick();
                 self._isMainLooping = true;
                 var curTime = Date.now() - self._startTime;
                 var deltaTime = curTime - self._time;
-                self.emit(Context.__TICK, deltaTime);// 主循环tick传时间差
-                self.emit(Context.__MAIN, deltaTime);// 主循环tick传时间差
-                self.emit(Context.__TICK_AFTER_DRAW, deltaTime);// 主循环tick传时间差
-                self.emitNextTick(Context.__NEXT_TICK);// 进行下一帧分发
+                // 主循环tick传时间差
+                self.emit(Context.__TICK, deltaTime);
+                // 主循环tick传时间差
+                self.emit(Context.__MAIN, deltaTime);
+                // 主循环tick传时间差
+                self.emit(Context.__TICK_AFTER_DRAW, deltaTime);
+                // 进行下一帧分发
+                self.emitNextTick(Context.__NEXT_TICK);
 
                 self._reqAniFrameId = requestAnimationFrame(_mainLoop);
                 self._time = curTime;
             };
             _mainLoop();
+        }
+
+        /**
+         * 初始化canvas
+         * @private
+         */
+        _initCanvas(){
+            var self = this;
+            var canvasId = project.canvas;
+            var canvas:any = self._canvas = canvasId ? document.getElementById(canvasId) : document.getElementsByTagName('canvas')[0];
+            if(!canvas) throw '请添加canvas元素！';
+            canvas.width = project.design.width;
+            canvas.height = project.design.height;
+            self.canvasContext = canvas.getContext('2d');
         }
     }
     // 引擎主循环tick的触发器，内部使用
@@ -1624,32 +1659,45 @@ module hh {
 
     // js加载完之后处理
     var _onAfterJs = function(cb){
+        // 启动主循环，但事实上，绘制的主循环还没被注册进去
         context.run();
-        context.emit(Context.AFTER_ENGINE);
-        context.emitAsync(Context.AFTER_ENGINE, function(){
-            project.load(function(){
-                if(!(<any>hh).isNative){//如果是h5版本，则进行title的设置
-                    var titleEle = document.getElementsByTagName('title')[0];
-                    if(titleEle){
-                        titleEle.innerHTML = hh.project.appName;
-                    }else{
-                        titleEle = document.createElement('title');
-                        titleEle.innerHTML = hh.project.appName;
-                        document.getElementsByTagName('head')[0].appendChild(titleEle);
-                    }
+        // 加载完js之后，首先先加载配置文件，这样才能保证引擎相关初始化能够直接通过配置文件读取
+        project.load(function(){
+            if(!(<any>hh).isNative){//如果是h5版本，则进行title的设置
+                var titleEle = document.getElementsByTagName('title')[0];
+                if(titleEle){
+                    titleEle.innerHTML = hh.project.appName;
+                }else{
+                    titleEle = document.createElement('title');
+                    titleEle.innerHTML = hh.project.appName;
+                    document.getElementsByTagName('head')[0].appendChild(titleEle);
                 }
+            }
 
-                // 进行日志初始化
-                logger.initByConfig(project);
+            // 进行日志初始化
+            logger.initByConfig(project);
 
-                context.emit(Context.AFTER_CONFIG);
-                context.emitAsync(Context.AFTER_CONFIG, function(){
-                    logger.log('项目启动完毕！');
-                    context.emit(Context.AFTER_MAIN);
-                    if(cb) cb();
+            // 分发配置文件加载后监听
+            context.emit(Context.AFTER_CONFIG);
+            // 分发异步方式的配置文件加载后监听
+            context.emitAsync(Context.AFTER_CONFIG, function(){
+                //初始化canvas相关
+                context._initCanvas();
+                // 分发引擎初始化监听，此时进行引擎的初始化操作
+                context.emit(Context.__INIT_ENGINE);
+                // 分发引擎初始化后监听
+                context.emit(Context.AFTER_ENGINE);
+                // 分发异步方式的引擎初始化后监听
+                context.emitAsync(Context.AFTER_ENGINE, function(){
+                    // 分发启动后监听
+                    context.emit(Context.AFTER_BOOT);
+                    // 分发异步方式的启动后监听
+                    context.emitAsync(Context.AFTER_BOOT, function(){
+                        if(cb) cb();
+                    }, null);
                 }, null);
-            });
-        }, null);
+            }, null);
+        });
     };
 
     export function boot(modules:string[], cb?:Function){

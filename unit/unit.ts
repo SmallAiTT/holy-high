@@ -32,13 +32,17 @@ module unit{
         menuInfoMap[itemName] = [func, releaseFunc];
     }
 
+    export function releaseDefault(param){
+
+    }
+
 
 
     var _menuStr = '';
     var _menuNameTemp = '<tr><td><div>${moduleName}</div></td></tr>';
     var _menuItemTemp = '<tr><td><a href="#" onclick="unit.onMenu(\'${moduleName}\', \'${name}\')" >${name}</a></td></tr>';
 
-    hh.context.once(hh.Context.AFTER_CONFIG, function(){
+    hh.context.once(hh.Context.AFTER_BOOT, function(){
         _menuStr += '<table>';
         for (var moduleName in _moduleMenuMap) {
             _menuStr += hh.formatPlaceholder(_menuNameTemp, {moduleName:moduleName});

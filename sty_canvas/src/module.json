@@ -1,5 +1,6 @@
 {
   "file_list" : [
-    "sty_canvas_init.js"
+    "sty_canvas_init.js",
+    "STYGraphics.js"
   ]
 }
