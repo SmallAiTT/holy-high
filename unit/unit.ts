@@ -4,43 +4,49 @@
 
 ///<reference path="ref.ts" />
 module unit{
-    var _curMenuInfo:any[];
-    var _curMenuParam:any;
-    export function onMenu(moduleName:string, itemName:string){
-        if(_curMenuInfo){
-            var releaseFunc = _curMenuInfo[1];
-            if(releaseFunc) releaseFunc(_curMenuParam);
-            _curMenuInfo = null;
+    var _curMenuInfo4Ctx:any[];
+    var _curMenuParam4Ctx:any;
+    export function onMenu4Ctx(moduleName:string, itemName:string){
+        if(_curMenuInfo4Ctx){
+            var releaseFunc = _curMenuInfo4Ctx[1];
+            if(releaseFunc) releaseFunc(_curMenuParam4Ctx);
+            _curMenuInfo4Ctx = null;
         }
         var menuInfoMap = _moduleMenuMap[moduleName];
         if(menuInfoMap){
             var menuInfo = menuInfoMap[itemName];
             var func = menuInfo[0];
             if(func) {
-                _curMenuInfo = menuInfo;
-                _curMenuParam = {};
-                func(_curMenuParam);
+                _curMenuInfo4Ctx = menuInfo;
+                _curMenuParam4Ctx = {};
+                var ctx = hh.context.canvasContext;
+                releaseDefault4Ctx({});
+                ctx.save();
+                func(ctx, _curMenuParam4Ctx);
             }
         }
     }
 
     var _moduleMenuMap = {};
     export var curModuleName:string = "default";
-    export function addMenuItem(itemName, func:Function, releaseFunc?:Function){
+    export function addMenuItem4Ctx(itemName, func:Function, releaseFunc?:Function){
         var menuInfoMap = _moduleMenuMap[unit.curModuleName];
         if(!menuInfoMap) menuInfoMap = _moduleMenuMap[unit.curModuleName] = {};
         menuInfoMap[itemName] = [func, releaseFunc];
     }
 
-    export function releaseDefault(param){
-
+    export function releaseDefault4Ctx(param){
+        var canvas = hh.context._canvas;
+        var ctx = hh.context.canvasContext;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.restore();
     }
 
 
 
     var _menuStr = '';
     var _menuNameTemp = '<tr><td><div>${moduleName}</div></td></tr>';
-    var _menuItemTemp = '<tr><td><a href="#" onclick="unit.onMenu(\'${moduleName}\', \'${name}\')" >${name}</a></td></tr>';
+    var _menuItemTemp = '<tr><td><a href="#" onclick="unit.onMenu4Ctx(\'${moduleName}\', \'${name}\')" >${name}</a></td></tr>';
 
     hh.context.once(hh.Context.AFTER_BOOT, function(){
         _menuStr += '<table>';

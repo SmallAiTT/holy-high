@@ -135,6 +135,7 @@ interface RenderingContext2D {
     shadowBlur: number;
     textAlign: string;
     textBaseline: string;
+    direction:string;
     restore(): void;
     setTransform(m11: number, m12: number, m21: number, m22: number, dx: number, dy: number): void;
     save(): void;

@@ -1,6 +1,13 @@
 {
   "file_list" : [
-    "sty_canvas_init.js",
-    "STYGraphics.js"
+    "sty_init.js",
+    "STYResHelper.js",
+    "STYGraphics.js",
+    "STYText.js",
+    "STYImage.js",
+    "STYTransformations.js",
+    "STYComposite.js",
+    "STYClip.js",
+    "STYImageData.js"
   ]
 }
