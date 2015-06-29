@@ -5,14 +5,14 @@
 module sty{
     unit.curModuleName = sty.moduleName_text;
 
-    unit.addMenuItem4Ctx('普通文本', function(ctx:RenderingContext2D){
+    unit.addMenuItem4Ctx('普通文本', function(ctx:IRenderingContext2D){
         ctx.font = "48px serif";
         // text, x, y [, maxWidth]
         ctx.fillText("Hello world", 10, 50);
         ctx.fillText("Hello world", 10, 100, 100);
     });
 
-    unit.addMenuItem4Ctx('文本边框——strokeText', function(ctx:RenderingContext2D){
+    unit.addMenuItem4Ctx('文本边框——strokeText', function(ctx:IRenderingContext2D){
         // A DOMString parsed as CSS font value. The default font is 10px sans-serif.
         ctx.font = "48px serif";
         // text, x, y [, maxWidth]
@@ -20,7 +20,7 @@ module sty{
         ctx.strokeText("Hello world", 10, 100, 100);
     });
 
-    unit.addMenuItem4Ctx('文本边框——textAlign', function(ctx:RenderingContext2D){
+    unit.addMenuItem4Ctx('文本边框——textAlign', function(ctx:IRenderingContext2D){
         // A DOMString parsed as CSS font value. The default font is 10px sans-serif.
         ctx.font = "48px serif";
         ctx.fillStyle = "red";
@@ -41,7 +41,7 @@ module sty{
         }
     });
 
-    unit.addMenuItem4Ctx('文本边框——textBaseline', function(ctx:RenderingContext2D){
+    unit.addMenuItem4Ctx('文本边框——textBaseline', function(ctx:IRenderingContext2D){
         // A DOMString parsed as CSS font value. The default font is 10px sans-serif.
         ctx.font = "48px serif";
         ctx.fillStyle = "red";
@@ -65,7 +65,7 @@ module sty{
         }
     });
 
-    unit.addMenuItem4Ctx('文本边框——direction（未全面支持）', function(ctx:RenderingContext2D){
+    unit.addMenuItem4Ctx('文本边框——direction（未全面支持）', function(ctx:IRenderingContext2D){
         // A DOMString parsed as CSS font value. The default font is 10px sans-serif.
         ctx.font = "48px serif";
         ctx.fillStyle = "red";
@@ -86,7 +86,7 @@ module sty{
         }
     });
 
-    unit.addMenuItem4Ctx('文本尺寸——measureText', function(ctx:RenderingContext2D){
+    unit.addMenuItem4Ctx('文本尺寸——measureText', function(ctx:IRenderingContext2D){
         // A DOMString parsed as CSS font value. The default font is 10px sans-serif.
         ctx.font = "48px serif";
         ctx.fillStyle = "red";

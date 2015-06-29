@@ -5,7 +5,7 @@
 module sty{
     unit.curModuleName = moduleName_clip;
 
-    unit.addMenuItem4Ctx('裁剪', function(ctx:RenderingContext2D){
+    unit.addMenuItem4Ctx('裁剪', function(ctx:IRenderingContext2D){
 
         // 绘制星星
         function drawStar(ctx,r){

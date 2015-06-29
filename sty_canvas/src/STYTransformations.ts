@@ -5,7 +5,7 @@
 module sty{
     unit.curModuleName = sty.moduleName_transformations;
 
-    unit.addMenuItem4Ctx('save-restore', function(ctx:RenderingContext2D){
+    unit.addMenuItem4Ctx('save-restore', function(ctx:IRenderingContext2D){
         ctx.fillRect(0,0,150,150);   // Draw a rectangle with default settings
         ctx.save();                  // Save the default state
 
@@ -24,7 +24,7 @@ module sty{
         ctx.fillRect(60,60,30,30);   // Draw a rectangle with restored settings
     });
 
-    unit.addMenuItem4Ctx('translate', function(ctx:RenderingContext2D){
+    unit.addMenuItem4Ctx('translate', function(ctx:IRenderingContext2D){
         for (var i=0;i<3;i++) {
             for (var j = 0; j < 3; j++) {
                 ctx.save();
@@ -36,7 +36,7 @@ module sty{
         }
     });
 
-    unit.addMenuItem4Ctx('rotate', function(ctx:RenderingContext2D){
+    unit.addMenuItem4Ctx('rotate', function(ctx:IRenderingContext2D){
         // left rectangles, rotate from canvas origin
         ctx.save();
         // blue rect
@@ -67,7 +67,7 @@ module sty{
         ctx.fillRect(150, 30, 100, 100);
     });
 
-    unit.addMenuItem4Ctx('scale', function(ctx:RenderingContext2D){
+    unit.addMenuItem4Ctx('scale', function(ctx:IRenderingContext2D){
         // draw a simple rectangle, but scale it.
         ctx.save();
         ctx.scale(10, 3);
@@ -80,7 +80,7 @@ module sty{
         ctx.fillText("MDN", -135, 120);
     });
 
-    unit.addMenuItem4Ctx('transform', function(ctx:RenderingContext2D){
+    unit.addMenuItem4Ctx('transform', function(ctx:IRenderingContext2D){
         var sin = Math.sin(Math.PI/6);
         var cos = Math.cos(Math.PI/6);
         /*
@@ -111,7 +111,7 @@ module sty{
         ctx.fillRect(0, 0, 100, 100);
     });
 
-    unit.addMenuItem4Ctx('transform1', function(ctx:RenderingContext2D){
+    unit.addMenuItem4Ctx('transform1', function(ctx:IRenderingContext2D){
         var sin = Math.sin(Math.PI/6);
         var cos = Math.cos(Math.PI/6);
         /*

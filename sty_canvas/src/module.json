@@ -8,6 +8,7 @@
     "STYTransformations.js",
     "STYComposite.js",
     "STYClip.js",
-    "STYImageData.js"
+    "STYImageData.js",
+    "STYAria.js"
   ]
 }

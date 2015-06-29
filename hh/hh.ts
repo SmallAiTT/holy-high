@@ -1593,7 +1593,7 @@ module hh {
         /** canvas对象 */
         _canvas:any;
         /** canvas对应的context，注意这个不一定是最终的renderContext，因为引擎中还可能会根据具体需求定义renderContext */
-        canvasContext:RenderingContext2D;
+        canvasContext:IRenderingContext2D;
 
         //执行主循环
         run(){

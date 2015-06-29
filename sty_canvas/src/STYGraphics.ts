@@ -4,7 +4,7 @@
 ///<reference path="sty_init.ts" />
 module sty{
     unit.curModuleName = moduleName_graphics;
-    unit.addMenuItem4Ctx('矩形', function(ctx:RenderingContext2D){
+    unit.addMenuItem4Ctx('矩形', function(ctx:IRenderingContext2D){
         // 进行颜色填充
         ctx.fillStyle='#FF0000';
         // 颜色填充还有以下几种方式
@@ -19,14 +19,14 @@ module sty{
         ctx.strokeRect(50,50,50,50);
     });
 
-    unit.addMenuItem4Ctx('直线', function(ctx:RenderingContext2D){
+    unit.addMenuItem4Ctx('直线', function(ctx:IRenderingContext2D){
         ctx.moveTo(10,10);
         ctx.lineTo(150,50);
         ctx.lineTo(10,50);
         ctx.stroke();
     });
 
-    unit.addMenuItem4Ctx('Path2D绘制三角形', function(ctx:RenderingContext2D){
+    unit.addMenuItem4Ctx('Path2D绘制三角形', function(ctx:IRenderingContext2D){
         var path2D:Path2D = new Path2D();
         path2D.moveTo(75, 50);
         path2D.lineTo(100, 75);
@@ -35,7 +35,7 @@ module sty{
         ctx.fill(path2D);
     });
 
-    unit.addMenuItem4Ctx('Path2D绘制笑脸', function(ctx:RenderingContext2D){
+    unit.addMenuItem4Ctx('Path2D绘制笑脸', function(ctx:IRenderingContext2D){
         var path2D:Path2D = new Path2D();
         path2D.arc(75, 75, 50, 0, Math.PI*2);// outer circle
         path2D.moveTo(110, 75);
@@ -48,7 +48,7 @@ module sty{
         ctx.stroke(path2D);
     });
 
-    unit.addMenuItem4Ctx('二次方贝塞尔曲线', function(ctx:RenderingContext2D){
+    unit.addMenuItem4Ctx('二次方贝塞尔曲线', function(ctx:IRenderingContext2D){
         var path2D:Path2D = new Path2D();
         path2D.moveTo(75, 25);
         path2D.quadraticCurveTo(25, 25, 25, 62.5);
@@ -61,7 +61,7 @@ module sty{
         ctx.stroke(path2D);
     });
 
-    unit.addMenuItem4Ctx('贝塞尔曲线', function(ctx:RenderingContext2D){
+    unit.addMenuItem4Ctx('贝塞尔曲线', function(ctx:IRenderingContext2D){
         var path2D:Path2D = new Path2D();
         path2D.moveTo(75, 40);
         path2D.bezierCurveTo(75, 37, 70, 25, 50, 25);
@@ -74,7 +74,7 @@ module sty{
         ctx.stroke(path2D);
     });
 
-    unit.addMenuItem4Ctx('线结束表现', function(ctx:RenderingContext2D){
+    unit.addMenuItem4Ctx('线结束表现', function(ctx:IRenderingContext2D){
         var lineCap = ['butt','round','square'];
         // Draw guides
         ctx.strokeStyle = '#09f';
@@ -97,7 +97,7 @@ module sty{
         }
     });
 
-    unit.addMenuItem4Ctx('线衔接表现', function(ctx:RenderingContext2D){
+    unit.addMenuItem4Ctx('线衔接表现', function(ctx:IRenderingContext2D){
         var ctx = hh.context.canvasContext;
         var lineJoin = ['round','bevel','miter'];
         ctx.lineWidth = 10;
@@ -113,7 +113,7 @@ module sty{
         }
     });
 
-    unit.addMenuItem4Ctx('setLineDash', function(ctx:RenderingContext2D, param){
+    unit.addMenuItem4Ctx('setLineDash', function(ctx:IRenderingContext2D, param){
         var offset = 0;
 
         function draw() {
@@ -138,7 +138,7 @@ module sty{
         hh.unTick(param.func);
     });
 
-    unit.addMenuItem4Ctx('线性渐变', function(ctx:RenderingContext2D) {
+    unit.addMenuItem4Ctx('线性渐变', function(ctx:IRenderingContext2D) {
         // Create gradients
         var lingrad = ctx.createLinearGradient(0,0,0,150);
         lingrad.addColorStop(0, '#00ABEB');
@@ -159,7 +159,7 @@ module sty{
         ctx.strokeRect(50,50,50,50);
     });
 
-    unit.addMenuItem4Ctx('放射渐变', function(ctx:RenderingContext2D) {
+    unit.addMenuItem4Ctx('放射渐变', function(ctx:IRenderingContext2D) {
         // Create gradients
         // 参数为两个圆，(x1,y1,r1)-(x2,y2,r2)
         var radgrad = ctx.createRadialGradient(45,45,10,52,50,30);
@@ -193,7 +193,7 @@ module sty{
         ctx.fillRect(0,0,150,150);
     });
 
-    unit.addMenuItem4Ctx('图案 createPattern', function(ctx:RenderingContext2D) {
+    unit.addMenuItem4Ctx('图案 createPattern', function(ctx:IRenderingContext2D) {
         // create new image object to use as pattern
         var img = new Image();
         img.src = resHelper.getS9gUrl(1);
@@ -207,7 +207,7 @@ module sty{
         }
     });
 
-    unit.addMenuItem4Ctx('阴影 Shadows', function(ctx:RenderingContext2D) {
+    unit.addMenuItem4Ctx('阴影 Shadows', function(ctx:IRenderingContext2D) {
         ctx.shadowOffsetX = 2;
         ctx.shadowOffsetY = 2;
         ctx.shadowBlur = 2;
@@ -220,7 +220,7 @@ module sty{
         ctx.fillRect(100, 100, 100, 100);
     });
 
-    unit.addMenuItem4Ctx('Canvas fill rules', function(ctx:RenderingContext2D) {
+    unit.addMenuItem4Ctx('Canvas fill rules', function(ctx:IRenderingContext2D) {
         ctx.beginPath();
         ctx.arc(50, 50, 30, 0, Math.PI*2);
         ctx.arc(50, 50, 15, 0, Math.PI*2);

@@ -5,7 +5,7 @@
 module sty{
     unit.curModuleName = moduleName_imageData;
 
-    unit.addMenuItem4Ctx('ColorPicker', function(ctx:RenderingContext2D, param){
+    unit.addMenuItem4Ctx('ColorPicker', function(ctx:IRenderingContext2D, param){
         var canvas = hh.context._canvas;
         function pick(event) {
             var x = event.layerX;
@@ -30,5 +30,50 @@ module sty{
     }, function (param) {
         var canvas = hh.context._canvas;
         canvas.removeEventListener('mousemove', param.pick);
+    });
+
+    unit.addMenuItem4Ctx('Gray', function(ctx:IRenderingContext2D){
+        resHelper.loadImage(resHelper.getItemUrl(11001), function(err, img){
+            var width = img.width, height = img.height;
+            ctx.drawImage(img, 0, 0);
+            ctx.drawImage(img, width, 0);
+            var imageData = ctx.getImageData(0,0,width, height);
+            var data = imageData.data;
+
+            for (var i = 0; i < data.length; i += 4) {
+                var avg = (data[i] + data[i +1] + data[i +2]) / 3;
+                data[i]     = avg; // red
+                data[i + 1] = avg; // green
+                data[i + 2] = avg; // blue
+            }
+            ctx.putImageData(imageData, 0, 0);
+        });
+    });
+
+    unit.addMenuItem4Ctx('Invert', function(ctx:IRenderingContext2D){
+        resHelper.loadImage(resHelper.getItemUrl(11001), function(err, img){
+            var width = img.width, height = img.height;
+            ctx.drawImage(img, 0, 0);
+            ctx.drawImage(img, width, 0);
+            var imageData = ctx.getImageData(0,0,width, height);
+            var data = imageData.data;
+
+            for (var i = 0; i < data.length; i += 4) {
+                data[i]     = 255 - data[i];     // red
+                data[i + 1] = 255 - data[i + 1]; // green
+                data[i + 2] = 255 - data[i + 2]; // blue
+            }
+            ctx.putImageData(imageData, 0, 0);
+
+            var grayscale = function() {
+                for (var i = 0; i < data.length; i += 4) {
+                    var avg = (data[i] + data[i +1] + data[i +2]) / 3;
+                    data[i]     = avg; // red
+                    data[i + 1] = avg; // green
+                    data[i + 2] = avg; // blue
+                }
+                ctx.putImageData(imageData, 0, 0);
+            };
+        });
     });
 }

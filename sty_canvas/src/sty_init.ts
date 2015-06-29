@@ -11,4 +11,5 @@ module sty{
     export var moduleName_composite = 'Compositing学习';
     export var moduleName_clip = 'Clipping学习';
     export var moduleName_imageData = 'ImageData学习';
+    export var moduleName_aria = 'ARIA学习';
 }

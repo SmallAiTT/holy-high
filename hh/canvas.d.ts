@@ -115,7 +115,7 @@ declare var Path2D: {
 }
 
 
-interface RenderingContext2D {
+interface IRenderingContext2D {
     miterLimit: number;
     font: string;
     globalCompositeOperation: string;

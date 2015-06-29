@@ -5,7 +5,7 @@
 module sty{
     unit.curModuleName = moduleName_composite;
 
-    unit.addMenuItem4Ctx('混合', function(ctx111:RenderingContext2D){
+    unit.addMenuItem4Ctx('混合', function(ctx111:IRenderingContext2D){
         var canvas1 = document.createElement("canvas");
         var canvas2 = document.createElement("canvas");
         var gco = [ 'source-over','source-in','source-out','source-atop',
@@ -122,7 +122,7 @@ module sty{
 
         var op_8x8 = createInterlace(8, "#FFF", "#eee");
         var lightMix = function() {
-            var ctx:RenderingContext2D = <any>canvas2.getContext("2d");
+            var ctx:IRenderingContext2D = <any>canvas2.getContext("2d");
             ctx.save();
             ctx.globalCompositeOperation = "lighter";
             ctx.beginPath();
@@ -144,7 +144,7 @@ module sty{
             ctx.fill();
         };
         var colorSphere = function() {
-            var ctx:RenderingContext2D = <any>canvas1.getContext("2d");
+            var ctx:IRenderingContext2D = <any>canvas1.getContext("2d");
             var width = 360;
             var halfWidth = width / 2;
             var rotate = (1 / 360) * Math.PI * 2; // per degree
@@ -193,7 +193,7 @@ module sty{
                 canvas.height = height/2;
 
                 // 关键性代码
-                var ctx:RenderingContext2D = <any>canvas.getContext('2d');
+                var ctx:IRenderingContext2D = <any>canvas.getContext('2d');
                 ctx.clearRect(0, 0, width, height);
                 ctx.save();
                 ctx.drawImage(canvas1, 0, 0, width/2, height/2);

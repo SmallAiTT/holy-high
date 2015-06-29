@@ -5,7 +5,7 @@
 module sty{
     unit.curModuleName = sty.moduleName_image;
 
-    unit.addMenuItem4Ctx('绘制', function(ctx:RenderingContext2D){
+    unit.addMenuItem4Ctx('绘制', function(ctx:IRenderingContext2D){
         resHelper.loadImage(resHelper.getItemUrl(10001), function(err, img){
             // 普通绘制
             ctx.drawImage(img,0,0);
