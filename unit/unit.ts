@@ -19,7 +19,7 @@ module unit{
             if(func) {
                 _curMenuInfo4Ctx = menuInfo;
                 _curMenuParam4Ctx = {};
-                var ctx = hh.context.canvasContext;
+                var ctx = hh.engine.canvasCtx;
                 releaseDefault4Ctx({});
                 ctx.save();
                 func(ctx, _curMenuParam4Ctx);
@@ -36,8 +36,8 @@ module unit{
     }
 
     export function releaseDefault4Ctx(param){
-        var canvas = hh.context._canvas;
-        var ctx = hh.context.canvasContext;
+        var canvas = hh.engine._canvas;
+        var ctx = hh.engine.canvasCtx;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.restore();
     }
@@ -48,7 +48,7 @@ module unit{
     var _menuNameTemp = '<tr><td><div>${moduleName}</div></td></tr>';
     var _menuItemTemp = '<tr><td><a href="#" onclick="unit.onMenu4Ctx(\'${moduleName}\', \'${name}\')" >${name}</a></td></tr>';
 
-    hh.context.once(hh.Context.AFTER_BOOT, function(){
+    hh.engine.once(hh.Engine.AFTER_BOOT, function(){
         _menuStr += '<table>';
         for (var moduleName in _moduleMenuMap) {
             _menuStr += hh.formatPlaceholder(_menuNameTemp, {moduleName:moduleName});

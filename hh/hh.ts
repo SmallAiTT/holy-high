@@ -14,50 +14,6 @@ _thisGlobal.__extends = _thisGlobal.__extends || function (d, b) {
 };
 
 module logger{
-
-    /**
-     * 格式化参数成String。
-     * 参数和h5的console.log保持一致。
-     * @returns {*}
-     */
-    export function formatStr(...args:any[]):string{
-        var l = args.length;
-        if(l < 1){
-            return '';
-        }
-        var str = args[0];
-        var needToFormat = true;
-        if(typeof str == 'object'){
-            str = JSON.stringify(str);
-            needToFormat = false;
-        }
-        if(str == null) str = 'null';
-        str += '';
-        var count = 1;
-        if(needToFormat){
-            var content = str.replace(/(%d)|(%i)|(%s)|(%f)|(%o)/g, function(world){
-                if(args.length <= count) return world;
-                var value = args[count++];
-                if(world == '%d' || world == '%i'){
-                    return parseInt(value);
-                }else{
-                    return value;
-                }
-            });
-            for (var l_i = args.length; count < l_i; count++) {
-                content += '    ' + args[count];
-            }
-            return content;
-        }else{
-            for(var i = 1; i < l; ++i){
-                var arg = args[i];
-                arg = typeof arg == 'object' ? JSON.stringify(arg) : arg;
-                str += '    ' + arg;
-            }
-            return str;
-        }
-    }
-
     var _map = {};
 
     /**
@@ -384,6 +340,50 @@ module hh.project {
 }
 module hh {
 
+    /**
+     * 格式化参数成String。
+     * 参数和h5的console.log保持一致。
+     * @returns {*}
+     */
+    export function formatStr(...args:any[]):string{
+        var l = args.length;
+        if(l < 1){
+            return '';
+        }
+        var str = args[0];
+        var needToFormat = true;
+        if(typeof str == 'object'){
+            str = JSON.stringify(str);
+            needToFormat = false;
+        }
+        if(str == null) str = 'null';
+        str += '';
+        var count = 1;
+        if(needToFormat){
+            var content = str.replace(/(%d)|(%i)|(%s)|(%f)|(%o)/g, function(world){
+                if(args.length <= count) return world;
+                var value = args[count++];
+                if(world == '%d' || world == '%i'){
+                    return parseInt(value);
+                }else{
+                    return value;
+                }
+            });
+            for (var l_i = args.length; count < l_i; count++) {
+                content += '    ' + args[count];
+            }
+            return content;
+        }else{
+            for(var i = 1; i < l; ++i){
+                var arg = args[i];
+                arg = typeof arg == 'object' ? JSON.stringify(arg) : arg;
+                str += '    ' + arg;
+            }
+            return str;
+        }
+    }
+
+
     var _tempStrRegExp = /\$\{[^\s\{\}]*\}/g;
     export function formatPlaceholder(tempStr:string, map:any):string{
         function change(word){
@@ -396,6 +396,75 @@ module hh {
             return value;
         }
         return tempStr.replace(_tempStrRegExp, change);
+    }
+
+    export class Class{
+        /** 类名 */
+        public static __className:string = 'Class';//为了跟cocos方案保持一致所写
+
+        /** 创建 */
+        static create(...args:any[]):any {
+            var Class:any = this;
+            var obj:any = new Class();
+            if (obj.init) obj.init.apply(obj, arguments);
+            return obj;
+        }
+
+        /** 获取单例 */
+        static getInstance(...args:any[]) {
+            var Class:any = this;
+            if (!Class._instance) {
+                var instance:any = Class._instance = Class.create.apply(Class, arguments);
+                instance._isInstance = true;
+            }
+            return Class._instance;
+        }
+
+        /** 释放单例 */
+        static release() {
+            var Class:any = this;
+            var instance:any = Class._instance;
+            if (instance) {
+                if (instance.doDtor) instance.doDtor();
+                Class._instance = null;
+            }
+        }
+
+        /** 类名 */
+        __className:string;
+        /** 实例对应的类 */
+        __class:any;
+        /** 是否是单例 */
+        _isInstance:boolean;
+        /** 储藏室 */
+        _store:Store;
+        /** 是否已经释放了 */
+        _hasDtored:boolean;
+
+        _initProp():void {
+            var self = this;
+            self._store = new Store();
+        }
+
+        constructor() {
+            var self = this;
+            var clazz:any = self.__class = this['constructor'];
+            self.__className = clazz.__className;
+            self._initProp();
+        }
+
+        public init(...args:any[]) {
+        }
+
+        public dtor() {
+            var self = this;
+            if (self._hasDtored) return;
+            self._hasDtored = true;
+            self._dtor();
+        }
+
+        _dtor() {
+        }
     }
 
     /**
@@ -489,7 +558,7 @@ module hh {
                     return
                 }
 
-                if (context._isMainLooping) {// 如果主循环已经开始执行了，就延迟到下一帧执行
+                if (engine._isMainLooping) {// 如果主循环已经开始执行了，就延迟到下一帧执行
                     hh.nextTick(self._handleItem, self);
                 } else {
                     //实在没有就用自带的（浏览器环境下才会进）
@@ -513,7 +582,7 @@ module hh {
                 }
             };
 
-            if (context._isMainLooping) {
+            if (engine._isMainLooping) {
                 hh.nextTick(onFlow);
             } else {
                 //实在没有就用自带的（浏览器环境下才会进）
@@ -708,13 +777,47 @@ module hh {
     var _tempEventArr:any = [];
     var _tempArgsArr:any = [];
     export class Emitter {
+        /** 类名 */
         public static __className:string = 'Emitter';//为了跟cocos方案保持一致所写
 
-        __className:string;
-        __class:any;//实例对应的类
+        /** 创建 */
+        static create(...args:any[]):any {
+            var Class:any = this;
+            var obj:any = new Class();
+            if (obj.init) obj.init.apply(obj, arguments);
+            return obj;
+        }
 
+        /** 获取单例 */
+        static getInstance(...args:any[]) {
+            var Class:any = this;
+            if (!Class._instance) {
+                var instance:any = Class._instance = Class.create.apply(Class, arguments);
+                instance._isInstance = true;
+            }
+            return Class._instance;
+        }
+
+        /** 释放单例 */
+        static release() {
+            var Class:any = this;
+            var instance:any = Class._instance;
+            if (instance) {
+                if (instance.doDtor) instance.doDtor();
+                Class._instance = null;
+            }
+        }
+
+        /** 类名 */
+        __className:string;
+        /** 实例对应的类 */
+        __class:any;
+        /** 是否是单例 */
         _isInstance:boolean;
+        /** 储藏室 */
         _store:Store;
+        /** 是否已经释放了 */
+        _hasDtored:boolean;
 
         _initProp():void {
             var self = this;
@@ -731,17 +834,17 @@ module hh {
         public init(...args:any[]) {
         }
 
-        _hasDtored:boolean;
-
-        public doDtor() {
+        public dtor() {
             var self = this;
             if (self._hasDtored) return;
             self._hasDtored = true;
-            self.dtor();
+            self._dtor();
         }
 
-        dtor() {
+        _dtor() {
         }
+
+        //______________以上由于考虑到性能问题，故意重新写了一遍，减少继承____________
 
         /**
          * 监听某个事件。可以注册多个。通过emit触发。
@@ -1480,31 +1583,6 @@ module hh {
         static formatAfterEvent(event:string):string {
             return event + '.after';
         }
-
-        static create(...args:any[]):any {
-            var Class:any = this;
-            var obj:any = new Class();
-            if (obj.init) obj.init.apply(obj, arguments);
-            return obj;
-        }
-
-        static getInstance(...args:any[]) {
-            var Class:any = this;
-            if (!Class._instance) {
-                var instance:any = Class._instance = Class.create.apply(Class, arguments);
-                instance._isInstance = true;
-            }
-            return Class._instance;
-        }
-
-        static purgeInstance() {
-            var Class:any = this;
-            var instance:any = Class._instance;
-            if (instance) {
-                if (instance.doDtor) instance.doDtor();
-                Class._instance = null;
-            }
-        }
     }
 
 
@@ -1563,22 +1641,24 @@ module hh {
         }
     };
 
-    export class Context extends Emitter {
+    export class Engine extends Emitter {
         /** 循环事件，外部不要轻易使用，而是通过tt.tick进行注册 */
         static __TICK:string = '__tick';
         /** 下一帧执行事件，外部不要轻易使用，而是通过tt.nextTick进行注册 */
         static __NEXT_TICK:string = '__nextTick';
         /** 主循环事件，外部不要轻易使用 */
-        static __MAIN:string = '__main';
+        static __MAIN_TRANS:string = '__mainTrans';
+        /** 主循环渲染事件，外部不要轻易使用 */
+        static __MAIN_RENDER:string = '__mainRender';
         /** 绘制之后的循环，外部不要轻易使用，而是通过tt.nextTick进行注册 */
         static __TICK_AFTER_DRAW:string = "__tickAfterDraw";
         /** 初始化引擎，外部不要轻易使用 */
-        static __INIT_ENGINE:string = "__initEngine";
+        static __INIT_CTX:string = "__initCtx";
 
         /** 配置文件初始化后监听 */
-        static AFTER_CONFIG:string = 'afterConfig';
+        static AFTER_CFG:string = 'afterCfg';
         /** 引擎初始化后监听 */
-        static AFTER_ENGINE:string = 'afterEngine';
+        static AFTER_CTX:string = 'afterCtx';
         /** 启动后监听 */
         static AFTER_BOOT:string = 'afterBoot';
 
@@ -1593,11 +1673,28 @@ module hh {
         /** canvas对象 */
         _canvas:any;
         /** canvas对应的context，注意这个不一定是最终的renderContext，因为引擎中还可能会根据具体需求定义renderContext */
-        canvasContext:IRenderingContext2D;
+        canvasCtx:IRenderingContext2D;
+        /** 判断引擎是否已经初始化完毕 */
+        isCtxInited:boolean;
+
+        /** 渲染命令队列 */
+        _renderQueue:any[];
+
+        /** 舞台，由具体实现传递 */
+        stage:any;
+        design:any;
+
+        //@override
+        _initProp():void{
+            super._initProp();
+            var self = this;
+            self._renderQueue = [];
+            self.design = {width:0, height:0};
+        }
 
         //执行主循环
         run(){
-            var self = this;
+            var self = this, clazz = self.__class;
             //设置开始时间
             self._startTime = Date.now();
             self._time = 0;
@@ -1609,13 +1706,21 @@ module hh {
                 var curTime = Date.now() - self._startTime;
                 var deltaTime = curTime - self._time;
                 // 主循环tick传时间差
-                self.emit(Context.__TICK, deltaTime);
+                self.emit(clazz.__TICK, deltaTime);
+                // 如果舞台已经初始化好了，就可以开始进行转化了
+                if(self.stage) self.stage._trans(self);
+                // 进行主渲染
+                var queue = self._renderQueue;
+                var ctx = self.canvasCtx;
+                while(queue.length > 0){
+                    var cmd = queue.shift();//命令方法
+                    var cmdCtx = queue.shift();//命令上下文
+                    cmd.call(cmdCtx, ctx);
+                }
                 // 主循环tick传时间差
-                self.emit(Context.__MAIN, deltaTime);
-                // 主循环tick传时间差
-                self.emit(Context.__TICK_AFTER_DRAW, deltaTime);
+                if(self.isCtxInited) self.emit(clazz.__TICK_AFTER_DRAW, deltaTime);
                 // 进行下一帧分发
-                self.emitNextTick(Context.__NEXT_TICK);
+                self.emitNextTick(clazz.__NEXT_TICK);
 
                 self._reqAniFrameId = requestAnimationFrame(_mainLoop);
                 self._time = curTime;
@@ -1631,36 +1736,39 @@ module hh {
             var self = this;
             var canvasId = project.canvas;
             var canvas:any = self._canvas = canvasId ? document.getElementById(canvasId) : document.getElementsByTagName('canvas')[0];
+            var design = self.design;
+            var w = design.width = project.design.width;
+            var h = design.height = project.design.height;
             if(!canvas) throw '请添加canvas元素！';
-            canvas.width = project.design.width;
-            canvas.height = project.design.height;
-            self.canvasContext = canvas.getContext('2d');
+            canvas.width = w;
+            canvas.height = h;
+            self.canvasCtx = canvas.getContext('2d');
         }
     }
     // 引擎主循环tick的触发器，内部使用
-    export var context:Context = new Context();
+    export var engine:Engine = new Engine();
 
     export function tick(listener:Function, ctx?:any) {
-        context.on(Context.__TICK, listener, ctx);
+        engine.on(Engine.__TICK, listener, ctx);
     }
 
     export function unTick(listener:Function, ctx?:any) {
-        context.un(Context.__TICK, listener, ctx);
+        engine.un(Engine.__TICK, listener, ctx);
     }
 
     export function nextTick(listener:Function, ctx?:any) {
-        context.onceNextTick(Context.__NEXT_TICK, listener, ctx);
+        engine.onceNextTick(Engine.__NEXT_TICK, listener, ctx);
     }
 
     export function unNextTick(listener:Function, ctx?:any) {
-        context.unOnceNextTick(Context.__NEXT_TICK, listener, ctx);
+        engine.unOnceNextTick(Engine.__NEXT_TICK, listener, ctx);
     }
 
 
     // js加载完之后处理
     var _onAfterJs = function(cb){
         // 启动主循环，但事实上，绘制的主循环还没被注册进去
-        context.run();
+        engine.run();
         // 加载完js之后，首先先加载配置文件，这样才能保证引擎相关初始化能够直接通过配置文件读取
         project.load(function(){
             if(!(<any>hh).isNative){//如果是h5版本，则进行title的设置
@@ -1678,21 +1786,21 @@ module hh {
             logger.initByConfig(project);
 
             // 分发配置文件加载后监听
-            context.emit(Context.AFTER_CONFIG);
+            engine.emit(Engine.AFTER_CFG);
             // 分发异步方式的配置文件加载后监听
-            context.emitAsync(Context.AFTER_CONFIG, function(){
+            engine.emitAsync(Engine.AFTER_CFG, function(){
                 //初始化canvas相关
-                context._initCanvas();
+                engine._initCanvas();
                 // 分发引擎初始化监听，此时进行引擎的初始化操作
-                context.emit(Context.__INIT_ENGINE);
+                engine.emit(Engine.__INIT_CTX);
                 // 分发引擎初始化后监听
-                context.emit(Context.AFTER_ENGINE);
+                engine.emit(Engine.AFTER_CTX);
                 // 分发异步方式的引擎初始化后监听
-                context.emitAsync(Context.AFTER_ENGINE, function(){
+                engine.emitAsync(Engine.AFTER_CTX, function(){
                     // 分发启动后监听
-                    context.emit(Context.AFTER_BOOT);
+                    engine.emit(Engine.AFTER_BOOT);
                     // 分发异步方式的启动后监听
-                    context.emitAsync(Context.AFTER_BOOT, function(){
+                    engine.emitAsync(Engine.AFTER_BOOT, function(){
                         if(cb) cb();
                     }, null);
                 }, null);

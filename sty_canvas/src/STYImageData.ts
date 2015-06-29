@@ -6,7 +6,7 @@ module sty{
     unit.curModuleName = moduleName_imageData;
 
     unit.addMenuItem4Ctx('ColorPicker', function(ctx:IRenderingContext2D, param){
-        var canvas = hh.context._canvas;
+        var canvas = hh.engine._canvas;
         function pick(event) {
             var x = event.layerX;
             var y = event.layerY;
@@ -28,7 +28,7 @@ module sty{
             ctx.drawImage(img, 0, 0);
         });
     }, function (param) {
-        var canvas = hh.context._canvas;
+        var canvas = hh.engine._canvas;
         canvas.removeEventListener('mousemove', param.pick);
     });
 

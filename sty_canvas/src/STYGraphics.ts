@@ -98,7 +98,7 @@ module sty{
     });
 
     unit.addMenuItem4Ctx('线衔接表现', function(ctx:IRenderingContext2D){
-        var ctx = hh.context.canvasContext;
+        var ctx = hh.engine.canvasCtx;
         var lineJoin = ['round','bevel','miter'];
         ctx.lineWidth = 10;
         for (var i=0;i<lineJoin.length;i++){
@@ -117,7 +117,7 @@ module sty{
         var offset = 0;
 
         function draw() {
-            var canvas = hh.context._canvas;
+            var canvas = hh.engine._canvas;
             ctx.clearRect(0,0, canvas.width, canvas.height);
             ctx.setLineDash([4, 2]);
             ctx.lineDashOffset = -offset;

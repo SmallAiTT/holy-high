@@ -12,7 +12,7 @@ module sty{
         console.log('目前好像还不支持');
         if((<any>ctx).addHitRegion) (<any>ctx).addHitRegion({id: "circle"});
 
-        var canvas = hh.context._canvas;
+        var canvas = hh.engine._canvas;
         canvas.addEventListener("mousemove", function(event){
             if(event.region) {
                 alert("hit region: " + event.region);
