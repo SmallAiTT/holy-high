@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no,target-densitydpi=device-dpi"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+
+    <meta name="full-screen" content="true"/>
+    <meta name="screen-orientation" content="portrait"/>
+    <meta name="x5-fullscreen" content="true"/>
+    <meta name="360-fullscreen" content="true"/>
+
+    <style type="text/css">
+        canvas{border:dashed 2px #CCC}
+    </style>
+</head>
+<body>
+<table>
+    <tr>
+        <td width="300">
+            <div id="div_menuRoot">
+
+            </div>
+        </td>
+        <td><canvas id="canvas"></canvas></td>
+    </tr>
+</table>
+<script src="../hh/hh.js"></script>
+<script>
+    hh.boot(["../unit", "src"], function(){
+        console.log("启动完毕!");
+    });
+</script>
+</body>
+</html>

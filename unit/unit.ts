@@ -4,38 +4,74 @@
 
 ///<reference path="ref.ts" />
 module unit{
-    var _curMenuInfo4Ctx:any[];
-    var _curMenuParam4Ctx:any;
+    var _curMenuInfo:any[];
+    var _curMenuParam:any;
+    var _moduleMenuMap = {};
+    export var curModuleName:string = 'default';
+
     export function onMenu4Ctx(moduleName:string, itemName:string){
-        if(_curMenuInfo4Ctx){
-            var releaseFunc = _curMenuInfo4Ctx[1];
-            if(releaseFunc) releaseFunc(_curMenuParam4Ctx);
-            _curMenuInfo4Ctx = null;
+        if(_curMenuInfo){
+            var releaseFunc = _curMenuInfo[1];
+            if(releaseFunc) releaseFunc(_curMenuParam);
+            _curMenuInfo = null;
         }
         var menuInfoMap = _moduleMenuMap[moduleName];
         if(menuInfoMap){
             var menuInfo = menuInfoMap[itemName];
             var func = menuInfo[0];
             if(func) {
-                _curMenuInfo4Ctx = menuInfo;
-                _curMenuParam4Ctx = {};
+                _curMenuInfo = menuInfo;
+                _curMenuParam = {};
                 var ctx = hh.engine.canvasCtx;
                 releaseDefault4Ctx({});
                 ctx.save();
-                func(ctx, _curMenuParam4Ctx);
+                func(ctx, _curMenuParam);
             }
         }
     }
 
-    var _moduleMenuMap = {};
-    export var curModuleName:string = "default";
     export function addMenuItem4Ctx(itemName, func:Function, releaseFunc?:Function){
         var menuInfoMap = _moduleMenuMap[unit.curModuleName];
         if(!menuInfoMap) menuInfoMap = _moduleMenuMap[unit.curModuleName] = {};
-        menuInfoMap[itemName] = [func, releaseFunc];
+        menuInfoMap[itemName] = [func, releaseFunc, 'onMenu4Ctx'];
     }
 
     export function releaseDefault4Ctx(param){
+        var canvas = hh.engine._canvas;
+        var ctx = hh.engine.canvasCtx;
+        ctx.restore();
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+
+    export function onMenu(moduleName:string, itemName:string){
+        if(_curMenuInfo){
+            var releaseFunc = _curMenuInfo[1];
+            if(releaseFunc) releaseFunc(_curMenuParam);
+            _curMenuInfo = null;
+        }
+        var menuInfoMap = _moduleMenuMap[moduleName];
+        if(menuInfoMap){
+            var menuInfo = menuInfoMap[itemName];
+            var func = menuInfo[0];
+            if(func) {
+                _curMenuInfo = menuInfo;
+                _curMenuParam = {};
+                var ctx = hh.engine.canvasCtx;
+                releaseDefault({});
+                ctx.save();
+                func(_curMenuParam);
+            }
+        }
+    }
+
+    export function addMenuItem(itemName, func:Function, releaseFunc?:Function){
+        var menuInfoMap = _moduleMenuMap[unit.curModuleName];
+        if(!menuInfoMap) menuInfoMap = _moduleMenuMap[unit.curModuleName] = {};
+        menuInfoMap[itemName] = [func, releaseFunc, 'onMenu'];
+    }
+
+    export function releaseDefault(param){
         var canvas = hh.engine._canvas;
         var ctx = hh.engine.canvasCtx;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -46,7 +82,7 @@ module unit{
 
     var _menuStr = '';
     var _menuNameTemp = '<tr><td><div>${moduleName}</div></td></tr>';
-    var _menuItemTemp = '<tr><td><a href="#" onclick="unit.onMenu4Ctx(\'${moduleName}\', \'${name}\')" >${name}</a></td></tr>';
+    var _menuItemTemp = '<tr><td><a href="#" onclick="unit.${onMenu}(\'${moduleName}\', \'${name}\')" >${name}</a></td></tr>';
 
     hh.engine.once(hh.Engine.AFTER_BOOT, function(){
         _menuStr += '<table>';
@@ -54,7 +90,7 @@ module unit{
             _menuStr += hh.formatPlaceholder(_menuNameTemp, {moduleName:moduleName});
             var moduleInfo = _moduleMenuMap[moduleName];
             for (var name in moduleInfo) {
-                _menuStr += hh.formatPlaceholder(_menuItemTemp, {moduleName:moduleName, name:name});
+                _menuStr += hh.formatPlaceholder(_menuItemTemp, {moduleName:moduleName, name:name, onMenu:[moduleInfo[name][2]]});
             }
         }
         _menuStr += '</table>';

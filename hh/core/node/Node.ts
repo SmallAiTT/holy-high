@@ -5,6 +5,7 @@
 module hh{
     export class Node extends Emitter{
         static __className:string = "Node";
+        static debug:boolean = true;
 
         _nodeOpt:NodeOpt;
 
@@ -209,11 +210,12 @@ module hh{
          * 转换节点。
          */
         _trans(engine:Engine){
-            var self = this, nodeOpt = self._nodeOpt;
+            var self = this, clazz = self.__class, nodeOpt = self._nodeOpt;
             var children = nodeOpt.children;
             // 进行世界转化，可能需要推送到渲染队列中也不一定，根据今后改造决定
             self._calMatrix();
             if(nodeOpt.drawable) engine._renderQueue.push(self._draw, self);
+            if(clazz.debug) engine._renderQueue.push(self._drawDebug, self);
             //遍历子节点
             for (var i = 0, l_i = children.length; i < l_i; i++) {
                 var child = children[i];
@@ -242,6 +244,16 @@ module hh{
          */
         _render(ctx:IRenderingContext2D, engine:Engine){
             // 子类在此实现真正的绘制
+        }
+
+        _drawDebug(ctx:IRenderingContext2D, engine:Engine){
+            // 进行debug模式绘制
+            var self = this, nodeOpt = self._nodeOpt;
+            var width = nodeOpt.width, height = nodeOpt.height;
+            ctx.save();
+            ctx.fillStyle = 'red';
+            ctx.fillRect(0, 0, width, height);
+            ctx.restore();
         }
 
         /**
