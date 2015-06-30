@@ -1649,9 +1649,11 @@ module hh {
         /** 区域擦除事件，外部不要轻易使用 */
         static __CLEAR_RECT:string = '__clearRect';
         /** 绘制之后的循环，外部不要轻易使用，而是通过tt.nextTick进行注册 */
-        static __TICK_AFTER_DRAW:string = "__tickAfterDraw";
+        static __TICK_AFTER_DRAW:string = '__tickAfterDraw';
+        /** 绘制帧率 */
+        static __DRAW_FPS:string = '__drawFPS';
         /** 初始化引擎，外部不要轻易使用 */
-        static __INIT_CTX:string = "__initCtx";
+        static __INIT_CTX:string = '__initCtx';
 
         /** 配置文件初始化后监听 */
         static AFTER_CFG:string = 'afterCfg';
@@ -1682,12 +1684,19 @@ module hh {
         stage:any;
         design:any;
 
+        __frameCount:number;
+        __frameTime:number;
+        __fps:number;
+
         //@override
         _initProp():void{
             super._initProp();
             var self = this;
             self._renderQueue = [];
             self.design = {width:0, height:0};
+            self.__frameCount = -1;
+            self.__frameTime = 0;
+            self.__fps = 60;
         }
 
         //执行主循环
@@ -1723,6 +1732,18 @@ module hh {
                 }
                 // 进行下一帧分发
                 self.emitNextTick(clazz.__NEXT_TICK);
+
+
+                if(ctx){
+                    self.__frameCount++;
+                    self.__frameTime += deltaTime;
+                    if(self.__frameCount == 60){
+                        self.__fps = Math.round(self.__frameCount*1000/self.__frameTime);
+                        self.__frameCount = -1;
+                        self.__frameTime = 0;
+                    }
+                    self.emit(clazz.__DRAW_FPS, ctx, self.__fps);
+                }
 
                 self._reqAniFrameId = requestAnimationFrame(_mainLoop);
                 self._time = curTime;

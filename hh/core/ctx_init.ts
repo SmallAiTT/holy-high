@@ -18,4 +18,12 @@ module hh{
         stage.height = engine.design.height;
         stage.name = "stage";
     });
+    // 先注册一个帧率显示以供使用
+    engine.on(Eng.__DRAW_FPS, function(ctx:IRenderingContext2D, fps:number){
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.save();
+        ctx.fillStyle = 'red';
+        ctx.fillText('FPS:'+fps, 10, 10);
+        ctx.restore();
+    });
 }
