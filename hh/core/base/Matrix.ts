@@ -48,13 +48,8 @@ module hh{
          * @param tx {number} 沿 x 轴平移每个点的距离。
          * @param ty {number} 沿 y 轴平移每个点的距离。
          */
-        constructor(a:number = 1, b:number = 0, c:number = 0, d:number = 1, tx:number = 0, ty:number = 0) {
-            this.a = a;
-            this.b = b;
-            this.c = c;
-            this.d = d;
-            this.tx = tx;
-            this.ty = ty;
+        constructor() {
+            this.identity();
         }
         /**
          * 前置矩阵

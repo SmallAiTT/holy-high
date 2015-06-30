@@ -73,6 +73,7 @@ module unit{
 
     export function releaseDefault(param){
         var canvas = hh.engine._canvas;
+        hh.engine.stage.rmChildren();
         var ctx = hh.engine.canvasCtx;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.restore();

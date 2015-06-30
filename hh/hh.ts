@@ -1646,10 +1646,8 @@ module hh {
         static __TICK:string = '__tick';
         /** 下一帧执行事件，外部不要轻易使用，而是通过tt.nextTick进行注册 */
         static __NEXT_TICK:string = '__nextTick';
-        /** 主循环事件，外部不要轻易使用 */
-        static __MAIN_TRANS:string = '__mainTrans';
-        /** 主循环渲染事件，外部不要轻易使用 */
-        static __MAIN_RENDER:string = '__mainRender';
+        /** 区域擦除事件，外部不要轻易使用 */
+        static __CLEAR_RECT:string = '__clearRect';
         /** 绘制之后的循环，外部不要轻易使用，而是通过tt.nextTick进行注册 */
         static __TICK_AFTER_DRAW:string = "__tickAfterDraw";
         /** 初始化引擎，外部不要轻易使用 */
@@ -1709,16 +1707,20 @@ module hh {
                 self.emit(clazz.__TICK, deltaTime);
                 // 如果舞台已经初始化好了，就可以开始进行转化了
                 if(self.stage) self.stage._trans(self);
-                // 进行主渲染
-                var queue = self._renderQueue;
+                // 进行上下文绘制区域擦除
                 var ctx = self.canvasCtx;
-                while(queue.length > 0){
-                    var cmd = queue.shift();//命令方法
-                    var cmdCtx = queue.shift();//命令上下文
-                    cmd.call(cmdCtx, ctx);
+                if(ctx){
+                    self.emit(clazz.__CLEAR_RECT, ctx);
+                    // 进行主渲染
+                    var queue = self._renderQueue;
+                    while(queue.length > 0){
+                        var cmd = queue.shift();//命令方法
+                        var cmdCtx = queue.shift();//命令上下文
+                        cmd.call(cmdCtx, ctx);
+                    }
+                    // 主循环tick传时间差
+                    self.emit(clazz.__TICK_AFTER_DRAW, deltaTime);
                 }
-                // 主循环tick传时间差
-                if(self.isCtxInited) self.emit(clazz.__TICK_AFTER_DRAW, deltaTime);
                 // 进行下一帧分发
                 self.emitNextTick(clazz.__NEXT_TICK);
 

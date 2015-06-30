@@ -41,18 +41,19 @@ module hh{
             self.height = 0;
             self.x = 0;
             self.y = 0;
-            self.scaleX = 0;
-            self.scaleY = 0;
+            self.scaleX = 1;
+            self.scaleY = 1;
             self.anchorX = 0;
             self.anchorY = 0;
             self.rotation = 0;
             self.skewX = 0;
             self.skewY = 0;
             self.alpha = 0;
-            self.worldAlpha = 0;
+            self.worldAlpha = 1;
             self.visible = true;
             self.children = [];
             self.drawable = false;
+            self.matrix = new Matrix();
         }
         constructor(NodeClass:any){
             this._NodeClass = NodeClass;

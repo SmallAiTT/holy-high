@@ -73,15 +73,14 @@ module hh{
         /**
          * y轴位置
          */
-        _y:number;
         _setY(y:number){
-            this._y = y;
+            this._nodeOpt.y = y;
         }
         public set y(y:number){
             this._setY(y);
         }
         public get y():number{
-            return this._y;
+            return this._nodeOpt.y;
         }
 
         /**
@@ -135,6 +134,19 @@ module hh{
         }
 
         /**
+         * 旋转
+         */
+        _setRotation(rotation:number){
+            this._nodeOpt.rotation = rotation;
+        }
+        public set rotation(rotation:number){
+            this._setRotation(rotation);
+        }
+        public get rotation():number{
+            return this._nodeOpt.rotation;
+        }
+
+        /**
          * zIndex
          */
         _setZIndex(zIndex:number){
@@ -169,7 +181,13 @@ module hh{
         public addChild(child:Node):Node{
             var self = this, children = self._nodeOpt.children;
             // TODO 需要根据zIndex进行排序
-            children.push(child);
+            if(children.indexOf(child) < 0){
+                var cNodeOpt = child._nodeOpt;
+                // 如果已经在别的节点上了，就先进行移除
+                if(cNodeOpt.parent) cNodeOpt.parent.rmChild(child);
+                children.push(child);
+                cNodeOpt.parent = self;
+            }
             return self;
         }
         /**
@@ -180,7 +198,22 @@ module hh{
         public rmChild(child:Node):Node{
             var self = this, children = self._nodeOpt.children;
             var index = children.indexOf(child);
-            if(index >= 0) children.splice(index, 1);
+            if(index >= 0) {
+                children.splice(index, 1);
+                child._nodeOpt.parent = null;
+            }
+            return self;
+        }
+
+        public rmChildren():Node{
+            var self = this, children = self._nodeOpt.children;
+            var l = children.length;
+            while(l > 0){
+                var child = children.pop();
+                // 解除父亲绑定
+                child._nodeOpt.parent = null;
+                l--;
+            }
             return self;
         }
 
@@ -220,7 +253,7 @@ module hh{
             for (var i = 0, l_i = children.length; i < l_i; i++) {
                 var child = children[i];
                 // 可见才可以继续进行转化
-                if(!child._nodeOpt.visible) child._trans(engine);
+                if(child._nodeOpt.visible) child._trans(engine);
             }
         }
 
@@ -249,10 +282,18 @@ module hh{
         _drawDebug(ctx:IRenderingContext2D, engine:Engine){
             // 进行debug模式绘制
             var self = this, nodeOpt = self._nodeOpt;
+
+            // 设置转化
+            var matrix = nodeOpt.matrix;
+            ctx.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+
             var width = nodeOpt.width, height = nodeOpt.height;
             ctx.save();
+            ctx.strokeStyle = 'red';
             ctx.fillStyle = 'red';
-            ctx.fillRect(0, 0, width, height);
+            ctx.strokeRect(0, 0, width, height);
+            var ps = 10;
+            ctx.fillRect(width*nodeOpt.anchorX - ps/2, height*nodeOpt.anchorY - ps/2, ps, ps);
             ctx.restore();
         }
 
@@ -267,12 +308,7 @@ module hh{
             if(parent) {
                 var pNodeOpt = parent._nodeOpt;
                 var pm = pNodeOpt.matrix;
-                matrix.a = pm.a;
-                matrix.b = pm.b;
-                matrix.c = pm.c;
-                matrix.d = pm.d;
-                matrix.tx = pm.tx;
-                matrix.ty = pm.ty;
+                matrix.identityMatrix(pm);
                 nodeOpt.worldAlpha = pNodeOpt.worldAlpha * nodeOpt.alpha;
             }
 
