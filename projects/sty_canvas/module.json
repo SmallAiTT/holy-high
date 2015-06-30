@@ -1,4 +1,5 @@
 {
+  "source" : "src",
   "file_list" : [
     "sty_init.js",
     "STYResHelper.js",

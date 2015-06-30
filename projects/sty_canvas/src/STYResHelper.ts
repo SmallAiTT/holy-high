@@ -1,7 +1,7 @@
 /**
  * Created by Administrator on 2015/6/28.
  */
-///<reference path="ref.ts" />
+///<reference path="../ref.ts" />
 module sty.resHelper{
     export function getItemUrl(resId:number):string{
         return 'res/item/11001.png';// TODO
