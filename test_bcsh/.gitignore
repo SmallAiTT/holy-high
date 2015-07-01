@@ -1,0 +1,4 @@
+*.js
+*.js.map
+res/*
+!res/11001.png

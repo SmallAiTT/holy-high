@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no,target-densitydpi=device-dpi"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+
+    <meta name="full-screen" content="true"/>
+    <meta name="screen-orientation" content="portrait"/>
+    <meta name="x5-fullscreen" content="true"/>
+    <meta name="360-fullscreen" content="true"/>
+
+    <style type="text/css">
+        canvas{border:dashed 2px #CCC}
+    </style>
+</head>
+<body>
+<table>
+    <tr>
+        <td width="300">
+            <div id="div_menuRoot">
+                <table>
+                    <tr>
+                        <td>brightness:</td>
+                        <td><input id="brightness" value="0"></td>
+                    </tr>
+                    <tr>
+                        <td>contrast:</td>
+                        <td><input id="contrast" value="0"></td>
+                    </tr>
+                    <tr>
+                        <td>saturation:</td>
+                        <td><input id="saturation" value="0"></td>
+                    </tr>
+                    <tr>
+                        <td>hub:</td>
+                        <td><input id="hub" value="0"></td>
+                    </tr>
+                </table>
+                <div><button onclick="hh.refresh()">刷新</button></div>
+                <div><textarea id="result" cols="40"></textarea></div>
+            </div>
+        </td>
+        <td><canvas id="canvas"></canvas></td>
+    </tr>
+</table>
+<script src="test_bcsh.js"></script>
+</body>
+</html>
