@@ -2,7 +2,7 @@
  * Created by SmallAiTT on 2015/6/29.
  */
 ///<reference path="../ref.ts" />
-///<reference path="../base/Matrix.ts" />
+///<reference path="../base/__module.ts" />
 module hh{
     export class NodeOpt extends Class{
         static __className:string = "NodeOpt";

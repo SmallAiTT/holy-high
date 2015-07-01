@@ -1,0 +1,8 @@
+{
+  "file_list" : [
+    "tc_init.js",
+    "core/node/tc_Node.js",
+    "core/res/tc_Res.js",
+    "core/ui/tc_UIImg.js"
+  ]
+}

@@ -400,7 +400,18 @@ module hh {
 
     export class Class{
         /** 类名 */
-        public static __className:string = 'Class';//为了跟cocos方案保持一致所写
+        static __className:string = 'Class';
+
+        static __recycler:any[] = [];
+        static push(obj:any){
+            this.__recycler.push(obj);
+        }
+        static pop(...args):any{
+            var clazz = this;
+            var obj = clazz.__recycler.pop();
+            if(obj) return obj;
+            else clazz.create.apply(clazz, args);
+        }
 
         /** 创建 */
         static create(...args:any[]):any {
@@ -778,7 +789,18 @@ module hh {
     var _tempArgsArr:any = [];
     export class Emitter {
         /** 类名 */
-        public static __className:string = 'Emitter';//为了跟cocos方案保持一致所写
+        public static __className:string = 'Emitter';
+
+        static __recycler:any[] = [];
+        static push(obj:any){
+            this.__recycler.push(obj);
+        }
+        static pop(...args):any{
+            var clazz = this;
+            var obj = clazz.__recycler.pop();
+            if(obj) return obj;
+            else return clazz.create.apply(clazz, args);
+        }
 
         /** 创建 */
         static create(...args:any[]):any {
@@ -1725,7 +1747,7 @@ module hh {
                     while(queue.length > 0){
                         var cmd = queue.shift();//命令方法
                         var cmdCtx = queue.shift();//命令上下文
-                        cmd.call(cmdCtx, ctx);
+                        cmd.call(cmdCtx, ctx, self);
                     }
                     // 主循环tick传时间差
                     self.emit(clazz.__TICK_AFTER_DRAW, deltaTime);
@@ -1836,7 +1858,7 @@ module hh {
             _onAfterJs(cb);
         }else{
             var asyncPool = new AsyncPool(modules, 0, function(item, index, cb1){
-                hh.net.loadJson(item + '/module.json', cb1);
+                hh.net.loadJson(item + '/__module.json', cb1);
             }, cb);
             asyncPool.onEnd(function(err, moduleJsons){
                 var list = [];

@@ -7,13 +7,14 @@ module hh{
         static __className:string = "Node";
         static debug:boolean = true;
 
+        static NodeOpt:any = NodeOpt;
         _nodeOpt:NodeOpt;
 
         //@override
         _initProp(){
             super._initProp();
-            var self = this;
-            self._nodeOpt = new NodeOpt(self.__class);
+            var self = this, clazz = self.__class;
+            self._nodeOpt = new clazz.NodeOpt(clazz);
         }
         _dtor(){
             super._dtor();
