@@ -7,7 +7,7 @@ module hh{
     export class NodeOpt extends Class{
         static __className:string = "NodeOpt";
 
-        _NodeClass:any;
+        _TargetClass:any;
 
         name:string;
         width:number;
@@ -36,7 +36,7 @@ module hh{
         _initProp():void{
             super._initProp();
             var self = this;
-            self.name = self._NodeClass.__className;
+            self.name = self._TargetClass.__className;
             self.width = 0;
             self.height = 0;
             self.x = 0;
@@ -56,7 +56,7 @@ module hh{
             self.matrix = new Matrix();
         }
         constructor(NodeClass:any){
-            this._NodeClass = NodeClass;
+            this._TargetClass = NodeClass;
             super();
         }
     }

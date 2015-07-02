@@ -2,6 +2,7 @@
  * Created by SmallAiTT on 2015/6/29.
  */
 ///<reference path="NodeOpt.ts" />
+///<reference path="../touch/TouchHandler.ts" />
 module hh{
     export class Node extends Emitter{
         static __className:string = "Node";
@@ -10,16 +11,23 @@ module hh{
         static NodeOpt:any = NodeOpt;
         _nodeOpt:NodeOpt;
 
+        static TouchHandler:any = TouchHandler;
+        _touchHandler:TouchHandler;
+
         //@override
         _initProp(){
             super._initProp();
             var self = this, clazz = self.__class;
             self._nodeOpt = new clazz.NodeOpt(clazz);
+            self._touchHandler = new clazz.TouchHandler();
         }
         _dtor(){
             super._dtor();
             var self = this;
             self._nodeOpt.dtor();
+            self._touchHandler.dtor();
+            // 解除绑定
+            self._touchHandler = null;
         }
 
         /**

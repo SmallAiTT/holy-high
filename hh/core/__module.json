@@ -6,6 +6,9 @@
     "base/Matrix.js",
     "base/ColorMatrix.js",
 
+    "touch/TouchHandler.js",
+    "touch/TouchCtx.js",
+
     "node/NodeOpt.js",
     "node/Node.js",
 
