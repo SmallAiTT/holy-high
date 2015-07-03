@@ -43,8 +43,8 @@ module hh{
             self.y = 0;
             self.scaleX = 1;
             self.scaleY = 1;
-            self.anchorX = 0;
-            self.anchorY = 0;
+            self.anchorX = 0.5;
+            self.anchorY = 0.5;
             self.rotation = 0;
             self.skewX = 0;
             self.skewY = 0;

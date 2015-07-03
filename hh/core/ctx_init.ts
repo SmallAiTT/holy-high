@@ -17,6 +17,7 @@ module hh{
         var stage = engine.stage = new Node();
         stage.width = engine.design.width;
         stage.height = engine.design.height;
+        stage.anchorX = stage.anchorY = 0;
         stage.name = "stage";
 
         // 注册点击事件

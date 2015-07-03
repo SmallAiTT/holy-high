@@ -4,6 +4,7 @@
 ///<reference path="base/__module.ts" />
 ///<reference path="res/__module.ts" />
 
+///<reference path="node/Layout.ts" />
 ///<reference path="node/NodeOpt.ts" />
 ///<reference path="node/Node.ts" />
 

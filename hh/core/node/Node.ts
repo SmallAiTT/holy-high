@@ -2,6 +2,7 @@
  * Created by SmallAiTT on 2015/6/29.
  */
 ///<reference path="NodeOpt.ts" />
+///<reference path="Layout.ts" />
 ///<reference path="../touch/TouchHandler.ts" />
 module hh{
     export class Node extends Emitter{
@@ -250,20 +251,49 @@ module hh{
         }
 
         /**
+         * 布局处理器。
+         */
+        _layout:Layout;
+        _setLayout(layout:Layout){
+            this._layout = layout;
+        }
+        public set layout(layout:Layout){
+            this._setLayout(layout);
+        }
+        public get layout():Layout{
+            return this._layout;
+        }
+
+        /**
          * 转换节点。
          */
         _trans(engine:Engine){
             var self = this, clazz = self.__class, nodeOpt = self._nodeOpt;
             var children = nodeOpt.children;
-            // 进行世界转化，可能需要推送到渲染队列中也不一定，根据今后改造决定
-            self._calMatrix();
             if(nodeOpt.drawable) engine._renderQueue.push(self._draw, self);
             if(clazz.debug) engine._renderQueue.push(self._drawDebug, self);
+
+            // 如果有设置布局，则进行布局处理
+            var layout = self._layout;
+            if(layout) {
+                // 清空
+                layout.onBefore(self);
+                layout.handle(self);
+            }
+
+            // 进行世界转化，需要推送到渲染队列中，延迟到绘制前进行计算
+            // 今后还会做dirty的判断，这样就可以更好的提高性能
+            engine._matrixQueue.push(self._calMatrix, self);
+
             //遍历子节点
             for (var i = 0, l_i = children.length; i < l_i; i++) {
                 var child = children[i];
                 // 可见才可以继续进行转化
                 if(child._nodeOpt.visible) child._trans(engine);
+            }
+
+            if(layout){
+                layout.onAfter(self);
             }
         }
 

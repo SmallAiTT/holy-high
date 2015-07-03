@@ -1668,6 +1668,8 @@ module hh {
         static __TICK:string = '__tick';
         /** 下一帧执行事件，外部不要轻易使用，而是通过tt.nextTick进行注册 */
         static __NEXT_TICK:string = '__nextTick';
+        /** 矩阵计算 */
+        static __CAL_MATRIX:string = '__calMatrix';
         /** 区域擦除事件，外部不要轻易使用 */
         static __CLEAR_RECT:string = '__clearRect';
         /** 绘制之后的循环，外部不要轻易使用，而是通过tt.nextTick进行注册 */
@@ -1701,6 +1703,8 @@ module hh {
         /** 判断引擎是否已经初始化完毕 */
         isCtxInited:boolean;
 
+        /** 矩阵计算队列 */
+        _matrixQueue:any[];
         /** 渲染命令队列 */
         _renderQueue:any[];
 
@@ -1716,6 +1720,7 @@ module hh {
         _initProp():void{
             super._initProp();
             var self = this;
+            self._matrixQueue = [];
             self._renderQueue = [];
             self.design = {width:0, height:0};
             self.__frameCount = -1;
@@ -1740,6 +1745,15 @@ module hh {
                 self.emit(clazz.__TICK, deltaTime);
                 // 如果舞台已经初始化好了，就可以开始进行转化了
                 if(self.stage) self.stage._trans(self);
+
+                var matrixQueue = self._matrixQueue;
+                while(matrixQueue.length > 0){
+                    var calFunc = matrixQueue.shift();//命令方法
+                    var calFuncCtx = matrixQueue.shift();//命令上下文
+                    calFunc.call(calFuncCtx, engine);
+                }
+
+                self.emit(clazz.__CAL_MATRIX, self);
                 // 进行上下文绘制区域擦除
                 var ctx = self.canvasCtx;
                 if(ctx){
@@ -1754,6 +1768,7 @@ module hh {
                     // 主循环tick传时间差
                     self.emit(clazz.__TICK_AFTER_DRAW, deltaTime);
                 }
+                // 点击处理放在绘制完之后，这样可以使得坐标转换使用_trans之后获得的矩阵，可以提高性能
                 self.emit(clazz.__HANDLE_TOUCH, deltaTime);
                 // 进行下一帧分发
                 self.emitNextTick(clazz.__NEXT_TICK);

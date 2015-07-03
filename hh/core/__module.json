@@ -9,6 +9,7 @@
     "touch/TouchHandler.js",
     "touch/TouchCtx.js",
 
+    "node/Layout.js",
     "node/NodeOpt.js",
     "node/Node.js",
 

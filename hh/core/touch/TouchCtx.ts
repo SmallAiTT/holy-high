@@ -56,6 +56,8 @@ module hh{
         addTouchListener(engine:Engine):TouchCtx{
             var self = this, touchEle = engine._canvas;
             var queue = self._queue;
+            // 统一将点击事件推送到队列中，再绘制之后才执行
+            // 这样可以使用转换后的矩阵，提高性能
             touchEle.addEventListener("mousedown", function (event) {
                 // 清空
                 queue.length = 0;
@@ -67,7 +69,6 @@ module hh{
             touchEle.addEventListener("mousemove", function (event) {
                 if(!self._canReceive) return;
                 var location = self._getLocation(touchEle, event);
-                console.log(location);
                 queue.push(self.onMove, location);
             });
             touchEle.addEventListener("mouseup", function (event) {
@@ -87,7 +88,6 @@ module hh{
         }
 
         onBegan(tx:number, ty:number):TouchCtx{
-            console.log('onBegan--->', tx, ty);
             var self = this, stack = self._touchStack, root = self._root;
             // 如果还未设置根节点则直接返回
             if(!root) return self;
@@ -105,7 +105,6 @@ module hh{
         }
 
         onMove(tx:number, ty:number):TouchCtx{
-            console.log('onMove--->', tx, ty);
             var self = this, stack = self._touchStack, root = self._root;
             // 如果还未设置根节点则直接返回
             if(!root) return self;
@@ -118,7 +117,6 @@ module hh{
         }
 
         onEnd(tx:number, ty:number):TouchCtx{
-            console.log('onEnd--->', tx, ty);
             var self = this, stack = self._touchStack, root = self._root;
             // 如果还未设置根节点则直接返回
             if(!root) return self;
