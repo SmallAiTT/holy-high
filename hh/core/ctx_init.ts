@@ -21,7 +21,8 @@ module hh{
 
         // 注册点击事件
         var touchCtx = engine["touchCtx"] = new TouchCtx();
-        touchCtx.addTouchListener(engine);
+        touchCtx.setRoot(stage).addTouchListener(engine);
+        engine.on(Eng.__HANDLE_TOUCH, touchCtx._handle, touchCtx);
     });
     // 先注册一个帧率显示以供使用
     engine.on(Eng.__DRAW_FPS, function(ctx:IRenderingContext2D, fps:number){

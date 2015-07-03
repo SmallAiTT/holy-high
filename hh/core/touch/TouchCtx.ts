@@ -10,11 +10,14 @@ module hh{
         _root:Node;
         /** 点击栈 */
         _touchStack:TouchHandler[];
+        _queue:any[];
+        _canReceive:boolean;
         //@override
         _initProp(){
             super._initProp();
             var self = this;
             self._touchStack = [];
+            self._queue = [];
         }
 
         _getLocation(touchEle, event):Point{
@@ -52,17 +55,26 @@ module hh{
 
         addTouchListener(engine:Engine):TouchCtx{
             var self = this, touchEle = engine._canvas;
+            var queue = self._queue;
             touchEle.addEventListener("mousedown", function (event) {
+                // 清空
+                queue.length = 0;
+                // 设置成可接收
+                self._canReceive = true;
                 var location = self._getLocation(touchEle, event);
-                self.onBegan(location.x, location.y);
+                queue.push(self.onBegan, location);
             });
             touchEle.addEventListener("mousemove", function (event) {
+                if(!self._canReceive) return;
                 var location = self._getLocation(touchEle, event);
-                self.onMove(location.x, location.y);
+                console.log(location);
+                queue.push(self.onMove, location);
             });
             touchEle.addEventListener("mouseup", function (event) {
+                if(!self._canReceive) return;
                 var location = self._getLocation(touchEle, event);
-                self.onEnd(location.x, location.y);
+                queue.push(self.onEnd, location);
+                self._canReceive = false;
             });
 
             return self;
@@ -75,13 +87,14 @@ module hh{
         }
 
         onBegan(tx:number, ty:number):TouchCtx{
+            console.log('onBegan--->', tx, ty);
             var self = this, stack = self._touchStack, root = self._root;
             // 如果还未设置根节点则直接返回
             if(!root) return self;
             // 如果堆栈里面还有，则不执行，避免重复触发事件
             if(stack.length > 0) return self;
             var phase:number = 1;// 目标阶段
-            if(root._touchHandler.test(tx, ty, stack)){// 如果有节点在区域内
+            if(root.touchHandler.test(tx, ty, stack)){// 如果有节点在区域内
                 // 从最顶层往下触发事件
                 for (var i = stack.length - 1; i >= 0; i--) {
                     var handler:TouchHandler = stack[i];
@@ -92,14 +105,20 @@ module hh{
         }
 
         onMove(tx:number, ty:number):TouchCtx{
+            console.log('onMove--->', tx, ty);
             var self = this, stack = self._touchStack, root = self._root;
             // 如果还未设置根节点则直接返回
             if(!root) return self;
             // 注意了，move的时候，事件从底部往上传
+            for (var i = 0, l_i = stack.length; i < l_i; i++) {
+                var handler:TouchHandler = stack[i];
+                handler.onMove(tx, ty);
+            }
             return self;
         }
 
         onEnd(tx:number, ty:number):TouchCtx{
+            console.log('onEnd--->', tx, ty);
             var self = this, stack = self._touchStack, root = self._root;
             // 如果还未设置根节点则直接返回
             if(!root) return self;
@@ -114,6 +133,16 @@ module hh{
                 phase = 2;// 沿路阶段
             }
             return self;
+        }
+
+        _handle(){
+            var self = this;
+            var queue = self._queue;
+            while(queue.length > 0){
+                var func = queue.shift();
+                var point = queue.shift();
+                func.call(self, point.x, point.y);
+            }
         }
     }
 }

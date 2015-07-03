@@ -12,22 +12,23 @@ module hh{
         _nodeOpt:NodeOpt;
 
         static TouchHandler:any = TouchHandler;
-        _touchHandler:TouchHandler;
+        touchHandler:TouchHandler;
 
         //@override
         _initProp(){
             super._initProp();
             var self = this, clazz = self.__class;
             self._nodeOpt = new clazz.NodeOpt(clazz);
-            self._touchHandler = new clazz.TouchHandler();
+            self.touchHandler = new clazz.TouchHandler();
+            self.touchHandler.target = self;
         }
         _dtor(){
             super._dtor();
             var self = this;
             self._nodeOpt.dtor();
-            self._touchHandler.dtor();
+            self.touchHandler.dtor();
             // 解除绑定
-            self._touchHandler = null;
+            self.touchHandler = null;
         }
 
         /**

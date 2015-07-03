@@ -1672,6 +1672,8 @@ module hh {
         static __CLEAR_RECT:string = '__clearRect';
         /** 绘制之后的循环，外部不要轻易使用，而是通过tt.nextTick进行注册 */
         static __TICK_AFTER_DRAW:string = '__tickAfterDraw';
+        /** 处理点击事件 */
+        static __HANDLE_TOUCH:string = '_handleTouch';
         /** 绘制帧率 */
         static __DRAW_FPS:string = '__drawFPS';
         /** 初始化引擎，外部不要轻易使用 */
@@ -1752,6 +1754,7 @@ module hh {
                     // 主循环tick传时间差
                     self.emit(clazz.__TICK_AFTER_DRAW, deltaTime);
                 }
+                self.emit(clazz.__HANDLE_TOUCH, deltaTime);
                 // 进行下一帧分发
                 self.emitNextTick(clazz.__NEXT_TICK);
 
