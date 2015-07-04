@@ -5,6 +5,7 @@
     "core/node/tc_Node.js",
     "core/node/tc_Node4Matrix.js",
     "core/node/tc_Node4Layout.js",
+    "core/node/tc_Node4Clip.js",
 
     "core/touch/tc_TouchHandler.js",
     "core/res/tc_Res.js",

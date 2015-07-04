@@ -123,6 +123,17 @@ module hh{
 
             var phase:number = 1;// 目标阶段
             var length = stack.length;
+            // 现进行一次便利，处理出clip区域设定
+            for(var i = 0; i < length - 1; ++i){
+                var handler:TouchHandler = stack[i];
+                var target:Node = handler.target;
+                if(target._nodeOpt.clip){
+                    if(!handler.isIn(tx, ty)){
+                        phase = 0;// 设置成出了区域状态
+                        break;
+                    }
+                }
+            }
             // 从最顶层往下触发事件，进行pop
             while(length > 0){
                 var handler:TouchHandler = stack.pop();

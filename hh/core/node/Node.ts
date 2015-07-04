@@ -2,12 +2,34 @@
  * Created by SmallAiTT on 2015/6/29.
  */
 ///<reference path="NodeOpt.ts" />
-///<reference path="Layout.ts" />
 ///<reference path="../touch/TouchHandler.ts" />
 module hh{
     export class Node extends Emitter{
         static __className:string = "Node";
         static debug:boolean = true;
+
+        /**
+         * 矩形裁剪
+         * @param ctx
+         * @param engine
+         * @param target
+         * @constructor
+         */
+        static CLIP_RECT:Function = function(ctx:IRenderingContext2D, engine:Engine, target:Node){
+            var width = target.width, height = target.height;
+            ctx.moveTo(0, 0);
+            ctx.lineTo(width, 0);
+            ctx.lineTo(width, height);
+            ctx.lineTo(0, height);
+            ctx.closePath();
+        };
+
+        static CLIP_ARC:Function = function(ctx:IRenderingContext2D, engine:Engine, target:Node){
+            var width = target.width, height = target.height;
+            var max = Math.max(width, height);
+            var min = Math.min(width, height);
+            ctx.arc(width/2, height/2, max/2, 0, Math.PI*2);
+        };
 
         static NodeOpt:any = NodeOpt;
         _nodeOpt:NodeOpt;
@@ -253,15 +275,39 @@ module hh{
         /**
          * 布局处理器。
          */
-        _layout:Layout;
         _setLayout(layout:Layout){
-            this._layout = layout;
+            this._nodeOpt.layout = layout;
         }
         public set layout(layout:Layout){
             this._setLayout(layout);
         }
         public get layout():Layout{
-            return this._layout;
+            return this._nodeOpt.layout;
+        }
+
+        /**
+         * 裁剪器
+         * @param clip
+         * @private
+         */
+        _setClip(clip:Function){
+            this._nodeOpt.clip = clip;
+        }
+        public set clip(clip:Function){
+            this._setClip(clip);
+        }
+        public get clip():Function{
+            return this._nodeOpt.clip;
+        }
+
+        _doClip(ctx:IRenderingContext2D, engine:Engine){
+            ctx.save();
+            ctx.beginPath();
+            this._nodeOpt.clip(ctx, engine, this);
+            ctx.clip();
+        }
+        _restoreClip(ctx:IRenderingContext2D, engine:Engine){
+            ctx.restore();
         }
 
         /**
@@ -270,11 +316,13 @@ module hh{
         _trans(engine:Engine){
             var self = this, clazz = self.__class, nodeOpt = self._nodeOpt;
             var children = nodeOpt.children;
-            if(nodeOpt.drawable) engine._renderQueue.push(self._draw, self);
-            if(clazz.debug) engine._renderQueue.push(self._drawDebug, self);
+            var renderQueue = engine._renderQueue;
+            if(nodeOpt.drawable) renderQueue.push(self._draw, self);
+            if(clazz.debug) renderQueue.push(self._drawDebug, self);
+            if(nodeOpt.clip) renderQueue.push(self._doClip, self);
 
             // 如果有设置布局，则进行布局处理
-            var layout = self._layout;
+            var layout = nodeOpt.layout;
             if(layout) {
                 // 清空
                 layout.onBefore(self);
@@ -295,6 +343,8 @@ module hh{
             if(layout){
                 layout.onAfter(self);
             }
+
+            if(nodeOpt.clip) renderQueue.push(self._restoreClip, self);
         }
 
         /**
@@ -329,6 +379,10 @@ module hh{
 
             var width = nodeOpt.width, height = nodeOpt.height;
             ctx.save();
+            if(nodeOpt.debugRectColor) {
+                ctx.fillStyle = nodeOpt.debugRectColor;
+                ctx.fillRect(0, 0, width, height);
+            }
             ctx.strokeStyle = 'red';
             ctx.fillStyle = 'red';
             ctx.strokeRect(0, 0, width, height);

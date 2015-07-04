@@ -36,14 +36,20 @@ module hh{
             return lx >= 0 && lx <= w && ly >= 0 && ly <= h;
         }
         test(wx:number, wy:number, stack:TouchHandler[]):Node{
-            var self = this, target:Node = this.target;
+            var self = this, target:Node = this.target, nodeOpt = target._nodeOpt;
             var result:Node;
             if(target && target._nodeOpt.visible){
                 // 先将节点推入栈中
+                if(nodeOpt.clip){// 如果有裁剪则需要现判断是否在裁剪区域内
+                    if(!self.isIn(wx, wy)) {
+                        return null;
+                    }
+                }
                 stack.push(self);
                 if(self.childrenEnabled){
                     var children = target._nodeOpt.children;
-                    for (var i = 0, l_i = children.length; i < l_i; i++) {
+                    // 需要反向来遍历，保证最后面的子节点在最上层
+                    for (var i = children.length; i >= 0; i--) {
                         var child:Node = children[i];
                         if(child){//遍历子节点
                             result = child.touchHandler.test(wx, wy, stack);
@@ -52,7 +58,11 @@ module hh{
                     }
                 }
                 if(!result){// 如果遍历了子节点还没获取
-                    if(self.enabled && self.isIn(wx, wy)){// 如果当前节点正在点击区域内，则将返回结果指向当前节点
+                    if(self.enabled && (nodeOpt.clip || self.isIn(wx, wy))){
+                        // 如果可点击
+                        // 并且是裁剪（这时候上面已经有个裁剪过滤了）
+                        // 或者当前节点正在点击区域内
+                        // 则将返回结果指向当前节点
                         result = self.target;
                     }else{// 如果当前节点没有在点击区域内，就将堆栈pop出一个
                         stack.pop();
@@ -72,10 +82,6 @@ module hh{
         onMove(tx:number, ty:number){
             var self = this, clazz = self.__class;
             self.emit(clazz.MOVE, self, tx, ty);
-        }
-        onFinish(tx:number, ty:number){
-            var self = this, clazz = self.__class;
-            self.emit(clazz.FINISH, self, tx, ty);
         }
 
         //@override

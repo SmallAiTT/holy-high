@@ -50,8 +50,8 @@ module hh{
                     var children = node._nodeOpt.children;
                     for (var i = 0, l_i = children.length; i < l_i; i++) {
                         var child:Node = children[i];
-                        var cLayout = child._layout;
                         var cNodeOpt = child._nodeOpt;
+                        var cLayout = cNodeOpt.layout;
                         var margin = cLayout ? cLayout.margin : [0, 0, 0, 0];
                         self.linearTotal += margin[abs - rate*linearType/abs] + margin[abs + rate*linearType/abs];
                         self.linearTotal += linearType == -1 ? cNodeOpt.height : cNodeOpt.width;
@@ -85,7 +85,7 @@ module hh{
             if(!parent) return;
             var self = this;
             var pOpt = parent._nodeOpt;
-            var pl:Layout = parent._layout;
+            var pl:Layout = pOpt.layout;
             // 当前布局的尺寸参数
             var width = nodeOpt.width, height = nodeOpt.height;
             // 父亲尺寸

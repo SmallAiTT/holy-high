@@ -3,11 +3,15 @@
  */
 ///<reference path="../ref.ts" />
 ///<reference path="../base/__module.ts" />
+///<reference path="Layout.ts" />
 module hh{
     export class NodeOpt extends Class{
         static __className:string = "NodeOpt";
 
         _TargetClass:any;
+
+        debug:boolean;
+        debugRectColor:any;
 
         name:string;
         width:number;
@@ -31,6 +35,9 @@ module hh{
 
         drawable:boolean;
         matrix:Matrix;
+
+        layout:Layout;
+        clip:Function;
 
         //@override
         _initProp():void{

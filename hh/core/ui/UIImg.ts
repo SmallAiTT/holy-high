@@ -21,7 +21,7 @@ module hh{
             super();
         }
 
-        load(urlOrTexture){
+        load(urlOrTexture, cb?:Function, ctx?:any){
             if(!urlOrTexture) return;
             var self = this, nodeOpt = self._nodeOpt;
             if(typeof urlOrTexture == 'string'){
@@ -31,10 +31,14 @@ module hh{
                     // 如果还没加载则进行动态加载
                     res.load(urlOrTexture, function(){
                         self._loadTexture(res.get(urlOrTexture));
+                        if(cb) cb.call(ctx, self);
                     });
+                }else{
+                    if(cb) cb.call(ctx, self);
                 }
             }else{
-                self._loadTexture(urlOrTexture)
+                self._loadTexture(urlOrTexture);
+                if(cb) cb.call(ctx, self);
             }
         }
 
@@ -67,7 +71,6 @@ module hh{
 
                 for (var i = 0; i < data.length; i += 4) {
                     var srcR = data[i], srcG = data[i+1], srcB = data[i+2], srcA = data[i+3];
-
                     data[i]   = (colorMatrix[0] * srcR) + (colorMatrix[1] * srcG) + (colorMatrix[2] * srcB) + (colorMatrix[3] * srcA) + colorMatrix[4];
                     data[i+1] = (colorMatrix[5] * srcR) + (colorMatrix[6] * srcG) + (colorMatrix[7] * srcB) + (colorMatrix[8] * srcA) + colorMatrix[9];
                     data[i+2] = (colorMatrix[10] * srcR) + (colorMatrix[11] * srcG) + (colorMatrix[12] * srcB) + (colorMatrix[13] * srcA) + colorMatrix[14];
