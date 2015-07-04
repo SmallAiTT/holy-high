@@ -2,7 +2,7 @@
  * Created by SmallAiTT on 2015/7/1.
  */
 ///<reference path="../Res.ts" />
-///<reference path="../Texture.ts" />
+///<reference path="../../texture/Texture.ts" />
 module hh{
     export class ImgParser extends ResParser{
         static __className:string = 'ImgParser';
@@ -58,7 +58,7 @@ module hh{
         _parse(resData:any, rci:ResCfgItem){
             var texture = new Texture();
             texture.url = rci.url;
-            texture.setImg(resData);
+            texture.setData(resData);
             return texture;
         }
     }

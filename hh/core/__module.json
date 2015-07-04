@@ -6,6 +6,9 @@
     "base/Matrix.js",
     "base/ColorMatrix.js",
 
+    "texture/Texture.js",
+    "texture/Sheet.js",
+
     "touch/TouchHandler.js",
     "touch/TouchCtx.js",
 
@@ -13,7 +16,6 @@
     "node/NodeOpt.js",
     "node/Node.js",
 
-    "res/Texture.js",
     "res/Res.js",
     "res/parser/ImgParser.js",
 

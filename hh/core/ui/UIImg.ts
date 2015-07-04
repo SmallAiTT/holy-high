@@ -49,8 +49,24 @@ module hh{
                 nodeOpt.texture = texture;
                 // 设置成可以绘制
                 nodeOpt.drawable = true;
-                self._setWidth(texture.width);
-                self._setHeight(texture.height);
+                var grid = nodeOpt.grid;
+                if(!grid || grid.length == 0){
+                    self._setWidth(texture.width);
+                    self._setHeight(texture.height);
+                }else{
+                    var type = grid[0];
+                    if(type == 1 || type == 2){
+                        // 九宫格，改变设定的size，而是外部定义size。
+                    }else if(type == 3){
+                        // 三宫格，只改变一个方向的
+                        // 垂直的时候改变width
+                        self._setWidth(texture.width);
+                    }else if(type == 4){
+                        // 三宫格，只改变一个方向的
+                        // 水平的时候改变height
+                        self._setHeight(texture.height);
+                    }
+                }
                 return true;
             }
             return false;
@@ -59,7 +75,7 @@ module hh{
         // @override
         _render(ctx:IRenderingContext2D, engine:Engine){
             var self = this, nodeOpt = self._nodeOpt, texture = nodeOpt.texture;
-            ctx.drawImage(texture.img, texture.x, texture.y, texture.width, texture.height);
+            texture.render(ctx, 0, 0, nodeOpt.width, nodeOpt.height, nodeOpt.grid);
 
             if(nodeOpt.isBCSH()){
                 var bcsh = nodeOpt.bcsh;

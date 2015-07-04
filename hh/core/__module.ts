@@ -2,7 +2,12 @@
  * Created by SmallAiTT on 2015/6/29.
  */
 ///<reference path="base/__module.ts" />
+
+///<reference path="texture/Texture.ts" />
+///<reference path="texture/Sheet.ts" />
+
 ///<reference path="res/__module.ts" />
+
 
 ///<reference path="node/Layout.ts" />
 ///<reference path="node/NodeOpt.ts" />

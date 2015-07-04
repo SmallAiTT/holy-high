@@ -311,6 +311,21 @@ module hh{
         }
 
         /**
+         * N宫格
+         * @param grid
+         * @private
+         */
+        _setGrid(grid:number[]){
+            this._nodeOpt.grid = grid;
+        }
+        public set grid(grid:number[]){
+            this._setGrid(grid);
+        }
+        public get grid():number[]{
+            return this._nodeOpt.grid;
+        }
+
+        /**
          * 转换节点。
          */
         _trans(engine:Engine){

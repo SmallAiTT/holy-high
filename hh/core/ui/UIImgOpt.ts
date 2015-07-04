@@ -2,7 +2,7 @@
  * Created by SmallAiTT on 2015/7/1.
  */
 ///<reference path="../node/NodeOpt.ts" />
-///<reference path="../res/Texture.ts" />
+///<reference path="../texture/Texture.ts" />
 ///<reference path="../res/Res.ts" />
 module hh{
     export class UIImgOpt extends NodeOpt{

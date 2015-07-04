@@ -39,6 +39,8 @@ module hh{
         layout:Layout;
         clip:Function;
 
+        grid:number[];
+
         //@override
         _initProp():void{
             super._initProp();
