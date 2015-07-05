@@ -27,6 +27,72 @@ module tc{
         hh.engine.stage.addChild(img);
     });
 
+    unit.addMenuItem('UIImg 数量测试', function(){
+        hh.UIImg.debug = false;
+        var url = res_helper.getItemUrl(11001);
+        hh.res.load(url, function(){
+            var stage:hh.Node = hh.engine.stage;
+            var w = stage.width, h = stage.height;
+            for(var i = 0; i < 600; ++i){
+                var randX = w*(Math.random());
+                var randY = h*(Math.random());
+                var img = new hh.UIImg();
+                img.x = randX;
+                img.y = randY;
+                img.grid = [3, 39, 2];
+                img.height = 200;
+                img.load(url);
+                stage.addChild(img);
+            }
+        });
+
+    });
+    unit.addMenuItem('UIImg 数量测试 clip1', function(){
+        hh.UIImg.debug = false;
+        var url = res_helper.getItemUrl(11001);
+        hh.res.load(url, function(){
+            var stage:hh.Node = hh.engine.stage;
+            var w = stage.width, h = stage.height;
+            for(var i = 0; i < 2000; ++i){
+                var randX = w*(Math.random());
+                var randY = h*(Math.random());
+                var img = new hh.UIImg();
+                img.x = randX;
+                img.y = randY;
+                img.grid = [3, 39, 2];
+                img.height = 200;
+                img.load(url);
+                stage.addChild(img);
+            }
+        });
+
+    });
+    unit.addMenuItem('UIImg 数量测试 clip2', function(){
+        hh.UIImg.debug = false;
+        var url = res_helper.getItemUrl(11001);
+        hh.res.load(url, function(){
+            var stage:hh.Node = hh.engine.stage;
+            var node:hh.Node = new hh.Node();
+            node.width = node.height = 100;
+            node.x = node.y = 200;
+            node.clip = hh.Node.CLIP_RECT;
+            stage.addChild(node);
+            var w = stage.width, h = stage.height;
+            for(var i = 0; i < 2000; ++i){
+                var randX = w*(Math.random()) - w/2;
+                var randY = h*(Math.random()) - h/2;
+                var img = new hh.UIImg();
+                img.x = randX;
+                img.y = randY;
+                img.grid = [3, 39, 2];
+                img.height = 200;
+                img.load(url);
+                node.addChild(img);
+            }
+        });
+
+    });
+
     unit.addMenuItem('UIImg#grid 三宫格', function(){
         hh.UIImg.debug = true;
         var url = res_helper.getS9gUrl(1);

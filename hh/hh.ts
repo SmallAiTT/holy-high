@@ -1675,6 +1675,8 @@ module hh {
         static __TICK:string = '__tick';
         /** 下一帧执行事件，外部不要轻易使用，而是通过tt.nextTick进行注册 */
         static __NEXT_TICK:string = '__nextTick';
+        /** 计算裁剪相关 */
+        static __CAL_CLIP:string = '__calClip';
         /** 区域擦除事件，外部不要轻易使用 */
         static __CLEAR_RECT:string = '__clearRect';
         /** 绘制之后的循环，外部不要轻易使用，而是通过tt.nextTick进行注册 */
@@ -1710,6 +1712,8 @@ module hh {
 
         /** 矩阵计算队列 */
         _matrixQueue:any[];
+        /** 裁剪计算队列 */
+        _clipQueue:any[];
         /** 渲染命令队列 */
         _renderQueue:any[];
 
@@ -1724,6 +1728,7 @@ module hh {
             super._initProp();
             var self = this;
             self._matrixQueue = [];
+            self._clipQueue = [];
             self._renderQueue = [];
             self.design = {width:0, height:0};
             self.__fpsInfo = {
@@ -1736,11 +1741,13 @@ module hh {
 
                 transCostCount : 0,
                 matrixCostCount : 0,
+                clipCostCount : 0,
                 renderCostCount : 0,
                 touchCostCount : 0,
 
                 transCost : 0,
                 matrixCost : 0,
+                clipCost : 0,
                 renderCost : 0,
                 touchCost : 0
             };
@@ -1775,7 +1782,9 @@ module hh {
                 }
                 var d3 = Date.now();
 
+                self.emit(clazz.__CAL_CLIP, self._clipQueue);
                 var d4 = Date.now();
+
                 // 进行上下文绘制区域擦除
                 var ctx = self.canvasCtx;
                 if(ctx){
@@ -1785,15 +1794,15 @@ module hh {
                     while(queue.length > 0){
                         var cmd = queue.shift();//命令方法
                         var cmdCtx = queue.shift();//命令上下文
-                        cmd.call(cmdCtx, ctx, self);
+                        if(cmd) cmd.call(cmdCtx, ctx, self);
                     }
                     // 主循环tick传时间差
                     self.emit(clazz.__TICK_AFTER_DRAW, deltaTime);
                 }
-                var d4 = Date.now();
+                var d5 = Date.now();
                 // 点击处理放在绘制完之后，这样可以使得坐标转换使用_trans之后获得的矩阵，可以提高性能
                 self.emit(clazz.__HANDLE_TOUCH, deltaTime);
-                var d5 = Date.now();
+                var d6 = Date.now();
                 // 进行下一帧分发
                 self.emitNextTick(clazz.__NEXT_TICK);
 
@@ -1803,14 +1812,16 @@ module hh {
                     fpsInfo.frameTime += deltaTime;
                     fpsInfo.transCostCount += d2 - d1;
                     fpsInfo.matrixCostCount += d3 - d2;
-                    fpsInfo.renderCostCount += d4 - d3;
-                    fpsInfo.touchCostCount += d5 - d4;
+                    fpsInfo.clipCostCount += d4 - d3;
+                    fpsInfo.renderCostCount += d5 - d4;
+                    fpsInfo.touchCostCount += d6 - d5;
                     var count = fpsInfo.count;
                     if(count == 60 || count == 1){
                         fpsInfo.fps = Math.round(count*1000/fpsInfo.frameTime);
                         fpsInfo.draw = Math.round(fpsInfo.drawCount/count);
                         fpsInfo.transCost = Math.round(fpsInfo.transCostCount/count);
                         fpsInfo.matrixCost = Math.round(fpsInfo.matrixCostCount/count);
+                        fpsInfo.clipCost = Math.round(fpsInfo.clipCostCount/count);
                         fpsInfo.renderCost = Math.round(fpsInfo.renderCostCount/count);
                         fpsInfo.touchCost = Math.round(fpsInfo.touchCostCount/count);
 
@@ -1820,6 +1831,7 @@ module hh {
                             fpsInfo.drawCount = 0;
                             fpsInfo.transCostCount = 0;
                             fpsInfo.matrixCostCount = 0;
+                            fpsInfo.clipCostCount = 0;
                             fpsInfo.renderCostCount = 0;
                             fpsInfo.touchCostCount = 0;
                         }

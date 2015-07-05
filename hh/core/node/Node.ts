@@ -332,9 +332,16 @@ module hh{
             var self = this, clazz = self.__class, nodeOpt = self._nodeOpt;
             var children = nodeOpt.children;
             var renderQueue = engine._renderQueue;
+            nodeOpt.renderQueueRange[0] = renderQueue.length;
             if(nodeOpt.drawable) renderQueue.push(self._draw, self);
             if(clazz.debug) renderQueue.push(self._drawDebug, self);
-            if(nodeOpt.clip) renderQueue.push(self._doClip, self);
+            if(nodeOpt.clip) {
+                // 如果当前节点可裁剪，则推送到裁剪计算队列中
+                engine._clipQueue.push(self);
+                renderQueue.push(self._doClip, self);
+                renderQueue.push(self._restoreClip, self);
+            }
+            nodeOpt.renderQueueRange[1] = renderQueue.length;
 
             // 如果有设置布局，则进行布局处理
             var layout = nodeOpt.layout;
@@ -359,7 +366,6 @@ module hh{
                 layout.onAfter(self);
             }
 
-            if(nodeOpt.clip) renderQueue.push(self._restoreClip, self);
         }
 
         /**

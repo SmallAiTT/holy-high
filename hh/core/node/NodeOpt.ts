@@ -41,6 +41,8 @@ module hh{
 
         grid:number[];
 
+        renderQueueRange:number[];
+
         //@override
         _initProp():void{
             super._initProp();
@@ -63,6 +65,7 @@ module hh{
             self.children = [];
             self.drawable = false;
             self.matrix = new Matrix();
+            self.renderQueueRange = [];
         }
         constructor(NodeClass:any){
             this._TargetClass = NodeClass;

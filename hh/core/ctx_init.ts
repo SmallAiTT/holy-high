@@ -5,6 +5,29 @@
 ///<reference path="touch/TouchCtx.ts" />
 module hh{
     var Eng = Engine;
+    engine.on(Eng.__CAL_CLIP, function(queue:Node[], eventType:string, engine:Engine){
+        while(queue.length > 0){
+            var clipNode:Node = queue.shift();// 裁剪节点
+            if(!clipNode) continue;
+            var nodeOpt = clipNode._nodeOpt;
+            var children = nodeOpt.children;
+            var matrix = nodeOpt.matrix;// 矩阵
+            var renderQueue = engine._renderQueue;
+            var rql = renderQueue.length;
+            var index = 1;
+            for (var i = 0, l_i = children.length; i < l_i; i++) {
+                var child:Node = children[i];
+                if(!child) continue;
+                var cOpt = child._nodeOpt;
+                // TODO 这里缺少矩形相交判断逻辑实现
+
+                var range:number[] = cOpt.renderQueueRange;
+                for(var j = range[0]; j < range[1]; ++j){
+                    renderQueue[j] = null;
+                }
+            }
+        }
+    });
     engine.on(Eng.__CLEAR_RECT, function(ctx:IRenderingContext2D){
         // 将矩阵还原
         ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -30,7 +53,7 @@ module hh{
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.save();
         ctx.fillStyle = 'red';
-        ctx.fillText('FPS:'+fpsInfo.fps + '|draw:' + fpsInfo.draw + '|cost:' + fpsInfo.transCost + ',' + fpsInfo.matrixCost + ',' + fpsInfo.renderCost + ',' + fpsInfo.touchCost, 10, 10);
+        ctx.fillText('FPS:'+fpsInfo.fps + '|draw:' + fpsInfo.draw + '|cost:' + fpsInfo.transCost + ',' + fpsInfo.matrixCost + ',' + fpsInfo.clipCost + ',' + fpsInfo.renderCost + ',' + fpsInfo.touchCost, 10, 10);
         ctx.restore();
     });
 }
