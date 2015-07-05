@@ -26,11 +26,11 @@ module hh{
         engine.on(Eng.__HANDLE_TOUCH, touchCtx._handle, touchCtx);
     });
     // 先注册一个帧率显示以供使用
-    engine.on(Eng.__DRAW_FPS, function(ctx:IRenderingContext2D, fps:number){
+    engine.on(Eng.__DRAW_FPS, function(ctx:IRenderingContext2D, fpsInfo:any){
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.save();
         ctx.fillStyle = 'red';
-        ctx.fillText('FPS:'+fps, 10, 10);
+        ctx.fillText('FPS:'+fpsInfo.fps + '|draw:' + fpsInfo.draw + '|cost:' + fpsInfo.transCost + ',' + fpsInfo.matrixCost + ',' + fpsInfo.renderCost + ',' + fpsInfo.touchCost, 10, 10);
         ctx.restore();
     });
 }

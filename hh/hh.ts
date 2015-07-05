@@ -1668,8 +1668,6 @@ module hh {
         static __TICK:string = '__tick';
         /** 下一帧执行事件，外部不要轻易使用，而是通过tt.nextTick进行注册 */
         static __NEXT_TICK:string = '__nextTick';
-        /** 矩阵计算 */
-        static __CAL_MATRIX:string = '__calMatrix';
         /** 区域擦除事件，外部不要轻易使用 */
         static __CLEAR_RECT:string = '__clearRect';
         /** 绘制之后的循环，外部不要轻易使用，而是通过tt.nextTick进行注册 */
@@ -1712,9 +1710,7 @@ module hh {
         stage:any;
         design:any;
 
-        __frameCount:number;
-        __frameTime:number;
-        __fps:number;
+        __fpsInfo:any;
 
         //@override
         _initProp():void{
@@ -1723,9 +1719,24 @@ module hh {
             self._matrixQueue = [];
             self._renderQueue = [];
             self.design = {width:0, height:0};
-            self.__frameCount = -1;
-            self.__frameTime = 0;
-            self.__fps = 60;
+            self.__fpsInfo = {
+                // 次数
+                count : -1,
+                frameTime : 0,
+                fps : 60,
+                draw : 0,
+                drawCount : 0,
+
+                transCostCount : 0,
+                matrixCostCount : 0,
+                renderCostCount : 0,
+                touchCostCount : 0,
+
+                transCost : 0,
+                matrixCost : 0,
+                renderCost : 0,
+                touchCost : 0
+            };
         }
 
         //执行主循环
@@ -1736,6 +1747,7 @@ module hh {
             self._time = 0;
             self._isMainLooping = false;
             var _mainLoop = function () {
+                var fpsInfo = self.__fpsInfo;
                 // nextTick相关事件的分发
                 if(self._isMainLooping) _emit4NextTick();
                 self._isMainLooping = true;
@@ -1744,7 +1756,9 @@ module hh {
                 // 主循环tick传时间差
                 self.emit(clazz.__TICK, deltaTime);
                 // 如果舞台已经初始化好了，就可以开始进行转化了
+                var d1 = Date.now();
                 if(self.stage) self.stage._trans(self);
+                var d2 = Date.now();
 
                 var matrixQueue = self._matrixQueue;
                 while(matrixQueue.length > 0){
@@ -1752,8 +1766,9 @@ module hh {
                     var calFuncCtx = matrixQueue.shift();//命令上下文
                     calFunc.call(calFuncCtx, engine);
                 }
+                var d3 = Date.now();
 
-                self.emit(clazz.__CAL_MATRIX, self);
+                var d4 = Date.now();
                 // 进行上下文绘制区域擦除
                 var ctx = self.canvasCtx;
                 if(ctx){
@@ -1768,21 +1783,41 @@ module hh {
                     // 主循环tick传时间差
                     self.emit(clazz.__TICK_AFTER_DRAW, deltaTime);
                 }
+                var d4 = Date.now();
                 // 点击处理放在绘制完之后，这样可以使得坐标转换使用_trans之后获得的矩阵，可以提高性能
                 self.emit(clazz.__HANDLE_TOUCH, deltaTime);
+                var d5 = Date.now();
                 // 进行下一帧分发
                 self.emitNextTick(clazz.__NEXT_TICK);
 
 
                 if(ctx){
-                    self.__frameCount++;
-                    self.__frameTime += deltaTime;
-                    if(self.__frameCount == 60){
-                        self.__fps = Math.round(self.__frameCount*1000/self.__frameTime);
-                        self.__frameCount = -1;
-                        self.__frameTime = 0;
+                    fpsInfo.count++;
+                    fpsInfo.frameTime += deltaTime;
+                    fpsInfo.transCostCount += d2 - d1;
+                    fpsInfo.matrixCostCount += d3 - d2;
+                    fpsInfo.renderCostCount += d4 - d3;
+                    fpsInfo.touchCostCount += d5 - d4;
+                    var count = fpsInfo.count;
+                    if(count == 60 || count == 1){
+                        fpsInfo.fps = Math.round(count*1000/fpsInfo.frameTime);
+                        fpsInfo.draw = Math.round(fpsInfo.drawCount/count);
+                        fpsInfo.transCost = Math.round(fpsInfo.transCostCount/count);
+                        fpsInfo.matrixCost = Math.round(fpsInfo.matrixCostCount/count);
+                        fpsInfo.renderCost = Math.round(fpsInfo.renderCostCount/count);
+                        fpsInfo.touchCost = Math.round(fpsInfo.touchCostCount/count);
+
+                        if(count == 60){
+                            fpsInfo.count = 0;
+                            fpsInfo.frameTime = 0;
+                            fpsInfo.drawCount = 0;
+                            fpsInfo.transCostCount = 0;
+                            fpsInfo.matrixCostCount = 0;
+                            fpsInfo.renderCostCount = 0;
+                            fpsInfo.touchCostCount = 0;
+                        }
                     }
-                    self.emit(clazz.__DRAW_FPS, ctx, self.__fps);
+                    self.emit(clazz.__DRAW_FPS, ctx, fpsInfo);
                 }
 
                 self._reqAniFrameId = requestAnimationFrame(_mainLoop);
