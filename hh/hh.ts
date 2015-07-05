@@ -338,14 +338,13 @@ module hh.project {
         setValue(data, 'canvas');
     });
 }
-module hh {
-
+module hh.STR{
     /**
      * 格式化参数成String。
      * 参数和h5的console.log保持一致。
      * @returns {*}
      */
-    export function formatStr(...args:any[]):string{
+    export function format(...args:any[]):string{
         var l = args.length;
         if(l < 1){
             return '';
@@ -383,9 +382,15 @@ module hh {
         }
     }
 
-
     var _tempStrRegExp = /\$\{[^\s\{\}]*\}/g;
-    export function formatPlaceholder(tempStr:string, map:any):string{
+
+    /**
+     * 占位符模式替换。
+     * @param tempStr
+     * @param map
+     * @returns {string}
+     */
+    export function placeholder(tempStr:string, map:any):string{
         function change(word){
             var key = word.substring(2, word.length - 1)
             var value = map[key];
@@ -397,6 +402,8 @@ module hh {
         }
         return tempStr.replace(_tempStrRegExp, change);
     }
+}
+module hh {
 
     export class Class{
         /** 类名 */

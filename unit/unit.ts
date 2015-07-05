@@ -88,10 +88,10 @@ module unit{
     hh.engine.once(hh.Engine.AFTER_BOOT, function(){
         _menuStr += '<table>';
         for (var moduleName in _moduleMenuMap) {
-            _menuStr += hh.formatPlaceholder(_menuNameTemp, {moduleName:moduleName});
+            _menuStr += hh.STR.placeholder(_menuNameTemp, {moduleName:moduleName});
             var moduleInfo = _moduleMenuMap[moduleName];
             for (var name in moduleInfo) {
-                _menuStr += hh.formatPlaceholder(_menuItemTemp, {moduleName:moduleName, name:name, onMenu:[moduleInfo[name][2]]});
+                _menuStr += hh.STR.placeholder(_menuItemTemp, {moduleName:moduleName, name:name, onMenu:[moduleInfo[name][2]]});
             }
         }
         _menuStr += '</table>';
