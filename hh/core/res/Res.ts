@@ -26,7 +26,7 @@ module hh{
             var self = this;
             self.url = url;
             if(url){
-                var extname = hh.path.extname(url);
+                var extname = hh.PATH.extname(url);
                 if(extname){
                     self.type = extname.substring(1).toLowerCase();
                 }
@@ -80,7 +80,7 @@ module hh{
         _getRealUrl(rci:ResCfgItem){
             var url = rci.url;
             if(url.indexOf("http:") == 0 || url.indexOf("https:") == 0) return url;
-            return path.join(res.root, url);
+            return hh.PATH.join(res.root, url);
         }
 
         _load(rci:ResCfgItem){

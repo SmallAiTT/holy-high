@@ -1,7 +1,7 @@
 /**
  * Created by SmallAiTT on 2015/6/30.
  */
-module hh.path{
+module hh.PATH{
 
     /**
      * 拼接字符串成路径。
@@ -82,12 +82,11 @@ module hh.path{
     }
 
     //TODO 还有写api没有写
-}
 
 /**
  * 这是path模块的拓展
  */
-module hh.path2 {
+
     /**
      * 替换一个文件的文件后缀名。
      * @param pathStr

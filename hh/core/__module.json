@@ -1,7 +1,7 @@
 {
   "file_list" : [
     "base/path.js",
-    "base/str.js",
+    "base/STR.js",
     "base/Point.js",
     "base/Matrix.js",
     "base/ColorMatrix.js",
