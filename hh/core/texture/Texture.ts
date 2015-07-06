@@ -40,6 +40,20 @@ module hh{
             var gridType = grid[0];
             if(gridType == 1){
                 // 九宫格模式
+                var vx = grid[1], vy = grid[2], vw = grid[3], vh = grid[4];
+                var arrX = [0, vx, vx+vw, self.width];
+                var arrY = [0, vy, vy+vh, self.height];
+                var arrX1 = [0, vx, dstW-(self.width-vx-vw), dstW];
+                var arrY1 = [0, vy, dstH-(self.height-vy-vh), dstH];
+                for(var i = 0; i < 3; ++i){
+                    var sx = arrX[i], sw = arrX[i+1] - arrX[i];
+                    var dx = arrX1[i], dw = arrX1[i+1] - arrX1[i];
+                    for(var j = 0; j < 3; ++j){
+                        var sy = arrY[j], sh = arrY[j+1] - arrY[j];
+                        var dy = arrY1[j], dh = arrY1[j+1] - arrY1[j];
+                        ctx.drawImage(data, sx, sy, sw, sh, dx, dy, dw, dh);
+                    }
+                }
             }else if(gridType == 2){
                 // 增强版九宫格模式
             }else if(gridType == 3){

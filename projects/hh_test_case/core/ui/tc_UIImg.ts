@@ -119,6 +119,18 @@ module tc{
 
     });
 
+    unit.addMenuItem('UIImg#grid 九宫格', function(){
+        hh.UIImg.debug = true;
+        var url = res_helper.getS9gUrl(1);
+        var img1 = new hh.UIImg();
+        img1.x = img1.y = 150;
+        img1.grid = [1, 39, 39, 2, 2];
+        img1.width = img1.height = 200;
+        img1.load(url);
+
+        hh.engine.stage.addChild(img1);
+    });
+
     unit.addMenuItem('UIImg#grid 三宫格', function(){
         hh.UIImg.debug = true;
         var url = res_helper.getS9gUrl(1);
