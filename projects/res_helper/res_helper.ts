@@ -8,11 +8,11 @@
 module res_helper{
 
     export function getItemUrl(resId:number):string{
-        return 'item/11001.png';// TODO
+        return 'item/' + hh.STR.fill(resId, '00000') + '.png';
     }
 
     export function getS9gUrl(resId:number):string{
-        return 's9g/00001.png';// TODO
+        return 's9g/' + hh.STR.fill(resId, '00000') + '.png';
     }
 
 }
