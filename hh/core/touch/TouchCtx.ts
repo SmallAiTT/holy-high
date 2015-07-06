@@ -1,7 +1,7 @@
 /**
  * Created by SmallAiTT on 2015/7/2.
  */
-///<reference path="TouchHandler.ts" />
+///<reference path="Touch.ts" />
 ///<reference path="../node/Node.ts" />
 module hh{
     export class TouchCtx extends Emitter{
@@ -9,7 +9,7 @@ module hh{
 
         _root:Node;
         /** 点击栈 */
-        _touchStack:TouchHandler[];
+        _touchStack:Touch[];
         _queue:any[];
         _canReceive:boolean;
         //@override
@@ -94,10 +94,10 @@ module hh{
             // 如果堆栈里面还有，则不执行，避免重复触发事件
             if(stack.length > 0) return self;
             var phase:number = 1;// 目标阶段
-            if(root.touchHandler.test(tx, ty, stack)){// 如果有节点在区域内
+            if(root.touch.test(tx, ty, stack)){// 如果有节点在区域内
                 // 从最顶层往下触发事件
                 for (var i = stack.length - 1; i >= 0; i--) {
-                    var handler:TouchHandler = stack[i];
+                    var handler:Touch = stack[i];
                     handler.onBegan(tx, ty, phase);
                     phase = 2;// 沿路阶段
                 }
@@ -110,7 +110,7 @@ module hh{
             if(!root) return self;
             // 注意了，move的时候，事件从底部往上传
             for (var i = 0, l_i = stack.length; i < l_i; i++) {
-                var handler:TouchHandler = stack[i];
+                var handler:Touch = stack[i];
                 handler.onMove(tx, ty);
             }
             return self;
@@ -125,7 +125,7 @@ module hh{
             var length = stack.length;
             // 现进行一次便利，处理出clip区域设定
             for(var i = 0; i < length - 1; ++i){
-                var handler:TouchHandler = stack[i];
+                var handler:Touch = stack[i];
                 var target:Node = handler.target;
                 if(target._nodeOpt.clip){
                     if(!handler.isIn(tx, ty)){
@@ -136,7 +136,7 @@ module hh{
             }
             // 从最顶层往下触发事件，进行pop
             while(length > 0){
-                var handler:TouchHandler = stack.pop();
+                var handler:Touch = stack.pop();
                 length--;
                 handler.onEnd(tx, ty, phase);
                 phase = 2;// 沿路阶段

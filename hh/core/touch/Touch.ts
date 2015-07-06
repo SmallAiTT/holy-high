@@ -4,8 +4,8 @@
 ///<reference path="../ref.ts" />
 ///<reference path="../node/Node.ts" />
 module hh{
-    export class TouchHandler extends Emitter{
-        static __className:string = "TouchHandler";
+    export class Touch extends Emitter{
+        static __className:string = "Touch";
 
         static BEGAN:string = 'began';
         static MOVE:string = 'move';
@@ -35,7 +35,7 @@ module hh{
             var w = nodeOpt.width, h = nodeOpt.height;
             return lx >= 0 && lx <= w && ly >= 0 && ly <= h;
         }
-        test(wx:number, wy:number, stack:TouchHandler[]):Node{
+        test(wx:number, wy:number, stack:Touch[]):Node{
             var self = this, target:Node = this.target, nodeOpt = target._nodeOpt;
             var result:Node;
             if(target && target._nodeOpt.visible){
@@ -52,7 +52,7 @@ module hh{
                     for (var i = children.length; i >= 0; i--) {
                         var child:Node = children[i];
                         if(child){//遍历子节点
-                            result = child.touchHandler.test(wx, wy, stack);
+                            result = child.touch.test(wx, wy, stack);
                             if(result) break;
                         }
                     }

@@ -6,6 +6,9 @@
 ///<reference path="texture/Texture.ts" />
 ///<reference path="texture/Sheet.ts" />
 
+///<reference path="touch/Touch.ts" />
+///<reference path="touch/TouchCtx.ts" />
+
 ///<reference path="res/__module.ts" />
 
 
