@@ -47,6 +47,32 @@ module tc{
         });
 
     });
+    unit.addMenuItem('UIImg clip 区域测试', function(){
+        hh.UIImg.debug = false;
+        var url = res_helper.getItemUrl(11001);
+        hh.res.load(url, function(){
+            var stage:hh.Node = hh.engine.stage;
+            var node:hh.Node = new hh.Node();
+            node.width = node.height = 100;
+            node.x = node.y = 200;
+            node.rotation = Math.PI/4;
+            node.clip = hh.Node.CLIP_RECT;
+            stage.addChild(node);
+
+            var img = new hh.UIImg();
+            img.x = img.y = 0;
+            img.load(url);
+            node.addChild(img);
+
+            var img = new hh.UIImg();
+            img.rotation = Math.PI/4;
+            img.scaleX = 0.5;
+            img.x = img.y = 200;
+            img.load(url);
+            node.addChild(img);
+        });
+
+    });
     unit.addMenuItem('UIImg 数量测试 clip1', function(){
         hh.UIImg.debug = false;
         var url = res_helper.getItemUrl(11001);

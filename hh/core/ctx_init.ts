@@ -5,6 +5,35 @@
 ///<reference path="touch/TouchCtx.ts" />
 module hh{
     var Eng = Engine;
+
+    var handleClip = function(matrix, dist1, centerPoint:number[], children:Node[], renderQueue:any[]){
+        var cpx = centerPoint[0], cpy = centerPoint[1];
+        for (var i = 0, l_i = children.length; i < l_i; i++) {
+            var child:Node = children[i];
+            if(!child) continue;
+            var cOpt = child._nodeOpt;
+            var cMatrix = cOpt.matrix;
+            var cfpx = cMatrix.tx, cfpy = cMatrix.ty;
+            var ccx = cOpt.width/2, ccy = cOpt.height/2;
+            var ccpx = cMatrix.a * ccx + cMatrix.c * ccy + cMatrix.tx;
+            var ccpy = cMatrix.b * ccx + cMatrix.d * ccy + cMatrix.ty;
+            var dist2 = Math.sqrt((cfpx-ccpx)*(cfpx-ccpx) + (cfpy-ccpy)*(cfpy-ccpy));
+            var dist3 = Math.sqrt((cpx-ccpx)*(cpx-ccpx) + (cpy-ccpy)*(cpy-ccpy));
+
+            if(dist1 + dist2 < dist3){
+                // 不相交
+                var range:number[] = cOpt.renderQueueRange;
+                for(var j = range[0]; j < range[1]; ++j){
+                    renderQueue[j] = null;
+                }
+                for(var j = range[1]; j < range[2]; ++j){
+                    renderQueue[j] = null;
+                }
+            }
+
+            handleClip(matrix, dist1, centerPoint, cOpt.children, renderQueue);
+        }
+    };
     engine.on(Eng.__CAL_CLIP, function(queue:Node[], eventType:string, engine:Engine){
         while(queue.length > 0){
             var clipNode:Node = queue.shift();// 裁剪节点
@@ -12,20 +41,13 @@ module hh{
             var nodeOpt = clipNode._nodeOpt;
             var children = nodeOpt.children;
             var matrix = nodeOpt.matrix;// 矩阵
-            var renderQueue = engine._renderQueue;
-            var rql = renderQueue.length;
-            var index = 1;
-            for (var i = 0, l_i = children.length; i < l_i; i++) {
-                var child:Node = children[i];
-                if(!child) continue;
-                var cOpt = child._nodeOpt;
-                // TODO 这里缺少矩形相交判断逻辑实现
+            var fpx = matrix.tx, fpy = matrix.ty;
+            var cx = nodeOpt.width/2, cy = nodeOpt.height/2;
+            var cpx = matrix.a * cx + matrix.c * cy + matrix.tx;
+            var cpy = matrix.b * cx + matrix.d * cy + matrix.ty;
+            var dist1 = Math.sqrt((fpx-cpx)*(fpx-cpx) + (fpy-cpy)*(fpy-cpy));
 
-                var range:number[] = cOpt.renderQueueRange;
-                for(var j = range[0]; j < range[1]; ++j){
-                    renderQueue[j] = null;
-                }
-            }
+            handleClip(matrix, dist1, [cpx, cpy], children, engine._renderQueue);
         }
     });
     engine.on(Eng.__CLEAR_RECT, function(ctx:IRenderingContext2D){

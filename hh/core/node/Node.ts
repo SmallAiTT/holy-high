@@ -339,7 +339,6 @@ module hh{
                 // 如果当前节点可裁剪，则推送到裁剪计算队列中
                 engine._clipQueue.push(self);
                 renderQueue.push(self._doClip, self);
-                renderQueue.push(self._restoreClip, self);
             }
             nodeOpt.renderQueueRange[1] = renderQueue.length;
 
@@ -365,6 +364,10 @@ module hh{
             if(layout){
                 layout.onAfter(self);
             }
+
+            nodeOpt.renderQueueRange[2] = renderQueue.length;
+            if(nodeOpt.clip) renderQueue.push(self._restoreClip, self);
+            nodeOpt.renderQueueRange[3] = renderQueue.length;
 
         }
 
