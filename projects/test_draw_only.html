@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no,target-densitydpi=device-dpi"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+
+    <meta name="full-screen" content="true"/>
+    <meta name="screen-orientation" content="portrait"/>
+    <meta name="x5-fullscreen" content="true"/>
+    <meta name="360-fullscreen" content="true"/>
+
+    <style type="text/css">
+        canvas{border:dashed 2px #CCC}
+    </style>
+</head>
+<body>
+<canvas id="canvas" width="600" height="800"></canvas>
+<script>
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+    var fpsInfo = {
+        // 次数
+        count : 0,
+        frameTime : 0,
+        fps : 60,
+        draw : 0,
+        drawCount : 0,
+
+        transCostCount : 0,
+        matrixCostCount : 0,
+        clipCostCount : 0,
+        renderCostCount : 0,
+        touchCostCount : 0,
+
+        transCost : 0,
+        matrixCost : 0,
+        clipCost : 0,
+        renderCost : 0,
+        touchCost : 0
+    };
+    var self = {};
+
+    function loop(){
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        var curTime = Date.now() - self._startTime;
+        var deltaTime = curTime - self._time;
+
+        var w = canvas.width, h = canvas.height;
+        var d1 = Date.now();
+        var d2 = Date.now();
+        var d3 = Date.now();
+        var d4 = Date.now();
+        for(var i = 0; i < 200; ++i){
+            var randX = w*(Math.random());
+            var randY = h*(Math.random());
+            ctx.setTransform(1, 0, 0, 1, randX, randY);
+            ctx.drawImage(img, 0, 0, img.width, img.height);
+            fpsInfo.drawCount++;
+        }
+
+
+
+        var d5 = Date.now();
+        var d6 = Date.now();
+        fpsInfo.count++;
+        fpsInfo.frameTime += deltaTime;
+        fpsInfo.transCostCount += d2 - d1;
+        fpsInfo.matrixCostCount += d3 - d2;
+        fpsInfo.clipCostCount += d4 - d3;
+        fpsInfo.renderCostCount += d5 - d4;
+        fpsInfo.touchCostCount += d6 - d5;
+        var count = fpsInfo.count;
+        if(count == 60){
+            fpsInfo.fps = Math.round(count*1000/fpsInfo.frameTime);
+            console.log(fpsInfo.fps, count, fpsInfo.frameTime);
+            fpsInfo.draw = Math.round(fpsInfo.drawCount/count);
+            fpsInfo.transCost = Math.round(fpsInfo.transCostCount/count);
+            fpsInfo.matrixCost = Math.round(fpsInfo.matrixCostCount/count);
+            fpsInfo.clipCost = Math.round(fpsInfo.clipCostCount/count);
+            fpsInfo.renderCost = Math.round(fpsInfo.renderCostCount/count);
+            fpsInfo.touchCost = Math.round(fpsInfo.touchCostCount/count);
+
+            fpsInfo.count = 0;
+            fpsInfo.frameTime = 0;
+            fpsInfo.drawCount = 0;
+            fpsInfo.transCostCount = 0;
+            fpsInfo.matrixCostCount = 0;
+            fpsInfo.clipCostCount = 0;
+            fpsInfo.renderCostCount = 0;
+            fpsInfo.touchCostCount = 0;
+        }
+        ctx.save();
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.fillStyle = 'red';
+        ctx.font = "30px serif";
+        ctx.fillText('FPS:'+fpsInfo.fps + '|draw:' + fpsInfo.draw + '|cost:' + fpsInfo.transCost + ',' + fpsInfo.matrixCost + ',' + fpsInfo.clipCost + ',' + fpsInfo.renderCost + ',' + fpsInfo.touchCost, 10, 30);
+        ctx.restore();
+
+        requestAnimationFrame(loop);
+        self._time = curTime;
+    }
+    var img = new Image();
+    img.onload = function(){
+        self._startTime = Date.now();
+        self._time = 0;
+        loop();
+    };
+    img.src = 'res/s9g/00001.png';
+</script>
+</body>
+</html>

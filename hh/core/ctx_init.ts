@@ -72,8 +72,8 @@ module hh{
     });
     // 先注册一个帧率显示以供使用
     engine.on(Eng.__DRAW_FPS, function(ctx:IRenderingContext2D, fpsInfo:any){
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.save();
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.fillStyle = 'red';
         ctx.font = "30px serif";
         ctx.fillText('FPS:'+fpsInfo.fps + '|draw:' + fpsInfo.draw + '|cost:' + fpsInfo.transCost + ',' + fpsInfo.matrixCost + ',' + fpsInfo.clipCost + ',' + fpsInfo.renderCost + ',' + fpsInfo.touchCost, 10, 30);

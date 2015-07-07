@@ -138,8 +138,6 @@ module tc{
                 var img = new hh.UIImg();
                 img.x = randX;
                 img.y = randY;
-                img.grid = [3, 39, 2];
-                img.height = 200;
                 img.load(url);
                 stage.addChild(img);
             }
@@ -163,8 +161,6 @@ module tc{
                 var img = new hh.UIImg();
                 img.x = randX;
                 img.y = randY;
-                img.grid = [3, 39, 2];
-                img.height = 200;
                 img.load(url);
                 node.addChild(img);
             }
