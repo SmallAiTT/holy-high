@@ -4,6 +4,7 @@
 
 ///<reference path="ref.ts" />
 module unit{
+    export var htmlMenuEnabled:boolean = true;
     var _curMenuInfo:any[];
     var _curMenuParam:any;
     var _moduleMenuMap = {};
@@ -86,6 +87,7 @@ module unit{
     var _menuItemTemp = '<tr><td><a href="#" onclick="unit.${onMenu}(\'${moduleName}\', \'${name}\')" >${name}</a></td></tr>';
 
     hh.engine.once(hh.Engine.AFTER_BOOT, function(){
+        if(!unit.htmlMenuEnabled) return;
         _menuStr += '<table>';
         for (var moduleName in _moduleMenuMap) {
             _menuStr += hh.STR.placeholder(_menuNameTemp, {moduleName:moduleName});

@@ -378,7 +378,6 @@ module hh{
          */
         _draw(ctx:IRenderingContext2D, engine:Engine){
             var self = this, nodeOpt = self._nodeOpt;
-            engine.__fpsInfo.drawCount++;
             // 设置转化
             var matrix = nodeOpt.matrix;
             ctx.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);

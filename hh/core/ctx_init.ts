@@ -75,7 +75,8 @@ module hh{
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.save();
         ctx.fillStyle = 'red';
-        ctx.fillText('FPS:'+fpsInfo.fps + '|draw:' + fpsInfo.draw + '|cost:' + fpsInfo.transCost + ',' + fpsInfo.matrixCost + ',' + fpsInfo.clipCost + ',' + fpsInfo.renderCost + ',' + fpsInfo.touchCost, 10, 10);
+        ctx.font = "30px serif";
+        ctx.fillText('FPS:'+fpsInfo.fps + '|draw:' + fpsInfo.draw + '|cost:' + fpsInfo.transCost + ',' + fpsInfo.matrixCost + ',' + fpsInfo.clipCost + ',' + fpsInfo.renderCost + ',' + fpsInfo.touchCost, 10, 30);
         ctx.restore();
     });
 }

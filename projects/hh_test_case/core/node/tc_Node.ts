@@ -66,4 +66,59 @@ module tc{
     }, function(param){
         hh.unTick(param.mv);
     });
+
+    unit.addMenuItem('Node 数量测试200', function(){
+        hh.Node.debug = false;
+        var url = res_helper.getItemUrl(11001);
+        hh.res.load(url, function(){
+            var stage:hh.Node = hh.engine.stage;
+            var w = stage.width, h = stage.height;
+            for(var i = 0; i < 200; ++i){
+                var randX = w*(Math.random());
+                var randY = h*(Math.random());
+                var img = new hh.Node();
+                img.x = randX;
+                img.y = randY;
+                img.height = 200;
+                stage.addChild(img);
+            }
+        });
+
+    });
+    unit.addMenuItem('Node 数量测试400', function(){
+        hh.Node.debug = false;
+        var url = res_helper.getItemUrl(11001);
+        hh.res.load(url, function(){
+            var stage:hh.Node = hh.engine.stage;
+            var w = stage.width, h = stage.height;
+            for(var i = 0; i < 400; ++i){
+                var randX = w*(Math.random());
+                var randY = h*(Math.random());
+                var img = new hh.Node();
+                img.x = randX;
+                img.y = randY;
+                img.height = 200;
+                stage.addChild(img);
+            }
+        });
+
+    });
+    unit.addMenuItem('Node 数量测试600', function(){
+        hh.Node.debug = false;
+        var url = res_helper.getItemUrl(11001);
+        hh.res.load(url, function(){
+            var stage:hh.Node = hh.engine.stage;
+            var w = stage.width, h = stage.height;
+            for(var i = 0; i < 600; ++i){
+                var randX = w*(Math.random());
+                var randY = h*(Math.random());
+                var img = new hh.Node();
+                img.x = randX;
+                img.y = randY;
+                img.height = 200;
+                stage.addChild(img);
+            }
+        });
+
+    });
 }

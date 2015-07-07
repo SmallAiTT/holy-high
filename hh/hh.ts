@@ -1733,7 +1733,7 @@ module hh {
             self.design = {width:0, height:0};
             self.__fpsInfo = {
                 // 次数
-                count : -1,
+                count : 0,
                 frameTime : 0,
                 fps : 60,
                 draw : 0,
@@ -1816,7 +1816,7 @@ module hh {
                     fpsInfo.renderCostCount += d5 - d4;
                     fpsInfo.touchCostCount += d6 - d5;
                     var count = fpsInfo.count;
-                    if(count == 60 || count == 1){
+                    if(count == 60){
                         fpsInfo.fps = Math.round(count*1000/fpsInfo.frameTime);
                         fpsInfo.draw = Math.round(fpsInfo.drawCount/count);
                         fpsInfo.transCost = Math.round(fpsInfo.transCostCount/count);
@@ -1825,16 +1825,14 @@ module hh {
                         fpsInfo.renderCost = Math.round(fpsInfo.renderCostCount/count);
                         fpsInfo.touchCost = Math.round(fpsInfo.touchCostCount/count);
 
-                        if(count == 60){
-                            fpsInfo.count = 0;
-                            fpsInfo.frameTime = 0;
-                            fpsInfo.drawCount = 0;
-                            fpsInfo.transCostCount = 0;
-                            fpsInfo.matrixCostCount = 0;
-                            fpsInfo.clipCostCount = 0;
-                            fpsInfo.renderCostCount = 0;
-                            fpsInfo.touchCostCount = 0;
-                        }
+                        fpsInfo.count = 0;
+                        fpsInfo.frameTime = 0;
+                        fpsInfo.drawCount = 0;
+                        fpsInfo.transCostCount = 0;
+                        fpsInfo.matrixCostCount = 0;
+                        fpsInfo.clipCostCount = 0;
+                        fpsInfo.renderCostCount = 0;
+                        fpsInfo.touchCostCount = 0;
                     }
                     self.emit(clazz.__DRAW_FPS, ctx, fpsInfo);
                 }

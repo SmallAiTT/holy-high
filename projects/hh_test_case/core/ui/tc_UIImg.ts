@@ -27,7 +27,62 @@ module tc{
         hh.engine.stage.addChild(img);
     });
 
-    unit.addMenuItem('UIImg 数量测试', function(){
+    unit.addMenuItem('UIImg 数量测试100', function(){
+        hh.UIImg.debug = false;
+        var url = res_helper.getItemUrl(11001);
+        hh.res.load(url, function(){
+            var stage:hh.Node = hh.engine.stage;
+            var w = stage.width, h = stage.height;
+            for(var i = 0; i < 100; ++i){
+                var randX = w*(Math.random());
+                var randY = h*(Math.random());
+                var img = new hh.UIImg();
+                img.x = randX;
+                img.y = randY;
+                img.load(url);
+                stage.addChild(img);
+            }
+        });
+
+    });
+
+    unit.addMenuItem('UIImg 数量测试200', function(){
+        hh.UIImg.debug = false;
+        var url = res_helper.getItemUrl(11001);
+        hh.res.load(url, function(){
+            var stage:hh.Node = hh.engine.stage;
+            var w = stage.width, h = stage.height;
+            for(var i = 0; i < 200; ++i){
+                var randX = w*(Math.random());
+                var randY = h*(Math.random());
+                var img = new hh.UIImg();
+                img.x = randX;
+                img.y = randY;
+                img.load(url);
+                stage.addChild(img);
+            }
+        });
+
+    });
+    unit.addMenuItem('UIImg 数量测试400', function(){
+        hh.UIImg.debug = false;
+        var url = res_helper.getItemUrl(11001);
+        hh.res.load(url, function(){
+            var stage:hh.Node = hh.engine.stage;
+            var w = stage.width, h = stage.height;
+            for(var i = 0; i < 400; ++i){
+                var randX = w*(Math.random());
+                var randY = h*(Math.random());
+                var img = new hh.UIImg();
+                img.x = randX;
+                img.y = randY;
+                img.load(url);
+                stage.addChild(img);
+            }
+        });
+
+    });
+    unit.addMenuItem('UIImg 数量测试600', function(){
         hh.UIImg.debug = false;
         var url = res_helper.getItemUrl(11001);
         hh.res.load(url, function(){
@@ -39,8 +94,6 @@ module tc{
                 var img = new hh.UIImg();
                 img.x = randX;
                 img.y = randY;
-                img.grid = [3, 39, 2];
-                img.height = 200;
                 img.load(url);
                 stage.addChild(img);
             }
@@ -129,6 +182,27 @@ module tc{
         img1.load(url);
 
         hh.engine.stage.addChild(img1);
+    });
+
+    unit.addMenuItem('UIImg九宫格数量100', function(){
+        hh.UIImg.debug = false;
+        var url = res_helper.getS9gUrl(1);
+        hh.res.load(url, function(){
+            var stage:hh.Node = hh.engine.stage;
+            var w = stage.width, h = stage.height;
+            for(var i = 0; i < 100; ++i){
+                var randX = w*(Math.random());
+                var randY = h*(Math.random());
+                var img = new hh.UIImg();
+                img.x = randX;
+                img.y = randY;
+                img.grid = [1, 39, 39, 2, 2];
+                img.width = img.height = 100;
+                img.load(url);
+                stage.addChild(img);
+            }
+        });
+
     });
 
     unit.addMenuItem('UIImg#grid 三宫格', function(){

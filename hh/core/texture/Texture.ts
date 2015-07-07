@@ -35,6 +35,7 @@ module hh{
             if(!grid || grid.length == 0){
                 // 普通绘图模式
                 ctx.drawImage(data, x, y, width, height, dstX, dstY, dstW, dstH);
+                engine.__fpsInfo.drawCount++;
                 return;
             }
             var gridType = grid[0];
@@ -54,6 +55,7 @@ module hh{
                         ctx.drawImage(data, sx, sy, sw, sh, dx, dy, dw, dh);
                     }
                 }
+                engine.__fpsInfo.drawCount += 9;
             }else if(gridType == 3){
                 // 垂直三宫格模式
                 // 方向
@@ -69,6 +71,7 @@ module hh{
                 //    yTemp += d;
                 //}
                 ctx.drawImage(data, x, height - v3, width, v3, dstX, dstH - v3, dstW, v3);
+                engine.__fpsInfo.drawCount += 3;
             }else if(gridType == 4){
                 // 垂直三宫格模式
                 // 方向
@@ -84,6 +87,7 @@ module hh{
                 //    yTemp += d;
                 //}
                 ctx.drawImage(data, width - v3, y, v3, height, dstW - v3, dstY, v3, dstH);
+                engine.__fpsInfo.drawCount += 3;
             }
         }
     }
