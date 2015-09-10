@@ -21,6 +21,8 @@
 
     "ui/UIImgOpt.js",
     "ui/UIImg.js",
+    "ui/UITextOpt.js",
+    "ui/UIText.js",
 
     "ctx_init.js"
   ]

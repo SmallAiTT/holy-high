@@ -1,13 +1,13 @@
 /**
  * Created by SmallAiTT on 2015/7/1.
  */
-///<reference path="../node/NodeOpt.ts" />
 ///<reference path="../texture/Texture.ts" />
 ///<reference path="../res/Res.ts" />
 module hh{
-    export class UIImgOpt extends NodeOpt{
+    export class UIImgOpt extends Class{
         texture:Texture;
         bcsh:number[];
+        grid:number[];
 
         //@override
         _initProp():void{

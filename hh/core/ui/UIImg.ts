@@ -9,21 +9,37 @@ module hh{
         static __className:string = 'UIImg';
         static NodeOpt:any = UIImgOpt;
 
-        _nodeOpt:UIImgOpt;
+        _imgOpt:UIImgOpt;
 
         //@override
         _initProp(){
             super._initProp();
             var self = this, nodeOpt = self._nodeOpt;
             nodeOpt.anchorX = nodeOpt.anchorY = 0.5;
+            self._imgOpt = new UIImgOpt();
         }
         constructor(urlOrTexture?:any){
             super();
         }
 
+        /**
+         * N宫格
+         * @param grid
+         * @private
+         */
+        _setGrid(grid:number[]){
+            this._imgOpt.grid = grid;
+        }
+        public set grid(grid:number[]){
+            this._setGrid(grid);
+        }
+        public get grid():number[]{
+            return this._imgOpt.grid;
+        }
+
         load(urlOrTexture, cb?:Function, ctx?:any){
             if(!urlOrTexture) return;
-            var self = this, nodeOpt = self._nodeOpt;
+            var self = this, imgOpt = self._imgOpt;
             if(typeof urlOrTexture == 'string'){
                 // 是url
                 var texture = res.get(urlOrTexture);
@@ -44,12 +60,12 @@ module hh{
 
         _loadTexture(texture):boolean{
             if(texture){
-                var self = this, nodeOpt = self._nodeOpt;
+                var self = this, nodeOpt = self._nodeOpt, imgOpt = self._imgOpt;
                 // 如果已经加载了
-                nodeOpt.texture = texture;
+                imgOpt.texture = texture;
                 // 设置成可以绘制
                 nodeOpt.drawable = true;
-                var grid = nodeOpt.grid;
+                var grid = imgOpt.grid;
                 if(!grid || grid.length == 0){
                     self._setWidth(texture.width);
                     self._setHeight(texture.height);
@@ -74,13 +90,13 @@ module hh{
 
         // @override
         _render(ctx:IRenderingContext2D, engine:Engine){
-            var self = this, nodeOpt = self._nodeOpt, texture = nodeOpt.texture;
-            texture.render(ctx, 0, 0, nodeOpt.width, nodeOpt.height, nodeOpt.grid);
+            var self = this, nodeOpt = self._nodeOpt, imgOpt = self._imgOpt, texture = imgOpt.texture;
+            texture.render(ctx, 0, 0, nodeOpt.width, nodeOpt.height, imgOpt.grid);
 
-            if(nodeOpt.isBCSH()){
-                var bcsh = nodeOpt.bcsh;
+            if(imgOpt.isBCSH()){
+                var bcsh = imgOpt.bcsh;
                 var colorMatrix:ColorMatrix = new ColorMatrix();
-                colorMatrix.adjustColor(bcsh[0], bcsh[1], bcsh[2], bcsh[3])
+                colorMatrix.adjustColor(bcsh[0], bcsh[1], bcsh[2], bcsh[3]);
 
                 var imageData = ctx.getImageData(0,0,engine.design.width, engine.design.height);
                 var data = imageData.data;
@@ -97,7 +113,7 @@ module hh{
         }
 
         setBCSH(brightness:number, contrast:number, saturation:number, hub:number){
-            var self = this, bcsh = self._nodeOpt.bcsh;
+            var self = this, bcsh = self._imgOpt.bcsh;
             bcsh[0] = brightness;
             bcsh[1] = contrast;
             bcsh[2] = saturation;

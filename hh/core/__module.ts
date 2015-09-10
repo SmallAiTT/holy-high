@@ -18,5 +18,7 @@
 
 ///<reference path="ui/UIImgOpt.ts" />
 ///<reference path="ui/UIImg.ts" />
+///<reference path="ui/UITextOpt.ts" />
+///<reference path="ui/UIText.ts" />
 
 ///<reference path="ctx_init.ts" />

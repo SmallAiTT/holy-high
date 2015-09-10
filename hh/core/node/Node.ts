@@ -31,7 +31,6 @@ module hh{
             ctx.arc(width/2, height/2, max/2, 0, Math.PI*2);
         };
 
-        static NodeOpt:any = NodeOpt;
         _nodeOpt:NodeOpt;
 
         static Touch:any = Touch;
@@ -41,7 +40,7 @@ module hh{
         _initProp(){
             super._initProp();
             var self = this, clazz = self.__class;
-            self._nodeOpt = new clazz.NodeOpt(clazz);
+            self._nodeOpt = new NodeOpt(clazz);
             self.touch = new clazz.Touch();
             self.touch.target = self;
         }
@@ -308,21 +307,6 @@ module hh{
         }
         _restoreClip(ctx:IRenderingContext2D, engine:Engine){
             ctx.restore();
-        }
-
-        /**
-         * N宫格
-         * @param grid
-         * @private
-         */
-        _setGrid(grid:number[]){
-            this._nodeOpt.grid = grid;
-        }
-        public set grid(grid:number[]){
-            this._setGrid(grid);
-        }
-        public get grid():number[]{
-            return this._nodeOpt.grid;
         }
 
         /**

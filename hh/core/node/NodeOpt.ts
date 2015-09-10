@@ -39,8 +39,6 @@ module hh{
         layout:Layout;
         clip:Function;
 
-        grid:number[];
-
         renderQueueRange:number[];
 
         //@override

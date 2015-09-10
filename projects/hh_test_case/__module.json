@@ -9,6 +9,7 @@
 
     "core/touch/tc_Touch.js",
     "core/res/tc_Res.js",
-    "core/ui/tc_UIImg.js"
+    "core/ui/tc_UIImg.js",
+    "core/ui/tc_UIText.js"
   ]
 }
