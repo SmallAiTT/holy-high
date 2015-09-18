@@ -4,7 +4,6 @@
 ///<reference path="Texture.ts" />
 module hh{
     export class Sheet extends Class{
-        static __className:string = 'Sheet';
 
         init(texture:Texture, data:any){}
 

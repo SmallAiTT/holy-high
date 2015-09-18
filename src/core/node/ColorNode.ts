@@ -2,10 +2,9 @@
 /// <reference path="Node.ts" />
 module hh{
     export class ColorNode extends hh.Node{
-        static __className:string = "ColorNode";
 
         //@override
-        _initProp():void{
+        _initProp(){
             super._initProp();
             var self = this;
             self._color = "red";//设置默认颜色为红色
@@ -30,9 +29,9 @@ module hh{
         }
 
         //@override
-        _draw(renderCtx:CanvasRenderingContext2D):void{
+        _draw(renderCtx:CanvasRenderingContext2D){
             super._draw(renderCtx);
-            var self = this, clazz = self.__class;
+            var self = this, clazz = self.__c;
             var transX = self._transX, transY = self._transY;
             var transWidth = self._transWidth, transHeight = self._transHeight;
 

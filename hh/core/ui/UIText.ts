@@ -5,7 +5,6 @@
 ///<reference path="UITextOpt.ts" />
 module hh{
     export class UIText extends Node{
-        static __className:string = "UIText";
 
         _textOpt:UITextOpt;
 

@@ -6,7 +6,6 @@
 ///<reference path="UIImgOpt.ts" />
 module hh{
     export class UIImg extends Node{
-        static __className:string = 'UIImg';
         static NodeOpt:any = UIImgOpt;
 
         _imgOpt:UIImgOpt;

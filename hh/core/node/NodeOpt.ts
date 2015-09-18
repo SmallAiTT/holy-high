@@ -6,7 +6,6 @@
 ///<reference path="Layout.ts" />
 module hh{
     export class NodeOpt extends Class{
-        static __className:string = "NodeOpt";
 
         _TargetClass:any;
 
@@ -45,7 +44,7 @@ module hh{
         _initProp():void{
             super._initProp();
             var self = this;
-            self.name = self._TargetClass.__className;
+            self.name = self._TargetClass.__n;
             self.width = 0;
             self.height = 0;
             self.x = 0;

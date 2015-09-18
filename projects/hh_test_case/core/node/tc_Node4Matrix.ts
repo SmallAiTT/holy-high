@@ -5,7 +5,6 @@
 module tc{
     unit.curModuleName = moduleName_Node;
     class Node4Matrix1 extends hh.Node{
-        static __className:string = 'Node4Matrix1';
 
         //@override
         _initProp(){

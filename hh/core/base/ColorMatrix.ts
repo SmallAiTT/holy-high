@@ -33,21 +33,21 @@ module hh{
         // initialization:
         constructor(p_matrix?:any) {
             super();
-            var self = this, clazz = self.__class;
+            var self = this, clazz = self.__c;
             p_matrix = self.fixMatrix(p_matrix);
             self.copyMatrix(((p_matrix.length == clazz.LENGTH) ? p_matrix : clazz.IDENTITY_MATRIX));
             self.length = clazz.LENGTH;
         }
 
         reset():void {
-            var self = this, clazz = self.__class;
+            var self = this, clazz = self.__c;
             for (var i:number=0; i<clazz.LENGTH; i++) {
                 this[i] = clazz.IDENTITY_MATRIX[i];
             }
         }
 
         adjustColor(p_brightness:number,p_contrast:number,p_saturation:number,p_hue:number):void {
-            var self = this, clazz = self.__class;
+            var self = this, clazz = self.__c;
             self.adjustHue(p_hue);
             self.adjustContrast(p_contrast);
             self.adjustBrightness(p_brightness);
@@ -55,7 +55,7 @@ module hh{
         }
 
         adjustBrightness(p_val:number):void {
-            var self = this, clazz = self.__class;
+            var self = this, clazz = self.__c;
             p_val = self.cleanValue(p_val,100);
             if (p_val == 0 || isNaN(p_val)) { return; }
             self.multiplyMatrix([
@@ -68,7 +68,7 @@ module hh{
         }
 
         adjustContrast(p_val:number):void {
-            var self = this, clazz = self.__class;
+            var self = this, clazz = self.__c;
             p_val = self.cleanValue(p_val,100);
             if (p_val == 0 || isNaN(p_val)) { return; }
             var x:number;
@@ -94,7 +94,7 @@ module hh{
         }
 
         adjustSaturation(p_val:number):void {
-            var self = this, clazz = self.__class;
+            var self = this, clazz = self.__c;
             p_val = self.cleanValue(p_val,100);
             if (p_val == 0 || isNaN(p_val)) { return; }
             var x:number = 1+((p_val > 0) ? 3*p_val/100 : p_val/100);
@@ -111,7 +111,7 @@ module hh{
         }
 
         adjustHue(p_val:number):void {
-            var self = this, clazz = self.__class;
+            var self = this, clazz = self.__c;
             p_val = self.cleanValue(p_val,180)/180*Math.PI;
             if (p_val == 0 || isNaN(p_val)) { return; }
             var cosVal:number = Math.cos(p_val);
@@ -129,7 +129,7 @@ module hh{
         }
 
         concat(p_matrix:number[]):void {
-            var self = this, clazz = self.__class;
+            var self = this, clazz = self.__c;
             p_matrix = self.fixMatrix(p_matrix);
             if (p_matrix.length != clazz.LENGTH) { return; }
             self.multiplyMatrix(p_matrix);
@@ -149,7 +149,7 @@ module hh{
 
         // copy the specified matrix's values to this matrix:
         copyMatrix(p_matrix:number[]):void {
-            var self = this, clazz = self.__class;
+            var self = this, clazz = self.__c;
             var l:number = clazz.LENGTH;
             for (var i:number=0;i<l;i++) {
                 this[i] = p_matrix[i];
@@ -158,7 +158,7 @@ module hh{
 
         // multiplies one matrix against another:
         multiplyMatrix(p_matrix:number[]):void {
-            var self = this, clazz = self.__class;
+            var self = this, clazz = self.__c;
             var col:number[] = [];
 
             for (var i:number=0;i<5;i++) {
@@ -177,13 +177,13 @@ module hh{
 
         // make sure values are within the specified range, hue has a limit of 180,
         cleanValue(p_val:number,p_limit:number):number {
-            var self = this, clazz = self.__class;
+            var self = this, clazz = self.__c;
             return Math.min(p_limit,Math.max(-p_limit,p_val));
         }
 
         // makes sure matrixes are 5x5 (25 long):
         fixMatrix(p_matrix:number[]=null):number[] {
-            var self = this, clazz = self.__class;
+            var self = this, clazz = self.__c;
             if (p_matrix == null) { return clazz.IDENTITY_MATRIX; }
             if (p_matrix instanceof ColorMatrix) { p_matrix = p_matrix.slice(0); }
             if (p_matrix.length < clazz.LENGTH) {

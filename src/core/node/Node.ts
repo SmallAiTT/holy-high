@@ -2,7 +2,6 @@
 
 module hh{
     export class Node extends Class{
-        static __className:string = "Node";
         static debug:boolean;
 
         public debug:boolean;
@@ -634,7 +633,7 @@ module hh{
 
 
         public visit(renderCtx, preVisibleSibling?:Node, nextSibling?:Node):void{
-            var self = this, clazz = self.__class;
+            var self = this, clazz = self.__c;
 
             if(!self._visible) return;
             var parent = self._parent;

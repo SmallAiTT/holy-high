@@ -5,7 +5,6 @@
 ///<reference path="../node/Node.ts" />
 module hh{
     export class TouchCtx extends Emitter{
-        static __className:string = "TouchCtx";
 
         _root:Node;
         /** 点击栈 */

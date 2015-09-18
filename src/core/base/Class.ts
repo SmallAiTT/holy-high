@@ -4,7 +4,7 @@
 /// <reference path="path.ts" />
 module hh{
     export class Class{
-        static __className:string = "Class";
+        static __n:string;
         static __instanceIdCount:number = 1;
         static _instance:any;
 
@@ -34,14 +34,12 @@ module hh{
         }
 
         __instanceId:number;
-        __class:any;
-        __className:string;
+        __c:any;
+        __n:string;
 
         public constructor(){
             var self = this;
             self.__instanceId = Class.__instanceIdCount++;
-            this.__class = this["constructor"];
-            self.__className = self.__class.__className;
             self._initProp();
             self._init();
         }

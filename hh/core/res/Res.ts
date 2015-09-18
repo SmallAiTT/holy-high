@@ -4,8 +4,6 @@
 ///<reference path="ref.ts" />
 module hh{
     export class ResCfgItem extends Emitter{
-        static __className:string = "ResCfgItem";
-
         static SUCCESS:string = "success";
         static ERROR:string = "error";
         static FINISH:string = "finish";
@@ -37,7 +35,7 @@ module hh{
         }
 
         _send(err, resData:any){
-            var self = this, clazz = self.__class;
+            var self = this, clazz = self.__c;
             // 从队列移除
             var queue = res._queue;
             for (var i = 0, l_i = queue.length; i < l_i; i++) {
@@ -62,8 +60,6 @@ module hh{
 
     }
     export class ResParser extends Emitter{
-        static __className:string = "ResParser";
-
         _map:any;
 
         //@override
@@ -113,8 +109,6 @@ module hh{
         }
     }
     export class Res extends Emitter{
-        static __className:string = 'res';
-
         _pool4Parser:any;
         _pool:any;
         _pool4JsData:any;

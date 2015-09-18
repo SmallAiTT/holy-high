@@ -5,8 +5,6 @@
 ///<reference path="../node/Node.ts" />
 module hh{
     export class Touch extends Emitter{
-        static __className:string = "Touch";
-
         static BEGAN:string = 'began';
         static MOVE:string = 'move';
         static END:string = 'end';
@@ -72,15 +70,15 @@ module hh{
             return result;
         }
         onBegan(tx:number, ty:number, phase:number){
-            var self = this, clazz = self.__class;
+            var self = this, clazz = self.__c;
             self.emit(clazz.BEGAN, self, tx, ty, phase);
         }
         onEnd(tx:number, ty:number, phase:number){
-            var self = this, clazz = self.__class;
+            var self = this, clazz = self.__c;
             self.emit(clazz.END, self, tx, ty, phase);
         }
         onMove(tx:number, ty:number){
-            var self = this, clazz = self.__class;
+            var self = this, clazz = self.__c;
             self.emit(clazz.MOVE, self, tx, ty);
         }
 

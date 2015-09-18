@@ -407,7 +407,7 @@ module hh {
 
     export class Class{
         /** 类名 */
-        static __className:string = 'Class';
+        static __n:string;
 
         static __recycler:any[] = [];
         static push(obj:any){
@@ -449,9 +449,9 @@ module hh {
         }
 
         /** 类名 */
-        __className:string;
+        __n:string;
         /** 实例对应的类 */
-        __class:any;
+        __c:any;
         /** 是否是单例 */
         _isInstance:boolean;
         /** 储藏室 */
@@ -466,8 +466,6 @@ module hh {
 
         constructor() {
             var self = this;
-            var clazz:any = self.__class = this['constructor'];
-            self.__className = clazz.__className;
             self._initProp();
         }
 
@@ -796,7 +794,7 @@ module hh {
     var _tempArgsArr:any = [];
     export class Emitter {
         /** 类名 */
-        public static __className:string = 'Emitter';
+        public static __n:string;
 
         static __recycler:any[] = [];
         static push(obj:any){
@@ -838,9 +836,9 @@ module hh {
         }
 
         /** 类名 */
-        __className:string;
+        __n:string;
         /** 实例对应的类 */
-        __class:any;
+        __c:any;
         /** 是否是单例 */
         _isInstance:boolean;
         /** 储藏室 */
@@ -855,8 +853,6 @@ module hh {
 
         constructor() {
             var self = this;
-            var clazz:any = self.__class = this['constructor'];
-            self.__className = clazz.__className;
             self._initProp();
         }
 
@@ -1241,7 +1237,7 @@ module hh {
             self._emitByListenerInfoArr(_OWNER_ON, event, tempArr, args);
 
             //类级别的注册
-            store = self.__class._store;
+            store = self.__c._store;
             //先执行单个的
             single = store.getSingle(_OWNER_ON, event);
             self._emitByListenerInfoArr(_OWNER_ON, event, single, args);
@@ -1287,7 +1283,7 @@ module hh {
             }
 
             //类级别的注册
-            store = self.__class._store;
+            store = self.__c._store;
             //先执行单个的
             single = store.getSingle(_OWNER_ON_ASYNC, event);
             if (single) arr.push(arr);
@@ -1652,7 +1648,7 @@ module hh {
                 emitter._emitByListenerInfoArr(_OWNER_ON_NT, event, tempArr, args);
 
                 //类级别的注册
-                store = emitter.__class._store;
+                store = emitter.__c._store;
                 //先执行单个的
                 single = store.getSingle(_OWNER_ON_NT, event);
                 emitter._emitByListenerInfoArr(_OWNER_ON_NT, event, single, args);
@@ -1755,7 +1751,7 @@ module hh {
 
         //执行主循环
         run(){
-            var self = this, clazz = self.__class;
+            var self = this, clazz = self.__c;
             //设置开始时间
             self._startTime = Date.now();
             self._time = 0;

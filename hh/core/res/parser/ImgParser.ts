@@ -5,7 +5,6 @@
 ///<reference path="../../texture/Texture.ts" />
 module hh{
     export class ImgParser extends ResParser{
-        static __className:string = 'ImgParser';
 
         // override
         _load(rci:ResCfgItem){

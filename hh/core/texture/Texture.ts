@@ -5,7 +5,6 @@
 ///<reference path="../base/__module.ts" />
 module hh{
     export class Texture extends Emitter{
-        static __className:string = 'Texture';
 
         url:string;
         data:any;

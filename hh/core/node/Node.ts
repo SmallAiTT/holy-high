@@ -5,7 +5,6 @@
 ///<reference path="../touch/Touch.ts" />
 module hh{
     export class Node extends Emitter{
-        static __className:string = "Node";
         static debug:boolean = true;
 
         /**
@@ -39,7 +38,7 @@ module hh{
         //@override
         _initProp(){
             super._initProp();
-            var self = this, clazz = self.__class;
+            var self = this, clazz = self.__c;
             self._nodeOpt = new NodeOpt(clazz);
             self.touch = new clazz.Touch();
             self.touch.target = self;
@@ -313,7 +312,7 @@ module hh{
          * 转换节点。
          */
         _trans(engine:Engine){
-            var self = this, clazz = self.__class, nodeOpt = self._nodeOpt;
+            var self = this, clazz = self.__c, nodeOpt = self._nodeOpt;
             var children = nodeOpt.children;
             var renderQueue = engine._renderQueue;
             nodeOpt.renderQueueRange[0] = renderQueue.length;

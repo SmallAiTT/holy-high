@@ -5,8 +5,6 @@
 ///<reference path="Node.ts" />
 module hh{
     export class Layout extends Class{
-        static __className:string = 'Layout';
-
         /** 相对布局类型： 0,1,2,10,11,12,20,21,22 */
         relativeType:number;
         /** 线性布局类型：0,1,2,-1,-2 */
