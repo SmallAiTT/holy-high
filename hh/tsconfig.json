@@ -1,0 +1,35 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "declaration": false,
+        "noImplicitAny": false,
+        "removeComments": true,
+        "noLib": false
+    },
+    "buildOnSave": false,
+    "compileOnSave": false,
+    "files": [
+        "./hh.ts",
+        "./canvas.d.ts",
+        "./core/base/STR.ts",
+        "./core/base/PATH.ts",
+        "./core/base/Matrix.ts",
+        "./core/base/ColorMatrix.ts",
+        "./core/base/Point.ts",
+        "./core/ctx_init.ts",
+        "./core/node/Layout.ts",
+        "./core/node/Node.ts",
+        "./core/node/NodeOpt.ts",
+        "./core/res/Res.ts",
+        "./core/res/parser/ImgParser.ts",
+        "./core/texture/Sheet.ts",
+        "./core/texture/Texture.ts",
+        "./core/touch/Touch.ts",
+        "./core/touch/TouchCtx.ts",
+        "./core/ui/UIImg.ts",
+        "./core/ui/UIImgOpt.ts",
+        "./core/ui/UIText.ts",
+        "./core/ui/UITextOpt.ts"
+    ]
+}
