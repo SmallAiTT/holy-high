@@ -1,9 +1,6 @@
 /**
  * Created by SmallAiTT on 2015/6/29.
  */
-///<reference path="../ref.ts" />
-///<reference path="../base/__module.ts" />
-///<reference path="Layout.ts" />
 module hh{
     export class NodeOpt extends Class{
 

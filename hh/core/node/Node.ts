@@ -1,8 +1,6 @@
 /**
  * Created by SmallAiTT on 2015/6/29.
  */
-///<reference path="NodeOpt.ts" />
-///<reference path="../touch/Touch.ts" />
 module hh{
     export class Node extends Emitter{
         static debug:boolean = true;

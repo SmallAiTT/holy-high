@@ -1,0 +1,31 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "declaration": false,
+        "noImplicitAny": false,
+        "removeComments": true,
+        "noLib": false
+    },
+    "buildOnSave": false,
+    "compileOnSave": false,
+    "filesGlob": [
+        "../../hh/hh.d.ts",
+        "../../unit/unit.d.ts",
+        "./**/*.ts",
+        "!./node_modules/**/*.ts"
+    ],
+    "files": [
+        "../../hh/hh.d.ts",
+        "../../unit/unit.d.ts",
+        "./core/node/tc_Node.ts",
+        "./core/node/tc_Node4Clip.ts",
+        "./core/node/tc_Node4Layout.ts",
+        "./core/node/tc_Node4Matrix.ts",
+        "./core/res/tc_Res.ts",
+        "./core/touch/tc_Touch.ts",
+        "./core/ui/tc_UIImg.ts",
+        "./core/ui/tc_UIText.ts",
+        "./tc_init.ts"
+    ]
+}

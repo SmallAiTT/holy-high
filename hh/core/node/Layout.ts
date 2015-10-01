@@ -1,8 +1,6 @@
 /**
  * Created by SmallAiTT on 2015/7/3.
  */
-///<reference path="../ref.ts" />
-///<reference path="Node.ts" />
 module hh{
     export class Layout extends Class{
         /** 相对布局类型： 0,1,2,10,11,12,20,21,22 */

@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "declaration": false,
+        "noImplicitAny": false,
+        "removeComments": true,
+        "noLib": false
+    },
+    "buildOnSave": false,
+    "compileOnSave": false,
+    "filesGlob": [
+        "../hh/hh.d.ts",
+        "./**/*.ts",
+        "!./node_modules/**/*.ts"
+    ],
+    "files": [
+        "../hh/hh.d.ts",
+        "./unit.d.ts",
+        "./unit.ts"
+    ]
+}

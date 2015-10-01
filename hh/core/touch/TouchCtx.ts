@@ -1,8 +1,6 @@
 /**
  * Created by SmallAiTT on 2015/7/2.
  */
-///<reference path="Touch.ts" />
-///<reference path="../node/Node.ts" />
 module hh{
     export class TouchCtx extends Emitter{
 

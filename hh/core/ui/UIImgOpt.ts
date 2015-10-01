@@ -1,8 +1,6 @@
 /**
  * Created by SmallAiTT on 2015/7/1.
  */
-///<reference path="../texture/Texture.ts" />
-///<reference path="../res/Res.ts" />
 module hh{
     export class UIImgOpt extends Class{
         texture:Texture;

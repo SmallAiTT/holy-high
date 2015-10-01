@@ -1,7 +1,6 @@
 /**
  * Created by SmallAiTT on 2015/6/26.
  */
-///<reference path="canvas.d.ts" />
 var _thisGlobal:any = this;
 _thisGlobal.__extends = _thisGlobal.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];

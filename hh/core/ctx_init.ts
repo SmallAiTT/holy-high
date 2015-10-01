@@ -1,8 +1,6 @@
 /**
  * Created by SmallAiTT on 2015/6/29.
  */
-///<reference path="node/Node.ts" />
-///<reference path="touch/TouchCtx.ts" />
 module hh{
     var Eng = Engine;
 

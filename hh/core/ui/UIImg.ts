@@ -1,9 +1,6 @@
 /**
  * Created by SmallAiTT on 2015/7/1.
  */
-///<reference path="../base/ColorMatrix.ts" />
-///<reference path="../node/Node.ts" />
-///<reference path="UIImgOpt.ts" />
 module hh{
     export class UIImg extends Node{
         static NodeOpt:any = UIImgOpt;

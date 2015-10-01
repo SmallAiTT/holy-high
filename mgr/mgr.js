@@ -36,6 +36,10 @@ server.addListener("error", function () {
 
 
 function onGet(request, response) {
+
+    writeFile(pathname, response);
+    return;
+    
     var pathname = url.parse(request.url).pathname;
     var arr = pathname.split("/");
     if(arr[1] == "cmd"){
@@ -98,7 +102,6 @@ function writeFile(pathname, response) {
         }
     });
 }
-
 
 server.listen(cfg.port, cfg.host, function(){
     console.log("http server %s:%s", cfg.host, cfg.port);

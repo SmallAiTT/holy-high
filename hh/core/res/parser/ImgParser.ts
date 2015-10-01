@@ -1,8 +1,6 @@
 /**
  * Created by SmallAiTT on 2015/7/1.
  */
-///<reference path="../Res.ts" />
-///<reference path="../../texture/Texture.ts" />
 module hh{
     export class ImgParser extends ResParser{
 

@@ -1,8 +1,6 @@
 /**
  * Created by SmallAiTT on 2015/7/2.
  */
-///<reference path="../ref.ts" />
-///<reference path="../node/Node.ts" />
 module hh{
     export class Touch extends Emitter{
         static BEGAN:string = 'began';

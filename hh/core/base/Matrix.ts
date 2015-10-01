@@ -1,7 +1,6 @@
 /**
  * Created by SmallAiTT on 2015/6/29.
  */
-///<reference path="Point.ts" />
 module hh{
     // 这里可以不需要继承Class
     export class Matrix{

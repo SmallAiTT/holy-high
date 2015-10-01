@@ -1,7 +1,6 @@
 /**
  * Created by SmallAiTT on 2015/7/1.
  */
-///<reference path="../../tc_init.ts" />
 module tc{
     unit.curModuleName = moduleName_Res;
 

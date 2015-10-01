@@ -2,7 +2,6 @@
  * Created by SmallAiTT on 2015/6/26.
  */
 
-///<reference path="ref.ts" />
 module unit{
     export var htmlMenuEnabled:boolean = true;
     var _curMenuInfo:any[];

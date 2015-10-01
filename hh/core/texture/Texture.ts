@@ -1,8 +1,6 @@
 /**
  * Created by Administrator on 2015/7/4.
  */
-///<reference path="../ref.ts" />
-///<reference path="../base/__module.ts" />
 module hh{
     export class Texture extends Emitter{
 

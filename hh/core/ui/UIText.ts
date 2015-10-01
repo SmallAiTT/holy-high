@@ -1,8 +1,6 @@
 /**
  * Created by SmallAiTT on 2015/7/7.
  */
-///<reference path="../node/Node.ts" />
-///<reference path="UITextOpt.ts" />
 module hh{
     export class UIText extends Node{
 
