@@ -12,7 +12,6 @@
     "filesGlob": [
         "../../hh/**/*.ts",
         "../../unit/**/*.ts",
-        "../res_helper/**/*.ts",
         "./**/*.ts",
         "!./node_modules/**/*.ts"
     ],
@@ -40,15 +39,6 @@
         "../../hh/core/ui/UITextOpt.ts",
         "../../hh/hh.ts",
         "../../unit/unit.ts",
-        "../res_helper/res_helper.ts",
-        "./core/node/tc_Node.ts",
-        "./core/node/tc_Node4Clip.ts",
-        "./core/node/tc_Node4Layout.ts",
-        "./core/node/tc_Node4Matrix.ts",
-        "./core/res/tc_Res.ts",
-        "./core/touch/tc_Touch.ts",
-        "./core/ui/tc_UIImg.ts",
-        "./core/ui/tc_UIText.ts",
-        "./tc_init.ts"
+        "./hh_test_case_mobile.ts"
     ]
 }

@@ -36,36 +36,8 @@ server.addListener("error", function () {
 
 
 function onGet(request, response) {
-
-    writeFile(pathname, response);
-    return;
-    
     var pathname = url.parse(request.url).pathname;
-    var arr = pathname.split("/");
-    if(arr[1] == "cmd"){
-        response.writeHead(200, { 'Content-Type': 'text/html;charset=utf-8' });
-        var cmdName = arr[2];
-        var cmdPath = path.join(__dirname, "./cmd", cmdName + ".js");
-        console.log(cmdPath);
-        if(!fs.existsSync(cmdPath)){
-            console.log(1111);
-            return response.end("找不到cmd：【" + cmdName + "】！");
-        }
-        try{
-            var cmd = require("./cmd/" + cmdName);
-            cmd.exec(function(err, msg){
-                if(err){
-                    response.end(err);
-                }else{
-                    response.end("成功！\r\n" + msg);
-                }
-            });
-        }catch(e){
-            response.end("cmd：【" + cmdName + "】出错！\r\n" + e);
-        }
-    }else{
-        writeFile(pathname, response);
-    }
+    writeFile(pathname, response);
 }
 
 function writeFile(pathname, response) {
@@ -102,7 +74,6 @@ function writeFile(pathname, response) {
         }
     });
 }
-
 server.listen(cfg.port, cfg.host, function(){
     console.log("http server %s:%s", cfg.host, cfg.port);
 });

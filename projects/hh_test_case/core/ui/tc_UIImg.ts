@@ -29,7 +29,7 @@ module tc{
     unit.addMenuItem('UIImg 数量测试100', function(){
         hh.UIImg.debug = false;
         var url = res_helper.getItemUrl(11001);
-        hh.res.load(url, function(){
+        hh.RES.load(url, function(){
             var stage:hh.Node = hh.engine.stage;
             var w = stage.width, h = stage.height;
             for(var i = 0; i < 100; ++i){
@@ -48,7 +48,7 @@ module tc{
     unit.addMenuItem('UIImg 数量测试200', function(){
         hh.UIImg.debug = false;
         var url = res_helper.getItemUrl(11001);
-        hh.res.load(url, function(){
+        hh.RES.load(url, function(){
             var stage:hh.Node = hh.engine.stage;
             var w = stage.width, h = stage.height;
             for(var i = 0; i < 200; ++i){
@@ -66,7 +66,7 @@ module tc{
     unit.addMenuItem('UIImg 数量测试400', function(){
         hh.UIImg.debug = false;
         var url = res_helper.getItemUrl(11001);
-        hh.res.load(url, function(){
+        hh.RES.load(url, function(){
             var stage:hh.Node = hh.engine.stage;
             var w = stage.width, h = stage.height;
             for(var i = 0; i < 400; ++i){
@@ -84,7 +84,7 @@ module tc{
     unit.addMenuItem('UIImg 数量测试600', function(){
         hh.UIImg.debug = false;
         var url = res_helper.getItemUrl(11001);
-        hh.res.load(url, function(){
+        hh.RES.load(url, function(){
             var stage:hh.Node = hh.engine.stage;
             var w = stage.width, h = stage.height;
             for(var i = 0; i < 600; ++i){
@@ -102,7 +102,7 @@ module tc{
     unit.addMenuItem('UIImg clip 区域测试', function(){
         hh.UIImg.debug = false;
         var url = res_helper.getItemUrl(11001);
-        hh.res.load(url, function(){
+        hh.RES.load(url, function(){
             var stage:hh.Node = hh.engine.stage;
             var node:hh.Node = new hh.Node();
             node.width = node.height = 100;
@@ -128,7 +128,7 @@ module tc{
     unit.addMenuItem('UIImg 数量测试 clip1', function(){
         hh.UIImg.debug = false;
         var url = res_helper.getItemUrl(11001);
-        hh.res.load(url, function(){
+        hh.RES.load(url, function(){
             var stage:hh.Node = hh.engine.stage;
             var w = stage.width, h = stage.height;
             for(var i = 0; i < 2000; ++i){
@@ -146,7 +146,7 @@ module tc{
     unit.addMenuItem('UIImg 数量测试 clip2', function(){
         hh.UIImg.debug = false;
         var url = res_helper.getItemUrl(11001);
-        hh.res.load(url, function(){
+        hh.RES.load(url, function(){
             var stage:hh.Node = hh.engine.stage;
             var node:hh.Node = new hh.Node();
             node.width = node.height = 100;
@@ -182,7 +182,7 @@ module tc{
     unit.addMenuItem('UIImg九宫格数量100', function(){
         hh.UIImg.debug = false;
         var url = res_helper.getS9gUrl(1);
-        hh.res.load(url, function(){
+        hh.RES.load(url, function(){
             var stage:hh.Node = hh.engine.stage;
             var w = stage.width, h = stage.height;
             for(var i = 0; i < 100; ++i){

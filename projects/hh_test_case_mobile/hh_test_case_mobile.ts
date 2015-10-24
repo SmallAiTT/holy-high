@@ -1,7 +1,6 @@
 /**
  * Created by SmallAiTT on 2015/7/6.
  */
-///<reference path="ref.ts" />
 unit.htmlMenuEnabled = false;
 module tc{
 

@@ -7,7 +7,7 @@ module tc{
     export var info:Function;
     export var warn:Function;
     export var error:Function;
-    logger.initLogger(tc, 'tc');
+    LOG.initLogger(tc, 'tc');
 
     export var moduleName_Node:string = "Node 测试";
     export var moduleName_Res:string = "Res 测试";

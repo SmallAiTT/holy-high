@@ -27,12 +27,12 @@ module hh.STR {
      * 获取字符串长度，中文为2
      * @param str
      */
-    export function getStringLength(str:string){
+    export function getLength(str:string){
         var strArr = str.split("");
         var length = 0;
         for (var i = 0; i < strArr.length; i++) {
             var s = strArr[i];
-            if(isChinese(s)){
+            if(hasChinese(s)){
                 length+=2;
             }else{
                 length+=1;
@@ -46,7 +46,7 @@ module hh.STR {
      * @param str
      * @returns {boolean}
      */
-    export function isChinese(str:string){
+    export function hasChinese(str:string){
         var reg = /^[u4E00-u9FA5]+$/;
         if(!reg.test(str)){
             return true;
@@ -66,7 +66,7 @@ module hh.STR {
         for (var i = startNum; i < strArr.length; i++) {
             var s = strArr[i];
 
-            if(isChinese(s)){
+            if(hasChinese(s)){
                 length+=2;
             }else{
                 length+=1;
@@ -110,40 +110,10 @@ module hh.STR {
         }
         return results;
     }
-    /**
-     * 敏感词检测
-     * @param word
-     * @param sensitiveArr
-     * @returns {boolean}
-     */
-    export function checkSensitiveWord(word, sensitiveArr){
-        for (var i = 0; i < sensitiveArr.length; i++) {
-            var sen = sensitiveArr[i];
-            if(sen=="") continue;
-            if(word.indexOf(sen) !== -1){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 替换敏感词
-     * @param word
-     * @param sensitiveArr
-     * @returns {*}
-     */
-    export function replaceSensitiveWord(word, sensitiveArr){
-        for (var i = 0; i < sensitiveArr.length; i++) {
-            var sen = sensitiveArr[i];
-            word = word.replace(sen, "*");
-        }
-        return word;
-    }
 
     export function parseNumOrStr(value:string):any{
         if(!value) return value;
-        if((value).search(NUM_EXP) == 0){
+        if(value.search(NUM_EXP) == 0){
             return value.indexOf(".") > 0 ? parseFloat(value) : parseInt(value);
         }
         return value;

@@ -38,11 +38,11 @@ module hh{
             var self = this, imgOpt = self._imgOpt;
             if(typeof urlOrTexture == 'string'){
                 // 是url
-                var texture = res.get(urlOrTexture);
+                var texture = RES.get(urlOrTexture);
                 if(!self._loadTexture(texture)){
                     // 如果还没加载则进行动态加载
-                    res.load(urlOrTexture, function(){
-                        self._loadTexture(res.get(urlOrTexture));
+                    RES.load(urlOrTexture, function(){
+                        self._loadTexture(RES.get(urlOrTexture));
                         if(cb) cb.call(ctx, self);
                     });
                 }else{

@@ -1,11 +1,11 @@
 /**
  * Created by SmallAiTT on 2015/7/1.
  */
-module hh{
-    export class ImgParser extends ResParser{
+module hh.RES{
+    export class ImgParser extends Parser{
 
         // override
-        _load(rci:ResCfgItem){
+        _load(rci:CfgItem){
             var self = this;
             var realUrl = self._getRealUrl(rci);
             var errMsg = '加载图片' + realUrl + '失败！';
@@ -16,7 +16,7 @@ module hh{
             var winURL = window["URL"] || window["webkitURL"];
 
             if (realUrl.indexOf("http:") != 0 && realUrl.indexOf("https:") != 0 && winURL /*&& Browser.getInstance().isIOS()*/) {
-                var xhr = hh.net.getXHR();
+                var xhr = NET.getXHR();
                 xhr.open("get", realUrl, true);
                 xhr.responseType = "blob";
                 xhr.onload = function () {
@@ -52,7 +52,7 @@ module hh{
         }
 
         // override
-        _parse(resData:any, rci:ResCfgItem){
+        _parse(resData:any, rci:CfgItem){
             var texture = new Texture();
             texture.url = rci.url;
             texture.setData(resData);
@@ -60,5 +60,5 @@ module hh{
         }
     }
 
-    res.registerParser(ImgParser, 'png', 'jpg');
+    registerParser(ImgParser, 'png', 'jpg');
 }

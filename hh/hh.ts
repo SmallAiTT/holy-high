@@ -2,7 +2,7 @@
  * Created by SmallAiTT on 2015/6/26.
  */
 var _thisGlobal:any = this;
-_thisGlobal.__extends = _thisGlobal.__extends || function (d, b) {
+var $E$ = function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() {
         this.constructor = d;
@@ -11,8 +11,16 @@ _thisGlobal.__extends = _thisGlobal.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
+var $D$ = function (o, p, g, s) {
+    Object.defineProperty(o, p, { configurable: true, enumerable: true, get: g, set: s });
+};
+var $C$ = function(clazz, name){
+    var p = clazz.prototype;
+    p.__c = clazz;
+    p.__n = clazz.__n = name;
+}
 
-module logger{
+module LOG{
     var _map = {};
 
     /**
@@ -70,13 +78,13 @@ module logger{
     export function initByConfig(config){
         var logLvl = config.logLvl;
         if(typeof logLvl == 'number'){
-            logger.setLvl('default', logLvl);
+            LOG.setLvl('default', logLvl);
         }else{
             var logLvlDefault = logLvl['default'];
-            if(logLvlDefault != null) logger.setLvl('default', logLvlDefault);
+            if(logLvlDefault != null) LOG.setLvl('default', logLvlDefault);
             for (var mName in logLvl) {
                 if(mName == 'all') continue;
-                logger.setLvl(mName, logLvl[mName]);
+                LOG.setLvl(mName, logLvl[mName]);
             }
         }
     }
@@ -86,24 +94,24 @@ module logger{
     export var info:Function;
     export var warn:Function;
     export var error:Function;
-    initLogger(logger, 'logger');
+    initLogger(LOG, 'LOG');
 }
 
 
-module hh.net {
+module hh.NET {
     export var log:Function;
     export var debug:Function;
     export var info:Function;
     export var warn:Function;
     export var error:Function;
-    logger.initLogger(hh.net, 'net');
+    LOG.initLogger(NET, 'net');
 
     export function getXHR(){
         return window['XMLHttpRequest'] ? new window['XMLHttpRequest']() : new ActiveXObject('MSXML2.XMLHTTP');
     }
 
     export function loadTxt(url:string, cb:Function){
-        var xhr = hh.net.getXHR(),
+        var xhr = getXHR(),
             errInfo = 'load ' + url + ' failed!';
         xhr.open('GET', url, true);
         if (/msie/i.test(navigator.userAgent) && !/opera/i.test(navigator.userAgent)) {
@@ -124,7 +132,7 @@ module hh.net {
     }
 
     export function loadJson(url:string, cb:Function){
-        hh.net.loadTxt(url, function (err, txt) {
+        loadTxt(url, function (err, txt) {
             if (err) {
                 cb(err);
             }
@@ -206,11 +214,11 @@ module hh.net {
     }
 }
 
-module hh.project {
+module hh.CFG {
     var _handlerArr = [];
 
     /**
-     * 注册project值处理函数。
+     * 注册CFG值处理函数。
      * @param handler
      */
     export function registerValueHandler(handler){
@@ -218,23 +226,23 @@ module hh.project {
     }
 
     /**
-     * 设置project值。
+     * 设置CFG值。
      * @param data
      * @param key
      * @param isBool
      */
     export function setValue(data, key, isBool?){
-        var defaultValue = project[key];
+        var defaultValue = CFG[key];
         var dv = data[key];
-        if(dv == null) project[key] = defaultValue;
+        if(dv == null) CFG[key] = defaultValue;
         else{
             dv = isBool ? !!dv : dv;
-            project[key] = dv;
+            CFG[key] = dv;
         }
     }
 
     /**
-     * 解析project内容
+     * 解析CFG内容
      * @param data
      */
     export function parse(data){
@@ -264,28 +272,28 @@ module hh.project {
                 data[pKey] = pValue;
             }
         }
-        project.parse(data);
+        CFG.parse(data);
     }
 
-    //加载project配置
+    //加载CFG配置
     export function load(cb){
         //加载配置文件
-        hh.net.loadJson('project.json', function(err, data){
+        NET.loadJson('cfg.json', function(err, data){
             if(err){
-                logger.error('缺失project.json文件，请检查！');
+                LOG.error('缺失cfg.json文件，请检查！');
             }else{
-                project.parse(data);
+                CFG.parse(data);
             }
             if((<any>hh).isNative){//不是h5就没有myProject.json和浏览器参数模式
                 return cb();
             }
-            hh.net.loadJson('myProject.json', function(err, data){
+            NET.loadJson('my-cfg.json', function(err, data){
                 if(err){
-                    project.parseParam();
+                    CFG.parseParam();
                     cb();
                 }else{
-                    project.parse(data);
-                    project.parseParam();
+                    CFG.parse(data);
+                    CFG.parseParam();
                     cb();
                 }
             });
@@ -314,7 +322,7 @@ module hh.project {
     /** 设计分辨率 */
     export var design:any = {width:960, height:640};//size
     /** 适配，目前没用 */
-    export var resolution:any = {width:0, height:0};//size
+    export var resolution:any = {width:960, height:640};//size
 
     /** 自由选项 */
     export var option:any = {};
@@ -403,8 +411,14 @@ module hh.STR{
     }
 }
 module hh {
+    var _hashCodeCounter:number = 1;
+    export function genHashCode():number{
+        return _hashCodeCounter++;
+    }
 
     export class Class{
+        /** 类 */
+        static __c:any;
         /** 类名 */
         static __n:string;
 
@@ -416,7 +430,7 @@ module hh {
             var clazz = this;
             var obj = clazz.__recycler.pop();
             if(obj) return obj;
-            else clazz.create.apply(clazz, args);
+            else return clazz.create.apply(clazz, args);
         }
 
         /** 创建 */
@@ -451,6 +465,8 @@ module hh {
         __n:string;
         /** 实例对应的类 */
         __c:any;
+        /** 哈希值 */
+        hashCode:number;
         /** 是否是单例 */
         _isInstance:boolean;
         /** 储藏室 */
@@ -465,6 +481,7 @@ module hh {
 
         constructor() {
             var self = this;
+            self.hashCode = genHashCode();
             self._initProp();
         }
 
@@ -613,13 +630,18 @@ module hh {
      * 储藏室
      */
     export class Store {
+        /** 哈希值 */
+        hashCode:number = genHashCode();
         pool:any = {};
         tempPool:any = {};
         pool4Single:any = {};
         tempArgsMap:any = {};
         valuePool:any = {};
 
-        register(owner:string, type:string, listener:Function, ctx:any, priority:number) {
+        /**
+         * 往仓库中进行保持
+         */
+        add(owner:string, type:string, listener:Function, ctx:any, priority:number) {
             var pool = this.pool;
             var map = pool[owner];
             if (!map) {
@@ -652,7 +674,7 @@ module hh {
             }
         }
 
-        unRegister(owner:string, type:string, listener:Function, ctx:any) {
+        del(owner:string, type:string, listener:Function, ctx:any) {
             var pool = this.pool;
             var map = pool[owner];
             if (!map) return;
@@ -676,7 +698,7 @@ module hh {
             arr.length = 0;
         }
 
-        registerSingle(owner:string, type:string, listener:Function, ctx:any) {
+        addSingle(owner:string, type:string, listener:Function, ctx:any) {
             var self = this, pool4Single = self.pool4Single, map = pool4Single[owner];
             if (!map) {
                 map = pool4Single[owner] = {};
@@ -684,13 +706,13 @@ module hh {
             map[type] = {listener: listener, ctx: ctx};
         }
 
-        unRegisterSingle(owner:string, type:string) {
+        delSingle(owner:string, type:string) {
             var self = this, pool4Single = self.pool4Single, map = pool4Single[owner];
             if (!map) return;
             delete map[type];
         }
 
-        unRegisterAll(owner:string, type?:string) {
+        delAll(owner:string, type?:string) {
             var pool = this.pool, pool4Single = this.pool4Single;
             var map = pool[owner], map4Single = pool4Single[owner];
             if (arguments.length == 1) {//删除所有
@@ -791,95 +813,18 @@ module hh {
     var _tempEmitters:Emitter[] = [];
     var _tempEventArr:any = [];
     var _tempArgsArr:any = [];
-    export class Emitter {
-        /** 类名 */
-        public static __n:string;
-
-        static __recycler:any[] = [];
-        static push(obj:any){
-            this.__recycler.push(obj);
-        }
-        static pop(...args):any{
-            var clazz = this;
-            var obj = clazz.__recycler.pop();
-            if(obj) return obj;
-            else return clazz.create.apply(clazz, args);
-        }
-
-        /** 创建 */
-        static create(...args:any[]):any {
-            var Class:any = this;
-            var obj:any = new Class();
-            if (obj.init) obj.init.apply(obj, arguments);
-            return obj;
-        }
-
-        /** 获取单例 */
-        static getInstance(...args:any[]) {
-            var Class:any = this;
-            if (!Class._instance) {
-                var instance:any = Class._instance = Class.create.apply(Class, arguments);
-                instance._isInstance = true;
-            }
-            return Class._instance;
-        }
-
-        /** 释放单例 */
-        static release() {
-            var Class:any = this;
-            var instance:any = Class._instance;
-            if (instance) {
-                if (instance.doDtor) instance.doDtor();
-                Class._instance = null;
-            }
-        }
-
-        /** 类名 */
-        __n:string;
-        /** 实例对应的类 */
-        __c:any;
-        /** 是否是单例 */
-        _isInstance:boolean;
-        /** 储藏室 */
-        _store:Store;
-        /** 是否已经释放了 */
-        _hasDtored:boolean;
-
-        _initProp():void {
-            var self = this;
-            self._store = new Store();
-        }
-
-        constructor() {
-            var self = this;
-            self._initProp();
-        }
-
-        public init(...args:any[]) {
-        }
-
-        public dtor() {
-            var self = this;
-            if (self._hasDtored) return;
-            self._hasDtored = true;
-            self._dtor();
-        }
-
-        _dtor() {
-        }
-
-        //______________以上由于考虑到性能问题，故意重新写了一遍，减少继承____________
+    export class Emitter extends Class{
 
         /**
          * 监听某个事件。可以注册多个。通过emit触发。
          * @param event
          * @param listener
          * @param ctx
-         * @returns {mo_evt.Emitter}
+         * @returns {hh.Emitter}
          */
         on(event:string, listener:Function, ctx?:any):Emitter {
             var self = this;
-            self._store.register(_OWNER_ON, event, listener, ctx, null);
+            self._store.add(_OWNER_ON, event, listener, ctx, null);
             return self;
         }
 
@@ -889,11 +834,11 @@ module hh {
          * @param priority
          * @param listener
          * @param ctx
-         * @returns {mo_evt.Emitter}
+         * @returns {hh.Emitter}
          */
         onPriority(event:string, priority:number, listener:Function, ctx?:any):Emitter {
             var self = this;
-            self._store.register(_OWNER_ON, event, listener, ctx, priority);
+            self._store.add(_OWNER_ON, event, listener, ctx, priority);
             return self;
         }
 
@@ -902,11 +847,11 @@ module hh {
          * @param event
          * @param listener
          * @param ctx
-         * @returns {mo_evt.Emitter}
+         * @returns {hh.Emitter}
          */
         onAsync(event:string, listener:Function, ctx?:any):Emitter {
             var self = this;
-            self._store.register(_OWNER_ON_ASYNC, event, listener, ctx, null);
+            self._store.add(_OWNER_ON_ASYNC, event, listener, ctx, null);
             return self;
         }
 
@@ -916,11 +861,11 @@ module hh {
          * @param priority
          * @param listener
          * @param ctx
-         * @returns {mo_evt.Emitter}
+         * @returns {hh.Emitter}
          */
         onAsyncPriority(event:string, priority:number, listener:Function, ctx?:any):Emitter {
             var self = this;
-            self._store.register(_OWNER_ON_ASYNC, event, listener, ctx, priority);
+            self._store.add(_OWNER_ON_ASYNC, event, listener, ctx, priority);
             return self;
         }
 
@@ -929,11 +874,11 @@ module hh {
          * @param event
          * @param listener
          * @param ctx
-         * @returns {mo_evt.Emitter}
+         * @returns {hh.Emitter}
          */
         onNextTick(event:string, listener:Function, ctx?:any):Emitter {
             var self = this;
-            self._store.register(_OWNER_ON_NT, event, listener, ctx, null);
+            self._store.add(_OWNER_ON_NT, event, listener, ctx, null);
             return self;
         }
 
@@ -943,11 +888,11 @@ module hh {
          * @param priority
          * @param listener
          * @param ctx
-         * @returns {mo_evt.Emitter}
+         * @returns {hh.Emitter}
          */
         onPriorityNextTick(event:string, priority:number, listener:Function, ctx?:any):Emitter {
             var self = this;
-            self._store.register(_OWNER_ON_NT, event, listener, ctx, priority);
+            self._store.add(_OWNER_ON_NT, event, listener, ctx, priority);
             return self;
         }
 
@@ -956,11 +901,11 @@ module hh {
          * @param event
          * @param listener
          * @param ctx
-         * @returns {mo_evt.Emitter}
+         * @returns {hh.Emitter}
          */
         once(event:string, listener:Function, ctx?:any):Emitter {
             var self = this;
-            self._store.register(_OWNER_ONCE, event, listener, ctx, null);
+            self._store.add(_OWNER_ONCE, event, listener, ctx, null);
             return self;
         }
 
@@ -970,11 +915,11 @@ module hh {
          * @param priority
          * @param listener
          * @param ctx
-         * @returns {mo_evt.Emitter}
+         * @returns {hh.Emitter}
          */
         oncePriority(event:string, priority:number, listener:Function, ctx?:any):Emitter {
             var self = this;
-            self._store.register(_OWNER_ONCE, event, listener, ctx, priority);
+            self._store.add(_OWNER_ONCE, event, listener, ctx, priority);
             return self;
         }
 
@@ -983,11 +928,11 @@ module hh {
          * @param event
          * @param listener
          * @param ctx
-         * @returns {mo_evt.Emitter}
+         * @returns {hh.Emitter}
          */
         onceAsync(event:string, listener:Function, ctx?:any):Emitter {
             var self = this;
-            self._store.register(_OWNER_ONCE_ASYNC, event, listener, ctx, null);
+            self._store.add(_OWNER_ONCE_ASYNC, event, listener, ctx, null);
             return self;
         }
 
@@ -997,11 +942,11 @@ module hh {
          * @param priority
          * @param listener
          * @param ctx
-         * @returns {mo_evt.Emitter}
+         * @returns {hh.Emitter}
          */
         onceAsyncPriority(event:string, priority:number, listener:Function, ctx?:any):Emitter {
             var self = this;
-            self._store.register(_OWNER_ONCE_ASYNC, event, listener, ctx, priority);
+            self._store.add(_OWNER_ONCE_ASYNC, event, listener, ctx, priority);
             return self;
         }
 
@@ -1010,11 +955,11 @@ module hh {
          * @param event
          * @param listener
          * @param ctx
-         * @returns {mo_evt.Emitter}
+         * @returns {hh.Emitter}
          */
         onceNextTick(event:string, listener:Function, ctx?:any):Emitter {
             var self = this;
-            self._store.register(_OWNER_ONCE_NT, event, listener, ctx, null);
+            self._store.add(_OWNER_ONCE_NT, event, listener, ctx, null);
             return self;
         }
 
@@ -1024,11 +969,11 @@ module hh {
          * @param priority
          * @param listener
          * @param ctx
-         * @returns {mo_evt.Emitter}
+         * @returns {hh.Emitter}
          */
         oncePriorityNextTick(event:string, priority:number, listener:Function, ctx?:any):Emitter {
             var self = this;
-            self._store.register(_OWNER_ONCE, event, listener, ctx, priority);
+            self._store.add(_OWNER_ONCE, event, listener, ctx, priority);
             return self;
         }
 
@@ -1037,11 +982,11 @@ module hh {
          * @param event
          * @param listener
          * @param ctx
-         * @returns {mo_evt.Emitter}
+         * @returns {hh.Emitter}
          */
         single(event:string, listener:Function, ctx?:any):Emitter {
             var self = this;
-            self._store.registerSingle(_OWNER_ON, event, listener, ctx);
+            self._store.addSingle(_OWNER_ON, event, listener, ctx);
             return self;
         }
 
@@ -1050,11 +995,11 @@ module hh {
          * @param event
          * @param listener
          * @param ctx
-         * @returns {mo_evt.Emitter}
+         * @returns {hh.Emitter}
          */
         singleAsync(event:string, listener:Function, ctx?:any):Emitter {
             var self = this;
-            self._store.registerSingle(_OWNER_ON_ASYNC, event, listener, ctx);
+            self._store.addSingle(_OWNER_ON_ASYNC, event, listener, ctx);
             return self;
         }
 
@@ -1063,11 +1008,11 @@ module hh {
          * @param event
          * @param listener
          * @param ctx
-         * @returns {mo_evt.Emitter}
+         * @returns {hh.Emitter}
          */
         singleNextTick(event:string, listener:Function, ctx?:any):Emitter {
             var self = this;
-            self._store.registerSingle(_OWNER_ON_NT, event, listener, ctx);
+            self._store.addSingle(_OWNER_ON_NT, event, listener, ctx);
             return self;
         }
 
@@ -1076,11 +1021,11 @@ module hh {
          * @param event
          * @param listener
          * @param ctx
-         * @returns {mo_evt.Emitter}
+         * @returns {hh.Emitter}
          */
         un(event:string, listener:Function, ctx?:any):Emitter {
             var self = this;
-            self._store.unRegister(_OWNER_ON, event, listener, ctx);
+            self._store.del(_OWNER_ON, event, listener, ctx);
             return self;
         }
 
@@ -1089,11 +1034,11 @@ module hh {
          * @param event
          * @param listener
          * @param ctx
-         * @returns {mo_evt.Emitter}
+         * @returns {hh.Emitter}
          */
         unNextTick(event:string, listener:Function, ctx?:any):Emitter {
             var self = this;
-            self._store.unRegister(_OWNER_ON_NT, event, listener, ctx);
+            self._store.del(_OWNER_ON_NT, event, listener, ctx);
             return self;
         }
 
@@ -1102,11 +1047,11 @@ module hh {
          * @param event
          * @param listener
          * @param ctx
-         * @returns {mo_evt.Emitter}
+         * @returns {hh.Emitter}
          */
         unOnce(event:string, listener:Function, ctx?:any):Emitter {
             var self = this;
-            self._store.unRegister(_OWNER_ONCE, event, listener, ctx);
+            self._store.del(_OWNER_ONCE, event, listener, ctx);
             return self;
         }
 
@@ -1115,33 +1060,33 @@ module hh {
          * @param event
          * @param listener
          * @param ctx
-         * @returns {mo_evt.Emitter}
+         * @returns {hh.Emitter}
          */
         unOnceNextTick(event:string, listener:Function, ctx?:any):Emitter {
             var self = this;
-            self._store.unRegister(_OWNER_ONCE_NT, event, listener, ctx);
+            self._store.del(_OWNER_ONCE_NT, event, listener, ctx);
             return self;
         }
 
         /**
          * 移除单个类型的事件监听。
          * @param event
-         * @returns {mo_evt.Emitter}
+         * @returns {hh.Emitter}
          */
         unSingle(event:string):Emitter {
             var self = this;
-            self._store.unRegisterSingle(_OWNER_ON, event);
+            self._store.delSingle(_OWNER_ON, event);
             return self;
         }
 
         /**
          * 移除单个类型的并且是下一帧执行类型的事件监听。
          * @param event
-         * @returns {mo_evt.Emitter}
+         * @returns {hh.Emitter}
          */
         unSingleNextTick(event:string):Emitter {
             var self = this;
-            self._store.unRegisterSingle(_OWNER_ON_NT, event);
+            self._store.delSingle(_OWNER_ON_NT, event);
             return self;
         }
 
@@ -1150,7 +1095,7 @@ module hh {
          * 如果arguments.length == 0 那么就表示移除所有监听。
          * 如果arguments.length == 1 那么就表示移除指定类型的所有监听。
          * @param event
-         * @returns {mo_evt.Emitter}
+         * @returns {hh.Emitter}
          */
         unAll(event?:string):Emitter {
             var self = this;
@@ -1162,9 +1107,9 @@ module hh {
             for (var i = 0, l_i = arr.length; i < l_i; i++) {
                 var owner = arr[i];
                 if (l == 0) {
-                    self._store.unRegisterAll(owner);
+                    self._store.delAll(owner);
                 } else {
-                    self._store.unRegisterAll(owner, event);
+                    self._store.delAll(owner, event);
                 }
             }
             return self;
@@ -1175,7 +1120,7 @@ module hh {
          * 如果arguments.length == 0 那么就表示移除所有监听。
          * 如果arguments.length == 1 那么就表示移除指定类型的所有监听。
          * @param event
-         * @returns {mo_evt.Emitter}
+         * @returns {hh.Emitter}
          */
         unAllNextTick(event?:string):Emitter {
             var self = this;
@@ -1187,9 +1132,9 @@ module hh {
             for (var i = 0, l_i = arr.length; i < l_i; i++) {
                 var owner = arr[i];
                 if (l == 0) {
-                    self._store.unRegisterAll(owner);
+                    self._store.delAll(owner);
                 } else {
-                    self._store.unRegisterAll(owner, event);
+                    self._store.delAll(owner, event);
                 }
             }
             return self;
@@ -1219,7 +1164,7 @@ module hh {
          * 立即发射事件。
          * @param event
          * @param args
-         * @returns {mo_evt.Emitter}
+         * @returns {hh.Emitter}
          */
         emit(event:string, ...args):Emitter {
             var self = this, store = self._store, single, tempArr;
@@ -1255,7 +1200,7 @@ module hh {
          * 立即发射事件。
          * @param event
          * @param args
-         * @returns {mo_evt.Emitter}
+         * @returns {hh.Emitter}
          */
         emitAsync(event:string, onEnd:Function, ctx:any, ...args):Emitter {
             var self = this, store = self._store, single, tempArr;
@@ -1318,7 +1263,7 @@ module hh {
          * 在下一帧才发射事件。而且，发射的事件只会发射最后调用emitNextTick的那次。
          * @param event
          * @param args
-         * @returns {mo_evt.Emitter}
+         * @returns {hh.Emitter}
          */
         emitNextTick(event:string, ...args):Emitter {
             var self = this;
@@ -1328,29 +1273,15 @@ module hh {
         }
 
         /**
-         * 发射阶段性事件。before and after。
+         * 同时进行emit和emitNextTick事件分发
          * @param event
-         * @param func
-         * @param ctx
          * @param args
-         * @returns {mo_evt.Emitter}
+         * @returns {hh.Emitter}
          */
-        emitPhase(event:string, func:Function, ctx:any, ...args):Emitter {
+        emitBoth(event:string, ...args):Emitter{
             var self = this;
-            return self;
-        }
-
-        /**
-         * 在下一帧才发射阶段性事件。before and after。
-         * 而且，发射的事件只会发射最后调用emitPhaseNextTick的那次。
-         * @param event
-         * @param func
-         * @param ctx
-         * @param args
-         * @returns {mo_evt.Emitter}
-         */
-        emitPhaseNextTick(event:string, func:Function, ctx:any, ...args):Emitter {
-            var self = this;
+            self.emit.apply(self, arguments);
+            self.emitNextTick.apply(self, arguments);
             return self;
         }
 
@@ -1844,11 +1775,11 @@ module hh {
          */
         _initCanvas(){
             var self = this;
-            var canvasId = project.canvas;
+            var canvasId = CFG.canvas;
             var canvas:any = self._canvas = canvasId ? document.getElementById(canvasId) : document.getElementsByTagName('canvas')[0];
             var design = self.design;
-            var w = design.width = project.design.width;
-            var h = design.height = project.design.height;
+            var w = design.width = CFG.design.width;
+            var h = design.height = CFG.design.height;
             if(!canvas) throw '请添加canvas元素！';
             canvas.width = w;
             canvas.height = h;
@@ -1880,20 +1811,20 @@ module hh {
         // 启动主循环，但事实上，绘制的主循环还没被注册进去
         engine.run();
         // 加载完js之后，首先先加载配置文件，这样才能保证引擎相关初始化能够直接通过配置文件读取
-        project.load(function(){
+        CFG.load(function(){
             if(!(<any>hh).isNative){//如果是h5版本，则进行title的设置
                 var titleEle = document.getElementsByTagName('title')[0];
                 if(titleEle){
-                    titleEle.innerHTML = hh.project.appName;
+                    titleEle.innerHTML = hh.CFG.appName;
                 }else{
                     titleEle = document.createElement('title');
-                    titleEle.innerHTML = hh.project.appName;
+                    titleEle.innerHTML = hh.CFG.appName;
                     document.getElementsByTagName('head')[0].appendChild(titleEle);
                 }
             }
 
             // 进行日志初始化
-            logger.initByConfig(project);
+            LOG.initByConfig(CFG);
 
             // 分发配置文件加载后监听
             engine.emit(Engine.AFTER_CFG);
@@ -1923,7 +1854,7 @@ module hh {
             _onAfterJs(cb);
         }else{
             var asyncPool = new AsyncPool(modules, 0, function(item, index, cb1){
-                hh.net.loadJson(item + '/__module.json', cb1);
+                NET.loadJson(item + '/__module.json', cb1);// 加载模块配置文件
             }, cb);
             asyncPool.onEnd(function(err, moduleJsons){
                 var list = [];
@@ -1939,9 +1870,9 @@ module hh {
                         list.push(moduleDir + source + file_list[j]);
                     }
                 }
-                hh.net.loadJs(list, function(){
+                NET.loadJs(list, function(){
                     //接下来加载配置文件
-                    logger.log('js文件加载成功！');
+                    LOG.log('js文件加载成功！');
                     _onAfterJs(cb);
                 });
             }, null);

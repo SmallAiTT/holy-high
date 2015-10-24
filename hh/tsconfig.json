@@ -13,6 +13,7 @@
         "./hh.ts",
         "./canvas.d.ts",
         "./core/base/STR.ts",
+        "./core/base/ARR.ts",
         "./core/base/PATH.ts",
         "./core/base/Matrix.ts",
         "./core/base/ColorMatrix.ts",
