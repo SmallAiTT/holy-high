@@ -314,7 +314,9 @@ module hh{
             var children = nodeOpt.children;
             var renderQueue = engine._renderQueue;
             nodeOpt.renderQueueRange[0] = renderQueue.length;
+            // 如果该节点是可绘制的就放到绘制队列中
             if(nodeOpt.drawable) renderQueue.push(self._draw, self);
+            // 如果是测试模式则将测试的绘制代码也放到绘制列表中
             if(clazz.debug) renderQueue.push(self._drawDebug, self);
             if(nodeOpt.clip) {
                 // 如果当前节点可裁剪，则推送到裁剪计算队列中

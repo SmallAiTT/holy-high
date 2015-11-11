@@ -639,18 +639,18 @@ module hh {
         valuePool:any = {};
 
         /**
-         * 往仓库中进行保持
+         * 往仓库中进行保存
+         * @param owner 保存归属标示
+         * @param type 保存类型
+         * @param listener 保存的监听
+         * @param ctx 监听方法的上下文
+         * @param priority 优先级，值越小优先级越高
          */
         add(owner:string, type:string, listener:Function, ctx:any, priority:number) {
             var pool = this.pool;
-            var map = pool[owner];
-            if (!map) {
-                pool[owner] = map = {};
-            }
-            var arr = map[type];
-            if (!arr) {
-                arr = map[type] = [];
-            }
+            var map:any = pool[owner] = pool[owner] || {};
+            var arr:any[] = map[type] = map[type] || [];
+
             for (var i = 0, l_i = arr.length; i < l_i; i++) {
                 var obj = arr[i];
                 if (!obj) continue;
@@ -659,7 +659,7 @@ module hh {
             var info = {listener: listener, ctx: ctx, priority: priority};
             if (priority == null) {
                 arr.push(info);
-            } else {
+            } else {// 如果有优先级则进行优先级处理
                 var index = 0;
                 for (var i = 0, l_i = arr.length; i < l_i; i++) {
                     var obj = arr[i];
@@ -674,6 +674,13 @@ module hh {
             }
         }
 
+        /**
+         * 删除仓库中保存的内容。
+         * @param owner 保存归属标示
+         * @param type 保存类型
+         * @param listener 保存的监听
+         * @param ctx 监听方法的上下文
+         */
         del(owner:string, type:string, listener:Function, ctx:any) {
             var pool = this.pool;
             var map = pool[owner];
@@ -689,6 +696,11 @@ module hh {
             }
         }
 
+        /**
+         * 按照拥有者和类型进行清空操作
+         * @param owner 保存归属标示
+         * @param type 保存类型
+         */
         clear(owner:string, type:string) {
             var pool = this.pool;
             var map = pool[owner];
@@ -698,6 +710,13 @@ module hh {
             arr.length = 0;
         }
 
+        /**
+         * 往仓库中进行保存，单一模式。
+         * @param owner 保存归属标示
+         * @param type 保存类型
+         * @param listener 保存的监听
+         * @param ctx 监听方法的上下文
+         */
         addSingle(owner:string, type:string, listener:Function, ctx:any) {
             var self = this, pool4Single = self.pool4Single, map = pool4Single[owner];
             if (!map) {
@@ -706,12 +725,23 @@ module hh {
             map[type] = {listener: listener, ctx: ctx};
         }
 
+        /**
+         * 删除仓库中保存的内容，单一模式。
+         * @param owner 保存归属标示
+         * @param type 保存类型
+         */
         delSingle(owner:string, type:string) {
             var self = this, pool4Single = self.pool4Single, map = pool4Single[owner];
             if (!map) return;
             delete map[type];
         }
 
+
+        /**
+         * 删除仓库中所有保存的内容。
+         * @param owner 保存归属标示
+         * @param type 保存类型
+         */
         delAll(owner:string, type?:string) {
             var pool = this.pool, pool4Single = this.pool4Single;
             var map = pool[owner], map4Single = pool4Single[owner];
@@ -737,6 +767,11 @@ module hh {
             }
         }
 
+        /**
+         * 获取模板数组。
+         * @param owner 保存归属标示
+         * @param type 保存类型
+         */
         getTempArr(owner:string, type:string) {
             var pool = this.pool, tempPool = this.tempPool;
             var map = pool[owner];
@@ -744,14 +779,8 @@ module hh {
             var arr = map[type];
             if (!arr) return null;
 
-            var tempMap = tempPool[owner];
-            if (!tempMap) {
-                tempMap = tempPool[owner] = {};
-            }
-            var tempArr = tempMap[type];
-            if (!tempArr) {
-                tempArr = tempMap[type] = [];
-            }
+            var tempMap:any = tempPool[owner] = tempPool[owner] || {};
+            var tempArr:any[] = tempMap[type] = tempMap[type] || [];
             tempArr.length = 0;
             for (var i = 0, l_i = arr.length; i < l_i; i++) {
                 tempArr.push(arr[i]);
@@ -759,22 +788,27 @@ module hh {
             return tempArr;
         }
 
+        /**
+         * 获取单一模式信息
+         * @param owner 保存归属标示
+         * @param type 保存类型
+         */
         getSingle(owner:string, type:string):any {
             var self = this, pool4Single = self.pool4Single, map = pool4Single[owner];
             if (!map) return null;
             return map[type];
         }
 
+        /**
+         * 获取模板参数。
+         * @param owner 保存归属标示
+         * @param type 保存类型
+         * @param args 参数
+         */
         getTempArgs(owner:string, type:string, args):any[] {
             var tempArgsMap = this.tempArgsMap;
-            var map = tempArgsMap[owner];
-            if (!map) {
-                map = tempArgsMap[owner] = {};
-            }
-            var arr = map[type];
-            if (!arr) {
-                arr = map[type] = [];
-            }
+            var map:any = tempArgsMap[owner] = tempArgsMap[owner] || {};
+            var arr:any[] = map[type] = map[type] || [];
             if (arr.length > 0) {//如果长度大于0，证明还在使用该temp数组。这时候就重新new一个进行返回
                 arr = [];
             }
@@ -784,6 +818,12 @@ module hh {
             return arr;
         }
 
+        /**
+         * 设置值信息。
+         * @param owner 保存归属标示
+         * @param type 保存类型
+         * @param args 参数
+         */
         setValue(owner:string, type:string, args:any) {
             var valuePool = this.valuePool;
             var map = valuePool[owner];
@@ -793,7 +833,12 @@ module hh {
             map[type] = args;
         }
 
-        removeValue(owner:string, type:string):any {
+        /**
+         * 删除值
+         * @param owner 保存归属标示
+         * @param type 保存类型
+         */
+        delValue(owner:string, type:string):any {
             var valuePool = this.valuePool;
             var map = valuePool[owner];
             if (!map) return null;
@@ -1100,16 +1145,14 @@ module hh {
         unAll(event?:string):Emitter {
             var self = this;
             var l = arguments.length;
-            var arr = [
-                _OWNER_ON,
-                _OWNER_ONCE
-            ];
+            var arr = [_OWNER_ON, _OWNER_ONCE];
+            var store = self._store;
             for (var i = 0, l_i = arr.length; i < l_i; i++) {
                 var owner = arr[i];
                 if (l == 0) {
-                    self._store.delAll(owner);
+                    store.delAll(owner);
                 } else {
-                    self._store.delAll(owner, event);
+                    store.delAll(owner, event);
                 }
             }
             return self;
@@ -1124,39 +1167,38 @@ module hh {
          */
         unAllNextTick(event?:string):Emitter {
             var self = this;
-            var arr = [
-                _OWNER_ON_NT,
-                _OWNER_ONCE_NT
-            ];
+            var arr = [_OWNER_ON_NT, _OWNER_ONCE_NT];
             var l = arguments.length;
+            var store = self._store;
             for (var i = 0, l_i = arr.length; i < l_i; i++) {
                 var owner = arr[i];
                 if (l == 0) {
-                    self._store.delAll(owner);
+                    store.delAll(owner);
                 } else {
-                    self._store.delAll(owner, event);
+                    store.delAll(owner, event);
                 }
             }
             return self;
         }
 
-        _emitByListenerInfoArr(owner:string, event:string, arr, args:any[]) {
+        // 对注册的监听信息列表进行事件分发
+        _emitArr(owner:string, event:string, arr, args:any[]) {
             if (arr) {
                 var self = this;
-                arr = arr instanceof Array ? arr : [arr];
-                if (arr.length == 0) return;
-                var args = self._store.getTempArgs(owner, event, args);
-                args.push(event);//事件类型放在倒数第二位置
-                args.push(self);//发送者放在最后一个位置
+                arr = arr instanceof Array ? arr : [arr];// 如果不是数组则转成数组
+                if (arr.length == 0) return;// 没有内容直接返回
+                var tempArgs = self._store.getTempArgs(owner, event, args);// 获取模板参数，避免污染
+                tempArgs.push(event);//事件类型放在倒数第二位置
+                tempArgs.push(self);//发送者放在最后一个位置
                 for (var i = 0, l_i = arr.length; i < l_i; i++) {
-                    var info = arr[i];
-                    var listener = info.listener;
+                    var info = arr[i];// 获取监听信息
+                    var listener = info.listener;// 监听方法
                     if (listener) {
-                        listener.apply(info.ctx, args);
+                        listener.apply(info.ctx, tempArgs);
                     }
                 }
                 arr.length = 0;//清空引用
-                args.length = 0;//清空参数
+                tempArgs.length = 0;//清空参数
             }
         }
 
@@ -1171,27 +1213,27 @@ module hh {
             //实例级别的注册
             //先执行单个的
             single = store.getSingle(_OWNER_ON, event);
-            self._emitByListenerInfoArr(_OWNER_ON, event, single, args);
+            self._emitArr(_OWNER_ON, event, single, args);
             //再执行一次性的
             tempArr = store.getTempArr(_OWNER_ONCE, event);
             store.clear(_OWNER_ONCE, event);//进行清除
-            self._emitByListenerInfoArr(_OWNER_ONCE, event, tempArr, args);
+            self._emitArr(_OWNER_ONCE, event, tempArr, args);
             //最后执行多次的
             tempArr = store.getTempArr(_OWNER_ON, event);
-            self._emitByListenerInfoArr(_OWNER_ON, event, tempArr, args);
+            self._emitArr(_OWNER_ON, event, tempArr, args);
 
             //类级别的注册
             store = self.__c._store;
             //先执行单个的
             single = store.getSingle(_OWNER_ON, event);
-            self._emitByListenerInfoArr(_OWNER_ON, event, single, args);
+            self._emitArr(_OWNER_ON, event, single, args);
             //再执行一次性的
             tempArr = store.getTempArr(_OWNER_ONCE, event);
             store.clear(_OWNER_ONCE, event);//进行清除
-            self._emitByListenerInfoArr(_OWNER_ONCE, event, tempArr, args);
+            self._emitArr(_OWNER_ONCE, event, tempArr, args);
             //最后执行多次的
             tempArr = store.getTempArr(_OWNER_ON, event);
-            self._emitByListenerInfoArr(_OWNER_ON, event, tempArr, args);
+            self._emitArr(_OWNER_ON, event, tempArr, args);
 
             return self;
         }
@@ -1521,36 +1563,18 @@ module hh {
             return this.prototype.unAllNextTick.apply(this, arguments);
         }
 
-        /**
-         * 格式化出before类型的event值。
-         * @param event
-         * @returns {string}
-         */
-        static formatBeforeEvent(event:string):string {
-            return event + '.before';
-        }
-
-        /**
-         * 格式化出after类型的event值。
-         * @param event
-         * @returns {string}
-         */
-        static formatAfterEvent(event:string):string {
-            return event + '.after';
-        }
     }
 
 
     // 为下一帧事件进行分发
     var _emit4NextTick = function () {
-        _tempEmittersNextTick.length = 0;
+        _tempEmittersNextTick.length = 0;// 每次都会先将之前缓存的列表删除掉，确保引用清除
         if (_emittersNextTick.length > 0) {
-            //进行模板获取
+            // 将信息转移到缓存列表中
             for (var i = 0, l_i = _emittersNextTick.length; i < l_i; i++) {
                 var emitter = _emittersNextTick[i];
                 var store = emitter._store;
-                var valuePool = store.valuePool;
-                var map = valuePool[_OWNER_ON_NT];
+                var map = store.valuePool[_OWNER_ON_NT];
                 for (var event in map) {
                     _tempEmitters.push(emitter);
                     _tempEventArr.push(event);
@@ -1559,7 +1583,9 @@ module hh {
                 }
 
             }
-            _emittersNextTick.length = 0;
+            _emittersNextTick.length = 0;// 清空了
+
+            // 开始进行分发
             for (var i = 0, l_i = _tempEmitters.length; i < l_i; i++) {
                 var emitter = _tempEmitters[i];
                 var event = _tempEventArr[i];
@@ -1568,27 +1594,27 @@ module hh {
                 var single, tempArr;
                 //先执行单个的
                 single = store.getSingle(_OWNER_ON_NT, event);
-                emitter._emitByListenerInfoArr(_OWNER_ON_NT, event, single, args);
+                emitter._emitArr(_OWNER_ON_NT, event, single, args);
                 //再执行一次性的
                 tempArr = store.getTempArr(_OWNER_ONCE_NT, event);
                 store.clear(_OWNER_ONCE_NT, event);//进行清除
-                emitter._emitByListenerInfoArr(_OWNER_ONCE_NT, event, tempArr, args);
+                emitter._emitArr(_OWNER_ONCE_NT, event, tempArr, args);
                 //最后执行多次的
                 tempArr = store.getTempArr(_OWNER_ON_NT, event);
-                emitter._emitByListenerInfoArr(_OWNER_ON_NT, event, tempArr, args);
+                emitter._emitArr(_OWNER_ON_NT, event, tempArr, args);
 
                 //类级别的注册
                 store = emitter.__c._store;
                 //先执行单个的
                 single = store.getSingle(_OWNER_ON_NT, event);
-                emitter._emitByListenerInfoArr(_OWNER_ON_NT, event, single, args);
+                emitter._emitArr(_OWNER_ON_NT, event, single, args);
                 //再执行一次性的
                 tempArr = store.getTempArr(_OWNER_ONCE_NT, event);
                 store.clear(_OWNER_ONCE_NT, event);//进行清除
-                emitter._emitByListenerInfoArr(_OWNER_ONCE_NT, event, tempArr, args);
+                emitter._emitArr(_OWNER_ONCE_NT, event, tempArr, args);
                 //最后执行多次的
                 tempArr = store.getTempArr(_OWNER_ON_NT, event);
-                emitter._emitByListenerInfoArr(_OWNER_ON_NT, event, tempArr, args);
+                emitter._emitArr(_OWNER_ON_NT, event, tempArr, args);
             }
             _tempEmitters.length = 0;
             _tempEventArr.length = 0;
@@ -1597,19 +1623,19 @@ module hh {
     };
 
     export class Engine extends Emitter {
-        /** 循环事件，外部不要轻易使用，而是通过tt.tick进行注册 */
+        /** 循环事件，外部不要轻易使用，而是通过hh.tick进行注册 */
         static __TICK:string = '__tick';
-        /** 下一帧执行事件，外部不要轻易使用，而是通过tt.nextTick进行注册 */
+        /** 下一帧执行事件，外部不要轻易使用，而是通过hh.nextTick进行注册 */
         static __NEXT_TICK:string = '__nextTick';
         /** 计算裁剪相关 */
         static __CAL_CLIP:string = '__calClip';
         /** 区域擦除事件，外部不要轻易使用 */
         static __CLEAR_RECT:string = '__clearRect';
-        /** 绘制之后的循环，外部不要轻易使用，而是通过tt.nextTick进行注册 */
+        /** 绘制之后的循环，外部不要轻易使用 */
         static __TICK_AFTER_DRAW:string = '__tickAfterDraw';
-        /** 处理点击事件 */
+        /** 处理点击事件，外部不要轻易使用 */
         static __HANDLE_TOUCH:string = '_handleTouch';
-        /** 绘制帧率 */
+        /** 绘制帧率，外部不要轻易使用 */
         static __DRAW_FPS:string = '__drawFPS';
         /** 初始化引擎，外部不要轻易使用 */
         static __INIT_CTX:string = '__initCtx';
@@ -1653,9 +1679,13 @@ module hh {
         _initProp():void{
             super._initProp();
             var self = this;
+            // 矩阵队列，存放模式一定是[listener1, ctx1, listener2, ctx2, ...]
             self._matrixQueue = [];
+            // 裁剪队列，存放模式一定是[listener1, ctx1, listener2, ctx2, ...]
             self._clipQueue = [];
+            // 渲染队列，存放模式一定是[listener1, ctx1, listener2, ctx2, ...]
             self._renderQueue = [];
+            // 设计分辨率
             self.design = {width:0, height:0};
             self.__fpsInfo = {
                 // 次数
@@ -1665,21 +1695,35 @@ module hh {
                 draw : 0,
                 drawCount : 0,
 
-                transCostCount : 0,
-                matrixCostCount : 0,
-                clipCostCount : 0,
-                renderCostCount : 0,
-                touchCostCount : 0,
+                transCostCount : 0,// 主循环转换开销次数
+                matrixCostCount : 0,// 矩阵换算开销次数
+                clipCostCount : 0,// 裁剪计算开销次数
+                renderCostCount : 0,// 渲染开销次数
+                touchCostCount : 0,// 点击开销次数
 
-                transCost : 0,
-                matrixCost : 0,
-                clipCost : 0,
-                renderCost : 0,
-                touchCost : 0
+                transCost : 0,// 主循环转换开销
+                matrixCost : 0,// 矩阵换算开销
+                clipCost : 0,// 裁剪开销
+                renderCost : 0,// 渲染开销
+                touchCost : 0 // 点击开销
             };
         }
 
         //执行主循环
+        /*
+            主循环主要进行以下逻辑操作
+            进行nextTick的事件分发
+            进行tick的事件分发
+            进行节点的转换
+            进行矩阵换算
+            进行裁剪的计算
+            进行上下文的擦除
+            进行节点渲染
+            进行绘制后事件分发
+            进行点击事件分发
+            进行下一帧分发
+            绘制fps
+        */
         run(){
             var self = this, clazz = self.__c;
             //设置开始时间
@@ -1700,6 +1744,7 @@ module hh {
                 if(self.stage) self.stage._trans(self);
                 var d2 = Date.now();
 
+                // 执行矩阵换算
                 var matrixQueue = self._matrixQueue;
                 while(matrixQueue.length > 0){
                     var calFunc = matrixQueue.shift();//命令方法
