@@ -55,7 +55,7 @@ module hh.RES{
         _parse(resData:any, rci:CfgItem){
             var texture = new Texture();
             texture.url = rci.url;
-            texture.setData(resData);
+            texture.setData(resData, 0, 0, resData.width, resData.height);
             return texture;
         }
     }

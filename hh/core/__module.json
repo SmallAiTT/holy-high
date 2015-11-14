@@ -8,6 +8,7 @@
 
     "texture/Texture.js",
     "texture/Sheet.js",
+    "texture/TexturePool.js",
 
     "touch/Touch.js",
     "touch/TouchCtx.js",

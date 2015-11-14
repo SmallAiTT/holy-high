@@ -54,7 +54,7 @@ module hh{
         _isInstance:boolean;
         /** 储藏室 */
         /** 是否已经释放了 */
-        _hasDtored:boolean;
+        released:boolean;
 
         _initProp():void {
             var self = this;
@@ -70,8 +70,8 @@ module hh{
 
         public dtor() {
             var self = this;
-            if (self._hasDtored) return;
-            self._hasDtored = true;
+            if (self.released) return;
+            self.released = true;
             self._dtor();
         }
 

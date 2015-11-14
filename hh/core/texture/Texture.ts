@@ -10,6 +10,8 @@ module hh{
         y:number;
         width:number;
         height:number;
+        canvas:any;
+        grid:number[];
 
         //@override
         _initProp():void{
@@ -17,24 +19,30 @@ module hh{
             var self = this;
             self.x = 0;
             self.y = 0;
+            var canvas = self.canvas = document.createElement('canvas');
+            canvas.width = canvas.height = 0;
         }
 
-        setData(data){
+        setData(img, x:number, y:number, width:number, height:number, grid?:number[]){
             var self = this;
-            self.data = data;
-            self.width = data.width;
-            self.height = data.height;
+            var canvas = self.canvas;
+            self.x = x;
+            self.y = y;
+            self.width = width;
+            self.height = height;
+            canvas.width = width;
+            canvas.height = height;
+            var ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, width, height);
+            ctx.drawImage(img, x, y, width, height, 0, 0, width, height);
+            self.grid = grid;
         }
-
-        render(ctx:IRenderingContext2D, dstX:number, dstY:number, dstW:number, dstH:number, grid?:number[]){
-            var self = this, data = self.data;
-            var x = self.x, y = self.y, width = self.width, height = self.height;
-            if(!grid || grid.length == 0){
-                // 普通绘图模式
-                ctx.drawImage(data, x, y, width, height, dstX, dstY, dstW, dstH);
-                engine.__fpsInfo.drawCount++;
-                return;
-            }
+        setByGrid(texture:Texture, grid:number[], dstW:number, dstH:number){
+            var self = this, canvas = self.canvas;
+            self.width = canvas.width = dstW;
+            self.height = canvas.height = dstH;
+            var ctx = self.canvas.getContext('2d');
+            var data = texture.canvas, width = texture.width, height = texture.height;
             var gridType = grid[0];
             if(gridType == 1){
                 // 九宫格模式
@@ -57,9 +65,9 @@ module hh{
                 // 垂直三宫格模式
                 // 方向
                 var v1 = grid[1], v2 = grid[2], v3 = height - v1 - v2;
-                ctx.drawImage(data, x, y, width, v1, dstX, dstY, dstW, v1);
+                ctx.drawImage(data, 0, 0, width, v1, 0, 0, dstW, v1);
                 var repeat = dstH - v1 - v3;
-                ctx.drawImage(data, x, v1, width, v2, dstX, v1, dstW, repeat);
+                ctx.drawImage(data, 0, v1, width, v2, 0, v1, dstW, repeat);
                 //var yTemp = v1;
                 //while(repeat > 0){
                 //    var d = Math.min(repeat, v2);
@@ -67,15 +75,15 @@ module hh{
                 //    repeat -= d;
                 //    yTemp += d;
                 //}
-                ctx.drawImage(data, x, height - v3, width, v3, dstX, dstH - v3, dstW, v3);
+                ctx.drawImage(data, 0, height - v3, width, v3, 0, dstH - v3, dstW, v3);
                 engine.__fpsInfo.drawCount += 3;
             }else if(gridType == 4){
                 // 垂直三宫格模式
                 // 方向
                 var v1 = grid[1], v2 = grid[2], v3 = height - v1 - v2;
-                ctx.drawImage(data, x, y, v1, height, dstX, dstY, v1, dstH);
+                ctx.drawImage(data, 0, 0, v1, height, 0, 0, v1, dstH);
                 var repeat = dstW - v1 - v3;
-                ctx.drawImage(data, v1, y, v2, height, v1, dstY, repeat, dstH);
+                ctx.drawImage(data, v1, 0, v2, height, v1, 0, repeat, dstH);
                 //var yTemp = v1;
                 //while(repeat > 0){
                 //    var d = Math.min(repeat, v2);
@@ -83,7 +91,7 @@ module hh{
                 //    repeat -= d;
                 //    yTemp += d;
                 //}
-                ctx.drawImage(data, width - v3, y, v3, height, dstW - v3, dstY, v3, dstH);
+                ctx.drawImage(data, width - v3, 0, v3, height, dstW - v3, 0, v3, dstH);
                 engine.__fpsInfo.drawCount += 3;
             }
         }

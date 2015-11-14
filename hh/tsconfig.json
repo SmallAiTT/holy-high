@@ -26,6 +26,7 @@
         "./core/res/parser/ImgParser.ts",
         "./core/texture/Sheet.ts",
         "./core/texture/Texture.ts",
+        "./core/texture/TexturePool.ts",
         "./core/touch/Touch.ts",
         "./core/touch/TouchCtx.ts",
         "./core/ui/UIImg.ts",

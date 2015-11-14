@@ -26,10 +26,4 @@ module tc{
         }
         return data;
     }
-
-    hh.engine.once(hh.Engine.AFTER_BOOT, function(){
-        var param = parseParam();
-        console.log(param);
-        unit.onMenu(param.moduleName, param.itemName);
-    });
 }

@@ -201,6 +201,13 @@ module hh{
             return this._nodeOpt.visible;
         }
 
+        public set resizableByRes(resizableByRes:boolean){
+            this._nodeOpt.resizableByRes = resizableByRes;
+        }
+        public get resizableByRes():boolean{
+            return this._nodeOpt.resizableByRes;
+        }
+
 
         /**
          * 添加子节点。
@@ -361,18 +368,23 @@ module hh{
          */
         _draw(ctx:IRenderingContext2D, engine:Engine){
             var self = this, nodeOpt = self._nodeOpt;
-            // 设置转化
             var matrix = nodeOpt.matrix;
-            ctx.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+            var drawInfo = nodeOpt.drawInfo;
+            var a = matrix.a, b = matrix.b, c = matrix.c, d = matrix.d, tx = matrix.tx, ty = matrix.ty;
+            var x = 0, y = 0, width = nodeOpt.width, height = nodeOpt.height;
+            if(drawInfo[0] == 0) return;// 相当于不画
+            else if (drawInfo[0] == 1) {// 使用转换
+                ctx.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+            }
             // 开始渲染节点
-            self._render(ctx, engine);
+            self._render(ctx, engine, drawInfo[1], drawInfo[2], drawInfo[3], drawInfo[4]);
         }
         /**
          * 渲染节点。
          * @param ctx
          * @private
          */
-        _render(ctx:IRenderingContext2D, engine:Engine){
+        _render(ctx:IRenderingContext2D, engine:Engine, x:number, y:number, width:number, height:number){
             // 子类在此实现真正的绘制
         }
 
@@ -434,6 +446,28 @@ module hh{
 //                var bounds:egret.Rectangle = DisplayObject.getTransformBounds(o._getSize(Rectangle.identity), o._worldTransform);
 //                o._worldBounds.initialize(bounds.x, bounds.y, bounds.width, bounds.height);
 //            }
+
+            // 为了提高性能，对绘制时候时候的转换参数进行区别对待
+            // 如果只有正数缩放并且没有旋转的话，就不采取setTransform的方式，因为setTransform很好性能
+            var a = matrix.a, b = matrix.b, c = matrix.c, d = matrix.d, tx = matrix.tx, ty = matrix.ty;
+            var x = 0, y = 0, width = nodeOpt.width, height = nodeOpt.height;
+            var drawInfo:number[] = nodeOpt.drawInfo;
+            drawInfo.length = 0;
+            if(a == 0 && b == 0 && c == 0 && d == 0) {
+                drawInfo.push(0);
+                return;// 相当于不画
+            }
+            else if (b == 0 && c == 0 && a > 0 && d > 0) {
+                x = tx;
+                y = ty;
+                width *= a;
+                height *= d;
+                drawInfo.push(2);
+            }
+            else {
+                drawInfo.push(1);
+            }
+            drawInfo.push(x, y, width, height);
         }
     }
 }

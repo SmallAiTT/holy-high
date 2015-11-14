@@ -37,6 +37,18 @@ module LOG{
         m.error = console.error.bind(console);
     }
 
+    var _setLvl = function(mName, lvl:number){
+        var m = _map[mName];
+        if(!m) return;//该日志还没初始化过，没法设置等级
+        initLogger(m, mName);
+        if(lvl > 1){
+            m.log = function(){};
+            m.debug = function(){};
+        }
+        if(lvl > 2) m.info = function(){};
+        if(lvl > 3) m.warn = function(){};
+        if(lvl > 4) m.error = function(){};
+    }
     /**
      * 设置日志等级
      * @param mName
@@ -46,28 +58,10 @@ module LOG{
         if(mName == 'default'){
             for (var key in _map) {
                 if(key == 'default') continue;
-                var m = _map[key];
-                if(!m) continue;
-                initLogger(m, key);
-                if(lvl > 1){
-                    m.log = function(){};
-                    m.debug = function(){};
-                }
-                if(lvl > 2) m.info = function(){};
-                if(lvl > 3) m.warn = function(){};
-                if(lvl > 4) m.error = function(){};
+                _setLvl(key, lvl);
             }
         }else{
-            var m = _map[mName];
-            if(!m) return;//该日志还没初始化过，没法设置等级
-            initLogger(m, mName);
-            if(lvl > 1){
-                m.log = function(){};
-                m.debug = function(){};
-            }
-            if(lvl > 2) m.info = function(){};
-            if(lvl > 3) m.warn = function(){};
-            if(lvl > 4) m.error = function(){};
+            _setLvl(mName, lvl);
         }
     }
 
@@ -472,7 +466,7 @@ module hh {
         /** 储藏室 */
         _store:Store;
         /** 是否已经释放了 */
-        _hasDtored:boolean;
+        released:boolean;
 
         _initProp():void {
             var self = this;
@@ -490,8 +484,8 @@ module hh {
 
         public dtor() {
             var self = this;
-            if (self._hasDtored) return;
-            self._hasDtored = true;
+            if (self.released) return;
+            self.released = true;
             self._dtor();
         }
 

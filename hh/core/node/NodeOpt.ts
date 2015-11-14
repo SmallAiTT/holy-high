@@ -25,6 +25,7 @@ module hh{
         worldAlpha:number;
         zIndex:number;
         visible:boolean;
+        resizableByRes:boolean;// 是否根据资源自动调整大小，默认设置为true
 
         parent:Node;
         children:Node[];
@@ -36,6 +37,8 @@ module hh{
         clip:Function;
 
         renderQueueRange:number[];
+
+        drawInfo:number[];
 
         //@override
         _initProp():void{
@@ -56,10 +59,12 @@ module hh{
             self.alpha = 0;
             self.worldAlpha = 1;
             self.visible = true;
+            self.resizableByRes = true;
             self.children = [];
             self.drawable = false;
             self.matrix = new Matrix();
             self.renderQueueRange = [];
+            self.drawInfo = [];
         }
         constructor(NodeClass:any){
             this._TargetClass = NodeClass;

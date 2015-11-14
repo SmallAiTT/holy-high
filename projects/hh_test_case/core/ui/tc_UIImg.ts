@@ -26,6 +26,23 @@ module tc{
         hh.engine.stage.addChild(img);
     });
 
+    unit.addMenuItem('UIImg 缩放', function(){
+        hh.UIImg.debug = false;
+        var url = res_helper.getItemUrl(11001);
+        hh.RES.load(url, function(){
+            var stage:hh.Node = hh.engine.stage;
+            var w = stage.width, h = stage.height;
+            var img = new hh.UIImg();
+            img.x = 0;
+            img.y = 0;
+            img.anchorX = img.anchorY = 0;
+            img.load(url);
+            img.scaleX = img.scaleY = 0.5;
+            stage.addChild(img);
+        });
+
+    });
+
     unit.addMenuItem('UIImg 数量测试100', function(){
         hh.UIImg.debug = false;
         var url = res_helper.getItemUrl(11001);
@@ -179,20 +196,21 @@ module tc{
         hh.engine.stage.addChild(img1);
     });
 
-    unit.addMenuItem('UIImg九宫格数量100', function(){
+    unit.addMenuItem('UIImg九宫格数量400', function(){
         hh.UIImg.debug = false;
         var url = res_helper.getS9gUrl(1);
         hh.RES.load(url, function(){
             var stage:hh.Node = hh.engine.stage;
             var w = stage.width, h = stage.height;
-            for(var i = 0; i < 100; ++i){
+            for(var i = 0; i < 400; ++i){
                 var randX = w*(Math.random());
                 var randY = h*(Math.random());
                 var img = new hh.UIImg();
                 img.x = randX;
                 img.y = randY;
                 img.grid = [1, 39, 39, 2, 2];
-                img.width = img.height = 100;
+                img.width = img.height = 240;
+                img.resizableByRes = false;
                 img.load(url);
                 stage.addChild(img);
             }

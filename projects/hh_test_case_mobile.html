@@ -21,6 +21,8 @@
 <script>
     hh.boot(["../hh/core", "../unit", "res_helper", "hh_test_case", "hh_test_case_mobile"], function(){
         hh.RES.root = 'res';
+        var param = tc.parseParam();
+        unit.onMenu(param.moduleName, param.itemName);
     });
 </script>
 </body>

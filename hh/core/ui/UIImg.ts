@@ -62,6 +62,7 @@ module hh{
                 // 设置成可以绘制
                 nodeOpt.drawable = true;
                 var grid = imgOpt.grid;
+                if(!nodeOpt.resizableByRes) return true;// 不需要重置大小
                 if(!grid || grid.length == 0){
                     self._setWidth(texture.width);
                     self._setHeight(texture.height);
@@ -84,10 +85,53 @@ module hh{
             return false;
         }
 
+        _textureCode:string;
+        _rmOldTexture(){
+            var textureCode = this._textureCode;
+            if(!textureCode) return;
+            texturePool.addCount(textureCode, -1);
+            delete this._textureCode;
+        }
+        _getTextureToDraw():Texture{
+            var self = this, textureCode = self._textureCode, nodeOpt = self._nodeOpt;
+            var width = nodeOpt.width, height = nodeOpt.height;
+            var texture:Texture = self._imgOpt.texture;
+            if(self._textureCode){
+                // 如果之前有textureCode，则需要进行移除
+            }
+            if(!texture) {
+                if(textureCode) self._rmOldTexture();// 如果有旧的texture则移除
+                return null;// 直接返回空
+            }
+            var grid = self._imgOpt.grid || texture.grid;
+            if(!grid){
+                if(textureCode) self._rmOldTexture();// 如果有旧的texture则移除
+                return texture;// 直接返回当前的texture
+            }
+            // 进行grid参数处理
+            // 先构造textureCode
+            var textureCodeNew = texture.hashCode + '_' + grid.join('_') + '_' + width + '_' + height;
+            if(textureCode && textureCode != textureCodeNew) {
+                // 如果不相等，则进行移除旧的texture操作
+                self._rmOldTexture();
+            }
+            var textureNew:Texture = texturePool.get(textureCodeNew);
+            if(!textureNew){
+                // 如果不存在则先进行创建，在放到pool里面
+                textureNew = new Texture();
+                textureNew.setByGrid(texture, grid, width, height);// 根据九宫格进行绘制
+                texturePool.set(textureCodeNew, textureNew);
+                texturePool.addCount(textureCodeNew, 1);// 计数加1
+            }
+            return textureNew;
+        }
         // @override
-        _render(ctx:IRenderingContext2D, engine:Engine){
-            var self = this, nodeOpt = self._nodeOpt, imgOpt = self._imgOpt, texture = imgOpt.texture;
-            texture.render(ctx, 0, 0, nodeOpt.width, nodeOpt.height, imgOpt.grid);
+        _render(ctx:IRenderingContext2D, engine:Engine, x:number, y:number, width:number, height:number){
+            var self = this, imgOpt = self._imgOpt;
+            var texture:Texture = self._getTextureToDraw();
+            if(!texture) return;// 不用绘制
+            ctx.drawImage(texture.canvas, 0, 0, texture.width, texture.height, x, y, width, height);
+            // texture.render(ctx, 0, 0, nodeOpt.width, nodeOpt.height, imgOpt.grid);
 
             if(imgOpt.isBCSH()){
                 var bcsh = imgOpt.bcsh;
@@ -106,6 +150,7 @@ module hh{
                 }
                 ctx.putImageData(imageData, 0, 0);
             }
+            engine.__fpsInfo.drawCount++;
         }
 
         setBCSH(brightness:number, contrast:number, saturation:number, hub:number){
