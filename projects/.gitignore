@@ -1,2 +1,4 @@
 *.js
 *.js.map
+
+!./hh_test_canvas_s16g

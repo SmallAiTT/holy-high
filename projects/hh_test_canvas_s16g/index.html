@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no,target-densitydpi=device-dpi"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+
+    <meta name="full-screen" content="true"/>
+    <meta name="screen-orientation" content="portrait"/>
+    <meta name="x5-fullscreen" content="true"/>
+    <meta name="360-fullscreen" content="true"/>
+
+    <style type="text/css">
+        canvas{border:dashed 2px #CCC}
+    </style>
+</head>
+<body>
+<canvas id="canvas" ></canvas>
+<script>
+function load(){
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+    var img = new Image();
+    img.onload = function(){
+        var grid = [16,15,15];
+        var width = img.width;
+        var height = img.height;
+        var dstW = 100;
+        var dstH = 100;
+
+        var vx = grid[1];
+        var vy = grid[2];
+        var vw = width - vx;
+        var vh = height - vy;
+
+        // 0-0
+        ctx.drawImage(img, 0, 0, vx, vy, 0, 0, vx, vy);
+        // 0-1
+        ctx.drawImage(img, vx, 0, vw, vy, vx, 0, dstW/2-vx, vy);
+        // 1-0
+        ctx.drawImage(img, 0, vy, vx, vh, 0, vy, vx, dstH/2-vy);
+        // 1-1
+        ctx.drawImage(img, vx, vy, vw, vh, vx, vy, dstW/2-vx, dstH/2-vy);
+
+
+        // 0-3
+        ctx.translate(dstW, 0);
+        ctx.scale(-1,1);
+        ctx.drawImage(img, 0, 0, vx, vy, 0, 0, vx, vy);
+        ctx.drawImage(img, vx, 0, vw, vy, vx, 0, dstW/2-vx, vy);
+        ctx.drawImage(img, 0, vy, vx, vh, 0, vy, vx, dstH/2-vy);
+        ctx.drawImage(img, vx, vy, vw, vh, vx, vy, dstW/2-vx, dstH/2-vy);
+
+        ctx.translate(0, dstH);
+        ctx.scale(1,-1);
+        ctx.drawImage(img, 0, 0, vx, vy, 0, 0, vx, vy);
+        ctx.drawImage(img, vx, 0, vw, vy, vx, 0, dstW/2-vx, vy);
+        ctx.drawImage(img, 0, vy, vx, vh, 0, vy, vx, dstH/2-vy);
+        ctx.drawImage(img, vx, vy, vw, vh, vx, vy, dstW/2-vx, dstH/2-vy);
+
+        ctx.translate(dstW, 0);
+        ctx.scale(-1,1);
+        ctx.drawImage(img, 0, 0, vx, vy, 0, 0, vx, vy);
+        ctx.drawImage(img, vx, 0, vw, vy, vx, 0, dstW/2-vx, vy);
+        ctx.drawImage(img, 0, vy, vx, vh, 0, vy, vx, dstH/2-vy);
+        ctx.drawImage(img, vx, vy, vw, vh, vx, vy, dstW/2-vx, dstH/2-vy);
+    };
+    img.src = '../res/s9g/00002.png';
+}
+load();
+</script>
+</body>
+</html>

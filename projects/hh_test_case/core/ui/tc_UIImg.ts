@@ -189,7 +189,7 @@ module tc{
         var url = res_helper.getS9gUrl(1);
         var img1 = new hh.UIImg();
         img1.x = img1.y = 150;
-        img1.grid = [1, 39, 39, 2, 2];
+        img1.grid = [9, 39, 39, 2, 2];
         img1.width = img1.height = 200;
         img1.load(url);
 
@@ -208,7 +208,7 @@ module tc{
                 var img = new hh.UIImg();
                 img.x = randX;
                 img.y = randY;
-                img.grid = [1, 39, 39, 2, 2];
+                img.grid = [9, 39, 39, 2, 2];
                 img.width = img.height = 240;
                 img.resizableByRes = false;
                 img.load(url);
@@ -223,7 +223,8 @@ module tc{
         var url = res_helper.getS9gUrl(1);
         var img1 = new hh.UIImg();
         img1.x = img1.y = 150;
-        img1.grid = [3, 39, 2];
+        img1.grid = [30, 39, 2];
+        img1.width = 100;
         img1.height = 200;
         img1.load(url);
 
@@ -234,10 +235,25 @@ module tc{
         var img2 = new hh.UIImg();
         img2.x = 300;
         img2.y = 150;
-        img2.grid = [4, 39, 2];
+        img2.grid = [31, 39, 2];
         img2.width = 200;
+        img2.height = 100;
         img2.load(url);
 
         hh.engine.stage.addChild(img2);
+    });
+
+
+    unit.addMenuItem('UIImg#grid 16宫格', function(){
+        hh.UIImg.debug = true;
+        var url = res_helper.getS9gUrl(2);
+        var img1 = new hh.UIImg();
+        img1.x = img1.y = 150;
+        img1.grid = [16, 15, 15];
+        img1.width = 200;
+        img1.height = 200;
+        img1.load(url);
+
+        hh.engine.stage.addChild(img1);
     });
 }

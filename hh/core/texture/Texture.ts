@@ -44,7 +44,7 @@ module hh{
             var ctx = self.canvas.getContext('2d');
             var data = texture.canvas, width = texture.width, height = texture.height;
             var gridType = grid[0];
-            if(gridType == 1){
+            if(gridType == 9){
                 // 九宫格模式
                 var vx = grid[1], vy = grid[2], vw = grid[3], vh = grid[4];
                 var arrX = [0, vx, vx+vw, width];
@@ -61,7 +61,7 @@ module hh{
                     }
                 }
                 engine.__fpsInfo.drawCount += 9;
-            }else if(gridType == 3){
+            }else if(gridType == 30){
                 // 垂直三宫格模式
                 // 方向
                 var v1 = grid[1], v2 = grid[2], v3 = height - v1 - v2;
@@ -77,7 +77,7 @@ module hh{
                 //}
                 ctx.drawImage(data, 0, height - v3, width, v3, 0, dstH - v3, dstW, v3);
                 engine.__fpsInfo.drawCount += 3;
-            }else if(gridType == 4){
+            }else if(gridType == 31){
                 // 垂直三宫格模式
                 // 方向
                 var v1 = grid[1], v2 = grid[2], v3 = height - v1 - v2;
@@ -93,6 +93,23 @@ module hh{
                 //}
                 ctx.drawImage(data, width - v3, 0, v3, height, dstW - v3, 0, v3, dstH);
                 engine.__fpsInfo.drawCount += 3;
+            }else if(gridType == 16){
+                var vx = grid[1];
+                var vy = grid[2];
+                var vw = width - vx;
+                var vh = height - vy;
+                var arr1 = [null, [dstW,0,-1,1], [0,dstH,1,-1], [dstW,0,-1,1]];
+                for(var i = 0; i < arr1.length; i++){
+                    var arr2 = arr1[i];
+                    if(arr2){
+                        ctx.translate(arr2[0], arr2[1]);
+                        ctx.scale(arr2[2], arr2[3]);
+                    }
+                    ctx.drawImage(data, 0, 0, vx, vy, 0, 0, vx, vy);
+                    ctx.drawImage(data, vx, 0, vw, vy, vx, 0, dstW/2-vx, vy);
+                    ctx.drawImage(data, 0, vy, vx, vh, 0, vy, vx, dstH/2-vy);
+                    ctx.drawImage(data, vx, vy, vw, vh, vx, vy, dstW/2-vx, dstH/2-vy);
+                }
             }
         }
     }
