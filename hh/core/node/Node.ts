@@ -325,7 +325,7 @@ module hh{
             if(touchable) touchQueue.push(self, 0);// 下传阶段入队列
             nodeOpt.renderQueueRange[0] = renderQueue.length;
             // 如果该节点是可绘制的就放到绘制队列中
-            if(nodeOpt.drawable) renderQueue.push(self._draw, self);
+            if(nodeOpt.drawable && nodeOpt.width > 0 && nodeOpt.height > 0) renderQueue.push(self._draw, self);
             // 如果是测试模式则将测试的绘制代码也放到绘制列表中
             if(clazz.debug) renderQueue.push(self._drawDebug, self);
             if(nodeOpt.clip) {
