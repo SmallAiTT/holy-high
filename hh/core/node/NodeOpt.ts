@@ -31,6 +31,7 @@ module hh{
         children:Node[];
 
         drawable:boolean;
+        touchable:boolean;// 是否可点击，默认设置成不可点击，这样可以提升性能
         matrix:Matrix;
 
         layout:Layout;

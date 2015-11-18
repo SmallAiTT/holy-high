@@ -319,7 +319,10 @@ module hh{
         _trans(engine:Engine){
             var self = this, clazz = self.__c, nodeOpt = self._nodeOpt;
             var children = nodeOpt.children;
+            var touchQueue = engine._touchQueue;
             var renderQueue = engine._renderQueue;
+            var touchable = nodeOpt.touchable;
+            if(touchable) touchQueue.push(self, 0);// 下传阶段入队列
             nodeOpt.renderQueueRange[0] = renderQueue.length;
             // 如果该节点是可绘制的就放到绘制队列中
             if(nodeOpt.drawable) renderQueue.push(self._draw, self);
@@ -358,6 +361,7 @@ module hh{
             nodeOpt.renderQueueRange[2] = renderQueue.length;
             if(nodeOpt.clip) renderQueue.push(self._restoreClip, self);
             nodeOpt.renderQueueRange[3] = renderQueue.length;
+            if(touchable) touchQueue.push(self, 1);// 冒泡阶段入队列
 
         }
 

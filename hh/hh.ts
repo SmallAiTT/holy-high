@@ -144,7 +144,7 @@ module hh.NET {
     }
 
     var _getArgs4Js = function (args) {
-        var a0 = args[0], a1 = args[1], a2 = args[2], results = ['', null, null];
+        var a0 = args[0], a1 = args[1], a2 = args[2], results:any[] = ['', null, null];
 
         if (args.length === 1) {
             results[1] = a0 instanceof Array ? a0 : [a0];
@@ -1656,6 +1656,8 @@ module hh {
         /** 判断引擎是否已经初始化完毕 */
         isCtxInited:boolean;
 
+        /** 点击事件处理队列，里面的格式为：[node0,0,node1,0,node1,1,node0,1]，其中0表示下传，1表示冒泡 */
+        _touchQueue:any[];
         /** 矩阵计算队列 */
         _matrixQueue:any[];
         /** 裁剪计算队列 */
@@ -1781,7 +1783,7 @@ module hh {
                     fpsInfo.renderCostCount += d5 - d4;
                     fpsInfo.touchCostCount += d6 - d5;
                     var count = fpsInfo.count;
-                    if(count == 60){
+                    if(count == 10){
                         fpsInfo.fps = Math.round(count*1000/fpsInfo.frameTime);
                         fpsInfo.draw = Math.round(fpsInfo.drawCount/count);
                         fpsInfo.transCost = Math.round(fpsInfo.transCostCount/count);

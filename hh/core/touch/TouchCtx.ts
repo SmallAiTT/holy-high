@@ -9,6 +9,9 @@ module hh{
         _touchStack:Touch[];
         _queue:any[];
         _canReceive:boolean;
+        _beginTempArr:Node[];
+        _moveTempArr:Node[];
+        _endTempArr:Node[];
         //@override
         _initProp(){
             super._initProp();
@@ -48,6 +51,48 @@ module hh{
             result.x = (tx - left);
             result.y = (ty - top);
             return result;
+        }
+
+        addTouchListener1(engine:Engine):TouchCtx{
+            var self = this, touchEle = engine._canvas;
+            var queue = self._queue;
+            // 统一将点击事件推送到队列中，再绘制之后才执行
+            // 这样可以使用转换后的矩阵，提高性能
+            touchEle.addEventListener("mousedown", function (event) {
+                var tempArr = [];
+                var tempMap:any = {};
+                var touchQueue = engine._touchQueue;
+                for(var i = 0, l_i = touchQueue.length; i < l_i;){
+                    // 做begin的点击处理
+                    var node = touchQueue[i++];
+                    var state = touchQueue[i++];
+                    if(state == 0){
+                        // 下传阶段
+
+                    }else{
+                        // 冒泡阶段
+                    }
+                }
+                // 清空
+                queue.length = 0;
+                // 设置成可接收
+                self._canReceive = true;
+                var location = self._getLocation(touchEle, event);
+                queue.push(self.onBegan, location);
+            });
+            touchEle.addEventListener("mousemove", function (event) {
+                if(!self._canReceive) return;
+                var location = self._getLocation(touchEle, event);
+                queue.push(self.onMove, location);
+            });
+            touchEle.addEventListener("mouseup", function (event) {
+                if(!self._canReceive) return;
+                var location = self._getLocation(touchEle, event);
+                queue.push(self.onEnd, location);
+                self._canReceive = false;
+            });
+
+            return self;
         }
 
         addTouchListener(engine:Engine):TouchCtx{
