@@ -7,11 +7,18 @@ module tc{
     unit.addMenuItem('UIImg#load', function(){
         hh.UIImg.debug = true;
         var url = res_helper.getItemUrl(11001);
-        var img = new hh.UIImg();
-        img.x = img.y = 150;
-        img.load(url);
 
-        hh.engine.stage.addChild(img);
+        var img1 = new hh.UIImg();
+        img1.x = img1.y = 150;
+        img1.load(url);
+
+        hh.engine.stage.addChild(img1);
+
+        var img2 = new hh.UIImg();
+        img2.x = img2.y = 300;
+        img2.load(url);
+
+        hh.engine.stage.addChild(img2);
     });
 
     unit.addMenuItem('UIImg#bcsh', function(){
@@ -27,7 +34,7 @@ module tc{
     });
 
     unit.addMenuItem('UIImg 缩放', function(){
-        hh.UIImg.debug = false;
+        hh.UIImg.debug = true;
         var url = res_helper.getItemUrl(11001);
         hh.RES.load(url, function(){
             var stage:hh.Node = hh.engine.stage;
@@ -221,23 +228,25 @@ module tc{
     unit.addMenuItem('UIImg#grid 三宫格', function(){
         hh.UIImg.debug = true;
         var url = res_helper.getS9gUrl(1);
+
+        // 水平模式
         var img1 = new hh.UIImg();
         img1.x = img1.y = 150;
-        img1.grid = [30, 39, 2];
-        img1.width = 100;
-        img1.height = 200;
+        // 3表示三宫格模式，然后是x,w，最后第四位如果为0或者不填表示水平方向
+        img1.grid = [3, 39, 2];
+        img1.width = 200;
+        img1.height = 100;
         img1.load(url);
 
         hh.engine.stage.addChild(img1);
 
-
-        var url = res_helper.getS9gUrl(1);
+        // 垂直模式
         var img2 = new hh.UIImg();
-        img2.x = 300;
-        img2.y = 150;
-        img2.grid = [31, 39, 2];
-        img2.width = 200;
-        img2.height = 100;
+        img2.x = img2.y = 150;
+        // 3表示三宫格模式，然后是y,h，最后第四位1表示垂直方向
+        img2.grid = [3, 39, 2, 1];
+        img2.width = 100;
+        img2.height = 200;
         img2.load(url);
 
         hh.engine.stage.addChild(img2);

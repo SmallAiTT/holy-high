@@ -379,6 +379,10 @@ module hh{
             if(drawInfo[0] == 0) return;// 相当于不画
             else if (drawInfo[0] == 1) {// 使用转换
                 ctx.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+                engine.transformed = true;
+            }else if(engine.transformed){// 如果不使用转换，但是之前有使用过，需要先进行复位
+                ctx.setTransform(1,0,0,1,0,0);
+                engine.transformed = false;
             }
             // 开始渲染节点
             self._render(ctx, engine, drawInfo[1], drawInfo[2], drawInfo[3], drawInfo[4]);
@@ -395,23 +399,50 @@ module hh{
         _drawDebug(ctx:IRenderingContext2D, engine:Engine){
             // 进行debug模式绘制
             var self = this, nodeOpt = self._nodeOpt;
-
-            // 设置转化
             var matrix = nodeOpt.matrix;
-            ctx.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
-
-            var width = nodeOpt.width, height = nodeOpt.height;
-            ctx.save();
+            var drawInfo = nodeOpt.drawInfo;
+            var a = matrix.a, b = matrix.b, c = matrix.c, d = matrix.d, tx = matrix.tx, ty = matrix.ty;
+            var x = 0, y = 0, width = nodeOpt.width, height = nodeOpt.height;
+            if(drawInfo[0] == 0) return;// 相当于不画
+            else if (drawInfo[0] == 1) {// 使用转换
+                ctx.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+                engine.transformed = true;
+            }else if(engine.transformed){// 如果不使用转换，但是之前有使用过，需要先进行复位
+                ctx.setTransform(1,0,0,1,0,0);
+                engine.transformed = false;
+            }
+            var dx = drawInfo[1], dy = drawInfo[2], dw = drawInfo[3], dh = drawInfo[4];
             if(nodeOpt.debugRectColor) {
                 ctx.fillStyle = nodeOpt.debugRectColor;
-                ctx.fillRect(0, 0, width, height);
+                ctx.fillRect(dx, dy, dw, dh);
             }
             ctx.strokeStyle = 'red';
             ctx.fillStyle = 'red';
-            ctx.strokeRect(0, 0, width, height);
+            ctx.strokeRect(dx, dy, dw, dh);
+            // 绘制锚点
             var ps = 10;
-            ctx.fillRect(width*nodeOpt.anchorX - ps/2, height*nodeOpt.anchorY - ps/2, ps, ps);
-            ctx.restore();
+            ctx.fillRect(dx + dw*nodeOpt.anchorX - ps/2, dy + dh*nodeOpt.anchorY - ps/2, ps, ps);
+
+
+            // var self = this, nodeOpt = self._nodeOpt;
+            //
+            // // 设置转化
+            // var matrix = nodeOpt.matrix;
+            // ctx.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+            // engine.transformed = true;
+            //
+            // var width = nodeOpt.width, height = nodeOpt.height;
+            // ctx.save();
+            // if(nodeOpt.debugRectColor) {
+            //     ctx.fillStyle = nodeOpt.debugRectColor;
+            //     ctx.fillRect(0, 0, width, height);
+            // }
+            // ctx.strokeStyle = 'red';
+            // ctx.fillStyle = 'red';
+            // ctx.strokeRect(0, 0, width, height);
+            // var ps = 10;
+            // ctx.fillRect(width*nodeOpt.anchorX - ps/2, height*nodeOpt.anchorY - ps/2, ps, ps);
+            // ctx.restore();
         }
 
         /**

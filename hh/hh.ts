@@ -1668,6 +1668,7 @@ module hh {
         /** 舞台，由具体实现传递 */
         stage:any;
         design:any;
+        transformed:boolean;
 
         __fpsInfo:any;
 

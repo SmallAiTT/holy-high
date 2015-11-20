@@ -24,6 +24,7 @@ module hh{
          * @private
          */
         _setGrid(grid:number[]){
+            if(grid) this._nodeOpt.resizableByRes = false;
             this._imgOpt.grid = grid;
         }
         public set grid(grid:number[]){
@@ -62,7 +63,7 @@ module hh{
                 // 设置成可以绘制
                 nodeOpt.drawable = true;
                 var grid = imgOpt.grid;
-                if(!nodeOpt.resizableByRes) return true;// 不需要重置大小
+                if((nodeOpt.width && nodeOpt.height) && (texture.grid || !nodeOpt.resizableByRes)) return true;// 不需要重置大小
                 if(!grid || grid.length == 0){
                     self._setWidth(texture.width);
                     self._setHeight(texture.height);
