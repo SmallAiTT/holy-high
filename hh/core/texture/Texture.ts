@@ -44,6 +44,9 @@ module hh{
             var ctx = self.canvas.getContext('2d');
             var data = texture.canvas, width = texture.width, height = texture.height;
             var gridType = grid[0];
+            var xValues1:number[], xValues2:number[], yValues1:number[], yValues2:number[];
+            var dstW2:number, dstH2:number;
+            var tempCanvas:any, tempCtx:any;
             if(gridType == 3){
                 // 水平三宫格模式
                 // 方向
@@ -82,8 +85,54 @@ module hh{
                 }
                 engine.__fpsInfo.drawCount += 9;
             }else if(gridType == 12){
+                // 为了减少绘制次数，先用一个临时的canvas绘制一个角
+                tempCanvas = document.createElement('canvas');
                 // 十二宫格模式
-                var v1 = grid[1], v2 = grid[2], direction = grid[3];
+                var v1 = grid[1], v2 = grid[2], v3 = grid[3], direction = grid[3];
+                var trX:number, trY:number;
+                var factor = 1;
+                if(!direction){
+                    // 水平模式
+                    xValues1 = [0, v1, v1+v3, width];
+                    xValues2 = [0, v1, dstW-width+v1+v3, dstW];
+                    yValues1 = [0, v2, height];
+                    yValues2 = [0, v2, dstH];
+                    dstW2 = dstW;
+                    dstH2 = dstH/2;
+                    trX = 0;
+                    trY = dstH;
+                }else{
+                    // 垂直模式
+                    xValues1 = [0, v1, width];
+                    xValues2 = [0, v1, dstW];
+                    yValues1 = [0, v2, v2+v3, height];
+                    yValues2 = [0, v2, dstH-height+v2+v3, dstH];
+                    dstW2 = dstW/2;
+                    dstH2 = dstH;
+                    trX = dstW;
+                    trY = 0;
+                    factor = -1;
+                }
+                tempCanvas.width = dstW2;
+                tempCanvas.height = dstH2;
+                tempCtx = tempCanvas.getContext('2d');
+                for(var i = 0, l_i = xValues1.length; i < l_i; ++i){
+                    var x1 = xValues1[i], w1 = xValues1[i+1] - x1;
+                    var x2 = xValues2[i], w2 = xValues2[i+1] - x2;
+                    for(var j = 0, l_j = yValues1.length; j < l_j; ++j){
+                        var y1 = yValues1[j], h1 = yValues1[j+1] - y1;
+                        var y2 = yValues2[j], h2 = yValues2[j+1] - y2;
+                        if(w2 > 0 && h2 > 0){
+                            tempCtx.drawImage(data, x1, y1, w1, h1, x2, y2, w2, h2);
+                        }
+                    }
+                }
+                // 然后直接用临时的canvas进行绘制
+                ctx.drawImage(tempCanvas, 0, 0, dstW2, dstH2, 0, 0, dstW2, dstH2);
+                ctx.translate(trX, trY);
+                ctx.scale(factor, -factor);
+                ctx.drawImage(tempCanvas, 0, 0, dstW2, dstH2, 0, 0, dstW2, dstH2);
+                engine.__fpsInfo.drawCount += 8;
             }else if(gridType == 16){
                 // 十六宫格模式
                 var vx = grid[1];
@@ -93,11 +142,12 @@ module hh{
                 var arr1 = [null, [dstW,0,-1,1], [0,dstH,1,-1], [dstW,0,-1,1]];
 
                 // 为了减少绘制次数，先用一个临时的canvas绘制一个角
-                var tempCanvas = document.createElement('canvas');
-                var dstW2 = dstW/2, dstH2 = dstH/2;
+                tempCanvas = document.createElement('canvas');
+                dstW2 = dstW/2;
+                dstH2 = dstH/2;
                 tempCanvas.width = dstW2;
                 tempCanvas.height = dstH2;
-                var tempCtx = tempCanvas.getContext('2d');
+                tempCtx = tempCanvas.getContext('2d');
                 tempCtx.drawImage(data, 0, 0, vx, vy, 0, 0, vx, vy);
                 tempCtx.drawImage(data, vx, 0, vw, vy, vx, 0, dstW2-vx, vy);
                 tempCtx.drawImage(data, 0, vy, vx, vh, 0, vy, vx, dstH2-vy);
