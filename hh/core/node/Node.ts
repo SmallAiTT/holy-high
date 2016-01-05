@@ -32,6 +32,7 @@ module hh{
 
         static Touch:any = Touch;
         touch:Touch;
+        debug:boolean;
 
         //@override
         _initProp(){
@@ -41,11 +42,11 @@ module hh{
             self.touch = new clazz.Touch();
             self.touch.target = self;
         }
-        _dtor(){
-            super._dtor();
+        _release(){
+            super._release();
             var self = this;
-            self._nodeOpt.dtor();
-            self.touch.dtor();
+            self._nodeOpt.release();
+            self.touch.release();
             // 解除绑定
             self.touch = null;
         }
@@ -208,6 +209,12 @@ module hh{
             return this._nodeOpt.resizableByRes;
         }
 
+        public set touchable(touchable:boolean){
+            this._nodeOpt.touchable = touchable;
+        }
+        public get touchable():boolean{
+            return this._nodeOpt.touchable;
+        }
 
         /**
          * 添加子节点。
@@ -313,27 +320,45 @@ module hh{
             ctx.restore();
         }
 
+        _testCQ(node, queue, index){
+            index = index || 0;
+
+        }
         /**
          * 转换节点。
          */
-        _trans(engine:Engine){
+        _trans(transOpt:TransOpt){
             var self = this, clazz = self.__c, nodeOpt = self._nodeOpt;
             var children = nodeOpt.children;
-            var touchQueue = engine._touchQueue;
-            var renderQueue = engine._renderQueue;
+
+            // 获取到各种队列
+            // 点击队列
+            var touchQueue = transOpt.touchQueue;
+            // 矩阵队列
+            var matrixQueue = transOpt.matrixQueue;
+            // 裁剪队列
+            var clipQueue = transOpt.clipQueue;
+            // 渲染队列
+            var renderQueue = transOpt.renderQueue;
+
             var touchable = nodeOpt.touchable;
-            if(touchable) touchQueue.push(self, 0);// 下传阶段入队列
+            // 保存好父亲节点当前在可点击队列中的具体位置
+            var touchQueueIndex = transOpt.indexToSplice4TouchQueue;// TODO
+
+
+            // 记录该节点所在的起始点渲染下标
             nodeOpt.renderQueueRange[0] = renderQueue.length;
-            // 如果该节点是可绘制的就放到绘制队列中
-            if(nodeOpt.drawable && nodeOpt.width > 0 && nodeOpt.height > 0) renderQueue.push(self._draw, self);
-            // 如果是测试模式则将测试的绘制代码也放到绘制列表中
-            if(clazz.debug) renderQueue.push(self._drawDebug, self);
-            if(nodeOpt.clip) {
+            // 如果该节点是可绘制的或者是出于debug模式的就放到绘制队列中
+            if((nodeOpt.drawable || clazz.debug || self.debug) && nodeOpt.width > 0 && nodeOpt.height > 0) {
+                renderQueue.push(self._draw, self);
+            }
+            if(nodeOpt.clip) {4
                 // 如果当前节点可裁剪，则推送到裁剪计算队列中
-                engine._clipQueue.push(self);
+                transOpt.clipQueue.push(self);
                 renderQueue.push(self._doClip, self);
             }
             nodeOpt.renderQueueRange[1] = renderQueue.length;
+
 
             // 如果有设置布局，则进行布局处理
             var layout = nodeOpt.layout;
@@ -342,26 +367,30 @@ module hh{
                 layout.onBefore(self);
                 layout.handle(self);
             }
-
             // 进行世界转化，需要推送到渲染队列中，延迟到绘制前进行计算
             // 今后还会做dirty的判断，这样就可以更好的提高性能
-            engine._matrixQueue.push(self._calMatrix, self);
+            matrixQueue.push(self._calMatrix, self);
 
+            if(touchable) touchQueue.splice(touchQueueIndex, 0, self);
+            transOpt.indexToSplice4TouchQueue++;// 位置+1
             //遍历子节点
             for (var i = 0, l_i = children.length; i < l_i; i++) {
                 var child = children[i];
                 // 可见才可以继续进行转化
-                if(child._nodeOpt.visible) child._trans(engine);
+                if(child._nodeOpt.visible) child._trans(transOpt);
             }
+            transOpt.indexToSplice4TouchQueue = touchQueueIndex;// 还原位置
+            if(touchable) touchQueue.push(self);
 
+            // 后置的布局计算
             if(layout){
                 layout.onAfter(self);
             }
 
+            // 记录该节点所在的结束点渲染下标
             nodeOpt.renderQueueRange[2] = renderQueue.length;
             if(nodeOpt.clip) renderQueue.push(self._restoreClip, self);
             nodeOpt.renderQueueRange[3] = renderQueue.length;
-            if(touchable) touchQueue.push(self, 1);// 冒泡阶段入队列
 
         }
 
@@ -371,8 +400,8 @@ module hh{
          * @private
          */
         _draw(ctx:IRenderingContext2D, engine:Engine){
-            var self = this, nodeOpt = self._nodeOpt;
-            var matrix = nodeOpt.matrix;
+            var self = this, nodeOpt = self._nodeOpt, clazz = self.__c;
+            var matrix = nodeOpt.matrix4Render;// 使用的是渲染矩阵
             var drawInfo = nodeOpt.drawInfo;
             var a = matrix.a, b = matrix.b, c = matrix.c, d = matrix.d, tx = matrix.tx, ty = matrix.ty;
             var x = 0, y = 0, width = nodeOpt.width, height = nodeOpt.height;
@@ -385,108 +414,79 @@ module hh{
                 engine.transformed = false;
             }
             // 开始渲染节点
-            self._render(ctx, engine, drawInfo[1], drawInfo[2], drawInfo[3], drawInfo[4]);
+            if(nodeOpt.drawable) self._render(ctx, engine, drawInfo[1], drawInfo[2], drawInfo[3], drawInfo[4]);
+            if(clazz.debug || self.debug) self._renderDebug(ctx, engine, drawInfo[1], drawInfo[2], drawInfo[3], drawInfo[4]);
         }
         /**
          * 渲染节点。
          * @param ctx
          * @private
          */
-        _render(ctx:IRenderingContext2D, engine:Engine, x:number, y:number, width:number, height:number){
+        _render(ctx:IRenderingContext2D, engine:Engine, x:number, y:number, w:number, h:number){
             // 子类在此实现真正的绘制
         }
-
-        _drawDebug(ctx:IRenderingContext2D, engine:Engine){
-            // 进行debug模式绘制
+        _renderDebug(ctx:IRenderingContext2D, engine:Engine, x:number, y:number, w:number, h:number){
             var self = this, nodeOpt = self._nodeOpt;
-            var matrix = nodeOpt.matrix;
-            var drawInfo = nodeOpt.drawInfo;
-            var a = matrix.a, b = matrix.b, c = matrix.c, d = matrix.d, tx = matrix.tx, ty = matrix.ty;
-            var x = 0, y = 0, width = nodeOpt.width, height = nodeOpt.height;
-            if(drawInfo[0] == 0) return;// 相当于不画
-            else if (drawInfo[0] == 1) {// 使用转换
-                ctx.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
-                engine.transformed = true;
-            }else if(engine.transformed){// 如果不使用转换，但是之前有使用过，需要先进行复位
-                ctx.setTransform(1,0,0,1,0,0);
-                engine.transformed = false;
-            }
-            var dx = drawInfo[1], dy = drawInfo[2], dw = drawInfo[3], dh = drawInfo[4];
             if(nodeOpt.debugRectColor) {
                 ctx.fillStyle = nodeOpt.debugRectColor;
-                ctx.fillRect(dx, dy, dw, dh);
+                ctx.fillRect(x, y, w, h);
             }
             ctx.strokeStyle = 'red';
             ctx.fillStyle = 'red';
-            ctx.strokeRect(dx, dy, dw, dh);
+            ctx.strokeRect(x, y, w, h);
             // 绘制锚点
             var ps = 10;
-            ctx.fillRect(dx + dw*nodeOpt.anchorX - ps/2, dy + dh*nodeOpt.anchorY - ps/2, ps, ps);
-
-
-            // var self = this, nodeOpt = self._nodeOpt;
-            //
-            // // 设置转化
-            // var matrix = nodeOpt.matrix;
-            // ctx.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
-            // engine.transformed = true;
-            //
-            // var width = nodeOpt.width, height = nodeOpt.height;
-            // ctx.save();
-            // if(nodeOpt.debugRectColor) {
-            //     ctx.fillStyle = nodeOpt.debugRectColor;
-            //     ctx.fillRect(0, 0, width, height);
-            // }
-            // ctx.strokeStyle = 'red';
-            // ctx.fillStyle = 'red';
-            // ctx.strokeRect(0, 0, width, height);
-            // var ps = 10;
-            // ctx.fillRect(width*nodeOpt.anchorX - ps/2, height*nodeOpt.anchorY - ps/2, ps, ps);
-            // ctx.restore();
+            ctx.fillRect(x + w*nodeOpt.anchorX - ps/2, y + h*nodeOpt.anchorY - ps/2, ps, ps);
         }
 
         /**
          * 计算世界转化
          * @private
          */
-        _calMatrix(){
+        _calMatrix(transOpt){
             var self = this;
             var nodeOpt = self._nodeOpt, parent = nodeOpt.parent;
+            // 这个表明当前节点是不是自身需要做cache
+            var cachable:boolean = nodeOpt.cachable;
+            // 需要有一个标示来表明当前是否处于cache计算
+            var chaching:boolean = transOpt.caching;
+
+            var x = nodeOpt.x, y = nodeOpt.y, w = nodeOpt.width, h = nodeOpt.height;
+            var scaleX = nodeOpt.scaleX, scaleY = nodeOpt.scaleY;
+            var rotation = nodeOpt.rotation;
+            var skewX = nodeOpt.skewX, skewY = nodeOpt.skewY;
+            var offsetX = w*nodeOpt.anchorX;
+            var offsetY = h*nodeOpt.anchorY;
+
             var matrix = nodeOpt.matrix;
+            var matrix4Render = nodeOpt.matrix4Render;
+
             if(parent) {
                 var pNodeOpt = parent._nodeOpt;
                 var pm = pNodeOpt.matrix;
                 matrix.identityMatrix(pm);
                 nodeOpt.worldAlpha = pNodeOpt.worldAlpha * nodeOpt.alpha;
-            }
 
-            var offsetX = nodeOpt.width*nodeOpt.anchorX;
-            var offsetY = nodeOpt.height*nodeOpt.anchorY;
-
-            var hackMatrix = (<any>self).__hack_local_matrix;// TODO
-            if (hackMatrix) {
-                matrix.append(hackMatrix.a, hackMatrix.b, hackMatrix.c, hackMatrix.d, hackMatrix.tx, hackMatrix.ty);
-                matrix.append(1, 0, 0, 1, -offsetX, -offsetY);
+                // 获取到parent的渲染矩阵
+                // 这个获取比较特殊，如果父节点就是一个cache节点，
+                // 那么该矩阵就应该是一个初始化矩阵
+                // 否则就取其的渲染矩阵
+                var pMatrix4Render = pNodeOpt.cachable ? new Matrix() : pNodeOpt.matrix4Render;
+                matrix4Render.identityMatrix(pMatrix4Render);// 先按照父亲的初始化
+            }else{// 如果没有父亲，那么就先初始化为默认矩阵
+                matrix.identity();
+                matrix4Render.identity();
             }
-            else {
-                matrix.appendTransform(nodeOpt.x, nodeOpt.y, nodeOpt.scaleX, nodeOpt.scaleY, nodeOpt.rotation,
-                    nodeOpt.skewX, nodeOpt.skewY, offsetX, offsetY);
-            }
-            //var scrollRect = do_props._scrollRect;
-            //if (scrollRect) {
-            //    worldTransform.append(1, 0, 0, 1, -scrollRect.x, -scrollRect.y);
-            //}
-
-//            if (this._texture_to_render){
-//                var bounds:egret.Rectangle = DisplayObject.getTransformBounds(o._getSize(Rectangle.identity), o._worldTransform);
-//                o._worldBounds.initialize(bounds.x, bounds.y, bounds.width, bounds.height);
-//            }
+            // 进行矩阵转换
+            matrix.appendTransform(x, y, scaleX, scaleY, rotation, skewX, skewY, offsetX, offsetY);
+            matrix4Render.appendTransform(x, y, scaleX, scaleY, rotation, skewX, skewY, offsetX, offsetY);
 
             // 为了提高性能，对绘制时候时候的转换参数进行区别对待
             // 如果只有正数缩放并且没有旋转的话，就不采取setTransform的方式，因为setTransform很好性能
-            var a = matrix.a, b = matrix.b, c = matrix.c, d = matrix.d, tx = matrix.tx, ty = matrix.ty;
-            var x = 0, y = 0, width = nodeOpt.width, height = nodeOpt.height;
+            var a = matrix4Render.a, b = matrix4Render.b, c = matrix4Render.c, d = matrix4Render.d, tx = matrix4Render.tx, ty = matrix4Render.ty;
             var drawInfo:number[] = nodeOpt.drawInfo;
+            x = 0;
+            y = 0;
             drawInfo.length = 0;
             if(a == 0 && b == 0 && c == 0 && d == 0) {
                 drawInfo.push(0);
@@ -495,14 +495,29 @@ module hh{
             else if (b == 0 && c == 0 && a > 0 && d > 0) {
                 x = tx;
                 y = ty;
-                width *= a;
-                height *= d;
+                w *= a;
+                h *= d;
                 drawInfo.push(2);
             }
             else {
                 drawInfo.push(1);
             }
-            drawInfo.push(x, y, width, height);
+            drawInfo.push(x, y, w, h);
+        }
+
+        touchTest(wx:number, wy:number):boolean{
+            return this.hitTest(wx, wy);
+        }
+        hitTest(wx:number, wy:number):boolean{
+            var self:Node = this;
+            var nodeOpt = self._nodeOpt;
+            var matrix:Matrix = nodeOpt.matrix;
+            // 计算全局坐标映射到该节点之后的坐标
+            var a = matrix.a, b = matrix.b, c = matrix.c, d = matrix.d, tx = matrix.tx, ty = matrix.ty;
+            var lx = (c*(wy - ty) - d*(wx-tx))/(b*c - a*d);
+            var ly = (a*(wy - ty) - b*(wx - tx))/(a*d-b*c);
+            var w = nodeOpt.width, h = nodeOpt.height;
+            return lx >= 0 && lx <= w && ly >= 0 && ly <= h;
         }
     }
 }

@@ -6,8 +6,8 @@ module tc{
 
     unit.addMenuItem('加载图片', function(){
         var url = res_helper.getItemUrl(11001);
-        hh.RES.load(url, function(){
-            var img = hh.RES.get(url);
+        hh.R.load(url, function(){
+            var img = hh.R.get(url);
             console.log(img);
         });
     });

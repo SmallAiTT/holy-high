@@ -16,8 +16,8 @@ module tc{
         }
 
         //@override
-        _calMatrix(){
-            super._calMatrix();
+        _calMatrix(transOpt){
+            super._calMatrix(transOpt);
             var matrix:hh.Matrix = this._nodeOpt.matrix;
             var w = this.width;
             var h = this.height;

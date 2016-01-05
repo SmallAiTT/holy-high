@@ -1,13 +1,13 @@
 /**
  * Created by SmallAiTT on 2015/6/30.
  */
-module hh.RES{
+module hh.R{
     export var log:Function;
     export var debug:Function;
     export var info:Function;
     export var warn:Function;
     export var error:Function;
-    LOG.initLogger(hh.RES, 'RES');
+    LOG.initLogger(hh.R, 'R');
 
     export class CfgItem extends Emitter{
         static SUCCESS:string = "success";
@@ -61,7 +61,6 @@ module hh.RES{
             self.type = null;
             self.cb = null;
             self.ctx = null;
-            clazz.push(self);
         }
 
     }
@@ -82,7 +81,7 @@ module hh.RES{
         _getRealUrl(rci:CfgItem){
             var url = rci.url;
             if(url.indexOf("http:") == 0 || url.indexOf("https:") == 0) return url;
-            return hh.PATH.join(RES.root, url);// 主意，这里必须是要加`RES.`才可以，避免使用了内部对象导致的bug
+            return hh.PATH.join(R.root, url);// 主意，这里必须是要加`R.`才可以，避免使用了内部对象导致的bug
         }
 
         _load(rci:CfgItem){
@@ -121,6 +120,11 @@ module hh.RES{
     export var _pool:any = {};
     export var _pool4JsData:any = {};
     export var _queue:CfgItem[] = [];
+    export var _pool4CfgItem:Pool = new Pool();
+    _pool4CfgItem.register(function(key:string){
+        return new CfgItem();
+    }, null, null);
+    _pool4CfgItem.setLimit(CfgItem.__n, -1);
 
     var _pushToQueue = function(urlOrRci:any, listener:Function, ctx?:any){
         var url = urlOrRci.url || urlOrRci;
@@ -136,7 +140,7 @@ module hh.RES{
         }
 
         // 没有的话就从回收池中获取一个
-        rci = RCI.pop();
+        rci = _pool4CfgItem.get(RCI.__n);
         rci.setUrl(url);
         if(type) rci.type = type;
         rci.once(RCI.FINISH, listener, ctx);

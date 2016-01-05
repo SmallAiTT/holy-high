@@ -45,7 +45,7 @@ module hh{
             var cpy = matrix.b * cx + matrix.d * cy + matrix.ty;
             var dist1 = Math.sqrt((fpx-cpx)*(fpx-cpx) + (fpy-cpy)*(fpy-cpy));
 
-            handleClip(matrix, dist1, [cpx, cpy], children, engine._renderQueue);
+            handleClip(matrix, dist1, [cpx, cpy], children, engine._transOpt.renderQueue);
         }
     });
     engine.on(Eng.__CLEAR_RECT, function(ctx:IRenderingContext2D){

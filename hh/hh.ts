@@ -416,17 +416,6 @@ module hh {
         /** 类名 */
         static __n:string;
 
-        static __recycler:any[] = [];
-        static push(obj:any){
-            this.__recycler.push(obj);
-        }
-        static pop(...args):any{
-            var clazz = this;
-            var obj = clazz.__recycler.pop();
-            if(obj) return obj;
-            else return clazz.create.apply(clazz, args);
-        }
-
         /** 创建 */
         static create(...args:any[]):any {
             var Class:any = this;
@@ -450,7 +439,7 @@ module hh {
             var Class:any = this;
             var instance:any = Class._instance;
             if (instance) {
-                if (instance.doDtor) instance.doDtor();
+                instance.release();
                 Class._instance = null;
             }
         }
@@ -465,12 +454,15 @@ module hh {
         _isInstance:boolean;
         /** 储藏室 */
         _store:Store;
+        /** 附加数据储存点 */
+        _ext:any;
         /** 是否已经释放了 */
         released:boolean;
 
         _initProp():void {
             var self = this;
             self._store = new Store();
+            self._ext = {};
         }
 
         constructor() {
@@ -482,14 +474,168 @@ module hh {
         public init(...args:any[]) {
         }
 
-        public dtor() {
+        getExt(key:string, defaultValue?:any):any{
+            var self = this;
+            var ext:any = self._ext;
+            if(!self.released){
+                var result = ext[key];
+                return result == null ? defaultValue : result;
+            }
+            return null;
+        }
+        setExt(key:string, data:any):Class{
+            var self = this;
+            var ext:any = self._ext;
+            if(!self.released){
+                ext[key] = data;
+            }
+            return self;
+        }
+
+        _toPool(){}
+        _fromPool(){}
+
+        _releaseExt(ext){
+
+        }
+
+        public release() {
             var self = this;
             if (self.released) return;
             self.released = true;
-            self._dtor();
+            self._release();
         }
 
-        _dtor() {
+        _release() {
+            var self = this;
+            var ext:any = self._ext;
+            self._releaseExt(ext);
+            delete self._ext;
+        }
+    }
+
+    export class Pool extends Class{
+        _batchId:number;
+        _map:any;
+        _limitInfoArr:any;
+        // 限制个数
+        defaultLimit:number;
+        _createFunc:Function;
+        _resetFunc:Function;
+        _saveFunc:Function;
+        closed:boolean;
+
+        _initProp(){
+            super._initProp();
+            var self = this;
+            self._map = {};
+            self._limitInfoArr = [];
+            self.defaultLimit = 2;// 默认的个数为2
+            self._batchId = 0;
+        }
+
+        register(createFunc:Function, resetFunc:Function, saveFunc:Function){
+            var self = this;
+            self._createFunc = createFunc;
+            self._resetFunc = resetFunc;
+            self._saveFunc = saveFunc;
+        }
+
+        prepare(key:string, num:number, ...args){
+            var self = this, map = self._map;
+            var batchId = self._batchId;
+            var list = map[key] = map[key] || [];
+            for(var i = 0; i < num; ++i){
+                var obj:Class = self._createFunc.apply(null, [key].concat(args));
+                obj.setExt('batchId', batchId);
+                list.push(obj);
+            }
+        }
+
+        get(key:string, ...args):any{
+            var self = this, map = self._map, obj:any;
+            var batchId = self._batchId;
+            var list = map[key] = map[key] || [];
+            if(list.length > 0) obj = list.pop();
+            if(!obj) {
+                obj = self._createFunc.apply(null, [key].concat(args));
+                obj.setExt('batchId', batchId);
+            }
+            var resetFunc = self._resetFunc;
+            if(resetFunc) resetFunc.apply(null, [obj].concat(args));
+            obj.setExt('pool', self);
+            obj.setExt('poolKey', key);
+            return obj;
+        }
+
+        rm(target:any){
+            var self = this;
+            var poolKey = target.getExt('poolKey');
+            if(!poolKey || target.released) return;// 不属于通过池创建的
+            target.setExt('poolKey', null);
+
+            var batchId = target.getExt('batchId');
+            if(batchId != self._batchId || self.closed || self.released){
+                // 如果pool已经关闭或者释放了，则要将对应的节点进行释放操作
+                if (!target.released) target.release();// 进行释放
+                return;
+            }
+
+            var limit = self.getLimit(poolKey);
+            var arr = self._map[poolKey] = self._map[poolKey] || [];
+            if(arr.length >= limit) {
+                // 已经超过了限制数
+                target.release();// 进行释放
+            }else{
+                var saveFunc = self._saveFunc;
+                target._toPool();
+                if(saveFunc) saveFunc(poolKey, target);// 进行重置操作
+                arr.push(target);
+            }
+        }
+
+        setLimit(exp:any, count:number){
+            this._limitInfoArr.push([exp, count]);
+        }
+
+        getLimit(key:string){
+            var limitInfoArr = this._limitInfoArr;
+            for(var i = 0, l_i = limitInfoArr.length; i < l_i; ++i){
+                var arr = limitInfoArr[0];
+                if(key.match(arr[0])) return arr[1];
+            }
+            return this.defaultLimit;
+        }
+
+        _release(){
+            super._release();
+            var self = this;
+            var map = self._map;
+            for(var key in map){
+                var arr = map[key];
+                while(arr.length){
+                    var obj:any = arr.pop();
+                    if(obj) obj.release();
+                }
+                delete map[key];
+            }
+            self._limitInfoArr.length = 0;
+            self._createFunc = null;
+            self._resetFunc = null;
+            self._saveFunc = null;
+        }
+        clear(){
+            var self = this;
+            var map = self._map;
+            self._batchId++;// 批次号递增
+            for(var key in map){
+                var arr = map[key];
+                while(arr.length){
+                    var obj:any = arr.pop();
+                    if(obj) obj.release();
+                }
+                delete map[key];
+            }
         }
     }
 
@@ -853,7 +999,16 @@ module hh {
     var _tempEventArr:any = [];
     var _tempArgsArr:any = [];
     export class Emitter extends Class{
+        static RELEASE:string = 'release';
 
+        //@override
+        release(){
+            var self = this;
+            if (self.released) return;
+            // 注意了，为了避免说没及时触发监听内容，release监听必须在以开始就就行分发
+            self.emit(self.__c.RELEASE);
+            super.release();
+        }
         /**
          * 监听某个事件。可以注册多个。通过emit触发。
          * @param event
@@ -1176,7 +1331,7 @@ module hh {
         }
 
         // 对注册的监听信息列表进行事件分发
-        _emitArr(owner:string, event:string, arr, args:any[]) {
+        _emitArr(owner:string, event:string, arr, args:any[]):boolean{
             if (arr) {
                 var self = this;
                 arr = arr instanceof Array ? arr : [arr];// 如果不是数组则转成数组
@@ -1188,12 +1343,14 @@ module hh {
                     var info = arr[i];// 获取监听信息
                     var listener = info.listener;// 监听方法
                     if (listener) {
-                        listener.apply(info.ctx, tempArgs);
+                        // 如果返回值为true，则认为分发要被阻止了
+                        if(listener.apply(info.ctx, tempArgs) === true) return true;
                     }
                 }
                 arr.length = 0;//清空引用
                 tempArgs.length = 0;//清空参数
             }
+            return false;
         }
 
         /**
@@ -1207,27 +1364,27 @@ module hh {
             //实例级别的注册
             //先执行单个的
             single = store.getSingle(_OWNER_ON, event);
-            self._emitArr(_OWNER_ON, event, single, args);
+            if(self._emitArr(_OWNER_ON, event, single, args)) return self;
             //再执行一次性的
             tempArr = store.getTempArr(_OWNER_ONCE, event);
             store.clear(_OWNER_ONCE, event);//进行清除
-            self._emitArr(_OWNER_ONCE, event, tempArr, args);
+            if(self._emitArr(_OWNER_ONCE, event, tempArr, args)) return self;
             //最后执行多次的
             tempArr = store.getTempArr(_OWNER_ON, event);
-            self._emitArr(_OWNER_ON, event, tempArr, args);
+            if(self._emitArr(_OWNER_ON, event, tempArr, args)) return self;
 
             //类级别的注册
             store = self.__c._store;
             //先执行单个的
             single = store.getSingle(_OWNER_ON, event);
-            self._emitArr(_OWNER_ON, event, single, args);
+            if(self._emitArr(_OWNER_ON, event, single, args)) return self;
             //再执行一次性的
-            tempArr = store.getTempArr(_OWNER_ONCE, event);
+            if(tempArr = store.getTempArr(_OWNER_ONCE, event)) return self;
             store.clear(_OWNER_ONCE, event);//进行清除
-            self._emitArr(_OWNER_ONCE, event, tempArr, args);
+            if(self._emitArr(_OWNER_ONCE, event, tempArr, args)) return self;
             //最后执行多次的
             tempArr = store.getTempArr(_OWNER_ON, event);
-            self._emitArr(_OWNER_ON, event, tempArr, args);
+            if(self._emitArr(_OWNER_ON, event, tempArr, args)) return self;
 
             return self;
         }
@@ -1616,6 +1773,21 @@ module hh {
         }
     };
 
+    export interface TransOpt{
+        touchQueue:any[];
+        /** 矩阵队列，存放模式一定是[listener1, ctx1, listener2, ctx2, ...] */
+        matrixQueue:any[];
+        /** 裁剪队列，存放模式一定是[listener1, ctx1, listener2, ctx2, ...] */
+        clipQueue:any[];
+        /** 渲染队列，存放模式一定是[listener1, ctx1, listener2, ctx2, ...] */
+        renderQueue:any[];
+        /** 当前是否处于cache阶段标示 */
+        caching:boolean;
+        cacheQueue:boolean[];
+        /** 插入到点击队列的下标 */
+        indexToSplice4TouchQueue:number;
+    }
+
     export class Engine extends Emitter {
         /** 循环事件，外部不要轻易使用，而是通过hh.tick进行注册 */
         static __TICK:string = '__tick';
@@ -1656,32 +1828,28 @@ module hh {
         /** 判断引擎是否已经初始化完毕 */
         isCtxInited:boolean;
 
-        /** 点击事件处理队列，里面的格式为：[node0,0,node1,0,node1,1,node0,1]，其中0表示下传，1表示冒泡 */
-        _touchQueue:any[];
-        /** 矩阵计算队列 */
-        _matrixQueue:any[];
-        /** 裁剪计算队列 */
-        _clipQueue:any[];
-        /** 渲染命令队列 */
-        _renderQueue:any[];
-
         /** 舞台，由具体实现传递 */
         stage:any;
+        /** 设计分辨率 */
         design:any;
         transformed:boolean;
 
         __fpsInfo:any;
+        /** 转换选项 */
+        _transOpt:TransOpt;
 
         //@override
         _initProp():void{
             super._initProp();
             var self = this;
-            // 矩阵队列，存放模式一定是[listener1, ctx1, listener2, ctx2, ...]
-            self._matrixQueue = [];
-            // 裁剪队列，存放模式一定是[listener1, ctx1, listener2, ctx2, ...]
-            self._clipQueue = [];
-            // 渲染队列，存放模式一定是[listener1, ctx1, listener2, ctx2, ...]
-            self._renderQueue = [];
+
+            var transOpt:TransOpt = self._transOpt = <any>{};
+            transOpt.touchQueue = [];
+            transOpt.matrixQueue = [];
+            transOpt.clipQueue = [];
+            transOpt.renderQueue = [];
+            transOpt.indexToSplice4TouchQueue = 0;
+
             // 设计分辨率
             self.design = {width:0, height:0};
             self.__fpsInfo = {
@@ -1723,58 +1891,73 @@ module hh {
         */
         run(){
             var self = this, clazz = self.__c;
+            var transOpt:TransOpt = self._transOpt;
             //设置开始时间
             self._startTime = Date.now();
             self._time = 0;
             self._isMainLooping = false;
             var _mainLoop = function () {
+                // 还原每次主循环都需要重置的值
+                transOpt.touchQueue.length = 0;
+                transOpt.matrixQueue.length = 0;
+                transOpt.clipQueue.length = 0;
+                transOpt.renderQueue = [];
+                transOpt.indexToSplice4TouchQueue = 0;
+
                 var fpsInfo = self.__fpsInfo;
-                // nextTick相关事件的分发
+                // 先处理点击事件
+                // 这获取到点击事件的处理列表，然后进行遍历调用
+
+                // 进行_emit4NextTick处理
                 if(self._isMainLooping) _emit4NextTick();
                 self._isMainLooping = true;
+
+                // 进行tick
                 var curTime = Date.now() - self._startTime;
                 var deltaTime = curTime - self._time;
-                // 主循环tick传时间差
                 self.emit(clazz.__TICK, deltaTime);
-                // 如果舞台已经初始化好了，就可以开始进行转化了
+
+                // 如果舞台已经初始化好了，就可以开始进行转换了
                 var d1 = Date.now();
-                if(self.stage) self.stage._trans(self);
+                if(self.stage) self.stage._trans(transOpt);
                 var d2 = Date.now();
 
-                // 执行矩阵换算
-                var matrixQueue = self._matrixQueue;
+                // 获取到矩阵换算队列
+                var matrixQueue = transOpt.matrixQueue;
+                // 进行矩阵换算
                 while(matrixQueue.length > 0){
                     var calFunc = matrixQueue.shift();//命令方法
                     var calFuncCtx = matrixQueue.shift();//命令上下文
-                    calFunc.call(calFuncCtx, engine);
+                    calFunc.call(calFuncCtx, transOpt);
                 }
                 var d3 = Date.now();
 
-                self.emit(clazz.__CAL_CLIP, self._clipQueue);
+                // 进行clip处理
+                self.emit(clazz.__CAL_CLIP, transOpt.clipQueue);
                 var d4 = Date.now();
 
-                // 进行上下文绘制区域擦除
                 var ctx = self.canvasCtx;
                 if(ctx){
+                    // 进行上下文绘制区域擦除
                     self.emit(clazz.__CLEAR_RECT, ctx);
                     // 进行主渲染
-                    var queue = self._renderQueue;
+                    var queue = transOpt.renderQueue;
                     while(queue.length > 0){
                         var cmd = queue.shift();//命令方法
                         var cmdCtx = queue.shift();//命令上下文
                         if(cmd) cmd.call(cmdCtx, ctx, self);
                     }
                     // 主循环tick传时间差
+                    // 分发主渲染后事件
                     self.emit(clazz.__TICK_AFTER_DRAW, deltaTime);
                 }
                 var d5 = Date.now();
-                // 点击处理放在绘制完之后，这样可以使得坐标转换使用_trans之后获得的矩阵，可以提高性能
-                self.emit(clazz.__HANDLE_TOUCH, deltaTime);
-                var d6 = Date.now();
-                // 进行下一帧分发
+
+
+                // 进行下一帧事件分发
                 self.emitNextTick(clazz.__NEXT_TICK);
 
-
+                // 这里fps信息输出
                 if(ctx){
                     fpsInfo.count++;
                     fpsInfo.frameTime += deltaTime;
@@ -1782,7 +1965,7 @@ module hh {
                     fpsInfo.matrixCostCount += d3 - d2;
                     fpsInfo.clipCostCount += d4 - d3;
                     fpsInfo.renderCostCount += d5 - d4;
-                    fpsInfo.touchCostCount += d6 - d5;
+                    fpsInfo.touchCostCount += d5 - d4;
                     var count = fpsInfo.count;
                     if(count == 10){
                         fpsInfo.fps = Math.round(count*1000/fpsInfo.frameTime);

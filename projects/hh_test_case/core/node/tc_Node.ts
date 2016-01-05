@@ -69,7 +69,7 @@ module tc{
     unit.addMenuItem('Node 数量测试200', function(){
         hh.Node.debug = false;
         var url = res_helper.getItemUrl(11001);
-        hh.RES.load(url, function(){
+        hh.R.load(url, function(){
             var stage:hh.Node = hh.engine.stage;
             var w = stage.width, h = stage.height;
             for(var i = 0; i < 200; ++i){
@@ -87,7 +87,7 @@ module tc{
     unit.addMenuItem('Node 数量测试400', function(){
         hh.Node.debug = false;
         var url = res_helper.getItemUrl(11001);
-        hh.RES.load(url, function(){
+        hh.R.load(url, function(){
             var stage:hh.Node = hh.engine.stage;
             var w = stage.width, h = stage.height;
             for(var i = 0; i < 400; ++i){
@@ -105,7 +105,7 @@ module tc{
     unit.addMenuItem('Node 数量测试600', function(){
         hh.Node.debug = false;
         var url = res_helper.getItemUrl(11001);
-        hh.RES.load(url, function(){
+        hh.R.load(url, function(){
             var stage:hh.Node = hh.engine.stage;
             var w = stage.width, h = stage.height;
             for(var i = 0; i < 600; ++i){

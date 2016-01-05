@@ -15,13 +15,14 @@
         "!./node_modules/**/*.ts"
     ],
     "files": [
+        "../hh/hh.ts",
         "../hh/canvas.d.ts",
-        "../hh/core/base/ARR.ts",
-        "../hh/core/base/ColorMatrix.ts",
-        "../hh/core/base/Matrix.ts",
-        "../hh/core/base/PATH.ts",
-        "../hh/core/base/Point.ts",
         "../hh/core/base/STR.ts",
+        "../hh/core/base/ARR.ts",
+        "../hh/core/base/PATH.ts",
+        "../hh/core/base/Matrix.ts",
+        "../hh/core/base/ColorMatrix.ts",
+        "../hh/core/base/Point.ts",
         "../hh/core/ctx_init.ts",
         "../hh/core/node/Layout.ts",
         "../hh/core/node/Node.ts",
@@ -30,13 +31,13 @@
         "../hh/core/res/parser/ImgParser.ts",
         "../hh/core/texture/Sheet.ts",
         "../hh/core/texture/Texture.ts",
+        "../hh/core/texture/TexturePool.ts",
         "../hh/core/touch/Touch.ts",
         "../hh/core/touch/TouchCtx.ts",
         "../hh/core/ui/UIImg.ts",
         "../hh/core/ui/UIImgOpt.ts",
         "../hh/core/ui/UIText.ts",
         "../hh/core/ui/UITextOpt.ts",
-        "../hh/hh.ts",
         "./unit.ts"
     ]
 }

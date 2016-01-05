@@ -33,6 +33,10 @@ module hh{
         drawable:boolean;
         touchable:boolean;// 是否可点击，默认设置成不可点击，这样可以提升性能
         matrix:Matrix;
+        // 这个是用来绘制用的矩阵
+        matrix4Render:Matrix;
+        // 是否是一个cache节点
+        cachable:boolean;
 
         layout:Layout;
         clip:Function;
@@ -64,6 +68,7 @@ module hh{
             self.children = [];
             self.drawable = false;
             self.matrix = new Matrix();
+            self.matrix4Render = new Matrix();
             self.renderQueueRange = [];
             self.drawInfo = [];
         }

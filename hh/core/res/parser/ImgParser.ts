@@ -1,7 +1,7 @@
 /**
  * Created by SmallAiTT on 2015/7/1.
  */
-module hh.RES{
+module hh.R{
     export class ImgParser extends Parser{
 
         // override

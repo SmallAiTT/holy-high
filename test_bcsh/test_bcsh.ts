@@ -41,7 +41,7 @@ module hh{
             var Class:any = this;
             var instance:any = Class._instance;
             if (instance) {
-                if (instance.doDtor) instance.doDtor();
+                instance.release();
                 Class._instance = null;
             }
         }
@@ -68,14 +68,14 @@ module hh{
         public init(...args:any[]) {
         }
 
-        public dtor() {
+        public release() {
             var self = this;
             if (self.released) return;
             self.released = true;
-            self._dtor();
+            self._release();
         }
 
-        _dtor() {
+        _release() {
         }
     }
 
