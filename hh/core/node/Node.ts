@@ -13,7 +13,7 @@ module hh{
          * @constructor
          */
         static CLIP_RECT:Function = function(ctx:IRenderingContext2D, engine:Engine, target:Node){
-            var width = target.width, height = target.height;
+            var width = target.w, height = target.h;
             ctx.moveTo(0, 0);
             ctx.lineTo(width, 0);
             ctx.lineTo(width, height);
@@ -22,7 +22,7 @@ module hh{
         };
 
         static CLIP_ARC:Function = function(ctx:IRenderingContext2D, engine:Engine, target:Node){
-            var width = target.width, height = target.height;
+            var width = target.w, height = target.h;
             var max = Math.max(width, height);
             var min = Math.min(width, height);
             ctx.arc(width/2, height/2, max/2, 0, Math.PI*2);
@@ -67,26 +67,26 @@ module hh{
         /**
          * 宽度
          */
-        _setWidth(width:number){
-            this._nodeOpt.width = width;
+        _setW(width:number){
+            this._nodeOpt.w = width;
         }
-        public set width(width:number){
-            this._setWidth(width);
+        public set w(width:number){
+            this._setW(width);
         }
-        public get width():number{
-            return this._nodeOpt.width;
+        public get w():number{
+            return this._nodeOpt.w;
         }
         /**
          * 高度
          */
-        _setHeight(height:number){
-            this._nodeOpt.height = height;
+        _setH(h:number){
+            this._nodeOpt.h = h;
         }
-        public set height(height:number){
-            this._setHeight(height);
+        public set h(h:number){
+            this._setH(h);
         }
-        public get height():number{
-            return this._nodeOpt.height;
+        public get h():number{
+            return this._nodeOpt.h;
         }
         /**
          * x轴位置
@@ -116,90 +116,90 @@ module hh{
         /**
          * X轴缩放
          */
-        _setScaleX(scaleX:number){
-            this._nodeOpt.scaleX = scaleX;
+        _setSX(sx:number){
+            this._nodeOpt.sx = sx;
         }
-        public set scaleX(scaleX:number){
-            this._setScaleX(scaleX);
+        public set sx(sx:number){
+            this._setSX(sx);
         }
-        public get scaleX():number{
-            return this._nodeOpt.scaleX;
+        public get sx():number{
+            return this._nodeOpt.sx;
         }
         /**
          * y轴缩放
          */
-        _setScaleY(scaleY:number){
-            this._nodeOpt.scaleY = scaleY;
+        _setSY(sy:number){
+            this._nodeOpt.sy = sy;
         }
-        public set scaleY(scaleY:number){
-            this._setScaleY(scaleY);
+        public set sy(sy:number){
+            this._setSY(sy);
         }
-        public get scaleY():number{
-            return this._nodeOpt.scaleY;
+        public get sy():number{
+            return this._nodeOpt.sy;
         }
 
         /**
          * x轴锚点
          */
-        _setAnchorX(anchorX:number){
-            this._nodeOpt.anchorX = anchorX;
+        _setAX(ax:number){
+            this._nodeOpt.ax = ax;
         }
-        public set anchorX(anchorX:number){
-            this._setAnchorX(anchorX);
+        public set ax(ax:number){
+            this._setAX(ax);
         }
-        public get anchorX():number{
-            return this._nodeOpt.anchorX;
+        public get ax():number{
+            return this._nodeOpt.ax;
         }
         /**
          * y轴锚点
          */
-        _setAnchorY(anchorY:number){
-            this._nodeOpt.anchorY = anchorY;
+        _setAY(ay:number){
+            this._nodeOpt.ay = ay;
         }
-        public set anchorY(anchorY:number){
-            this._setAnchorY(anchorY);
+        public set ay(ay:number){
+            this._setAY(ay);
         }
-        public get anchorY():number{
-            return this._nodeOpt.anchorY;
+        public get ay():number{
+            return this._nodeOpt.ay;
         }
 
         /**
          * 旋转
          */
-        _setRotation(rotation:number){
-            this._nodeOpt.rotation = rotation;
+        _setR(r:number){
+            this._nodeOpt.r = r;
         }
-        public set rotation(rotation:number){
-            this._setRotation(rotation);
+        public set r(r:number){
+            this._setR(r);
         }
-        public get rotation():number{
-            return this._nodeOpt.rotation;
+        public get r():number{
+            return this._nodeOpt.r;
         }
 
         /**
          * zIndex
          */
-        _setZIndex(zIndex:number){
-            this._nodeOpt.zIndex = zIndex;
+        _setZ(z:number){
+            this._nodeOpt.z = z;
         }
-        public set zIndex(zIndex:number){
-            this._setZIndex(zIndex);
+        public set z(z:number){
+            this._setZ(z);
         }
-        public get zIndex():number{
-            return this._nodeOpt.zIndex;
+        public get z():number{
+            return this._nodeOpt.z;
         }
 
         /**
          * 是否可见。
          */
-        _setVisible(visible:boolean){
-            this._nodeOpt.visible = visible;
+        _setV(v:boolean){
+            this._nodeOpt.v = v;
         }
-        public set visible(visible:boolean){
-            this._setVisible(visible);
+        public set v(visible:boolean){
+            this._setV(visible);
         }
-        public get visible():boolean{
-            return this._nodeOpt.visible;
+        public get v():boolean{
+            return this._nodeOpt.v;
         }
 
         public set resizableByRes(resizableByRes:boolean){
@@ -209,11 +209,11 @@ module hh{
             return this._nodeOpt.resizableByRes;
         }
 
-        public set touchable(touchable:boolean){
-            this._nodeOpt.touchable = touchable;
+        public set t(t:boolean){
+            this._nodeOpt.t = t;
         }
-        public get touchable():boolean{
-            return this._nodeOpt.touchable;
+        public get t():boolean{
+            return this._nodeOpt.t;
         }
 
         /**
@@ -341,7 +341,7 @@ module hh{
             // 渲染队列
             var renderQueue = transOpt.renderQueue;
 
-            var touchable = nodeOpt.touchable;
+            var touchable = nodeOpt.t;
             // 保存好父亲节点当前在可点击队列中的具体位置
             var touchQueueIndex = transOpt.indexToSplice4TouchQueue;// TODO
 
@@ -349,7 +349,7 @@ module hh{
             // 记录该节点所在的起始点渲染下标
             nodeOpt.renderQueueRange[0] = renderQueue.length;
             // 如果该节点是可绘制的或者是出于debug模式的就放到绘制队列中
-            if((nodeOpt.drawable || clazz.debug || self.debug) && nodeOpt.width > 0 && nodeOpt.height > 0) {
+            if((nodeOpt.drawable || clazz.debug || self.debug) && nodeOpt.w > 0 && nodeOpt.h > 0) {
                 renderQueue.push(self._draw, self);
             }
             if(nodeOpt.clip) {4
@@ -377,7 +377,7 @@ module hh{
             for (var i = 0, l_i = children.length; i < l_i; i++) {
                 var child = children[i];
                 // 可见才可以继续进行转化
-                if(child._nodeOpt.visible) child._trans(transOpt);
+                if(child._nodeOpt.v) child._trans(transOpt);
             }
             transOpt.indexToSplice4TouchQueue = touchQueueIndex;// 还原位置
             if(touchable) touchQueue.push(self);
@@ -404,7 +404,7 @@ module hh{
             var matrix = nodeOpt.matrix4Render;// 使用的是渲染矩阵
             var drawInfo = nodeOpt.drawInfo;
             var a = matrix.a, b = matrix.b, c = matrix.c, d = matrix.d, tx = matrix.tx, ty = matrix.ty;
-            var x = 0, y = 0, width = nodeOpt.width, height = nodeOpt.height;
+            var x = 0, y = 0, width = nodeOpt.w, height = nodeOpt.h;
             if(drawInfo[0] == 0) return;// 相当于不画
             else if (drawInfo[0] == 1) {// 使用转换
                 ctx.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
@@ -436,7 +436,7 @@ module hh{
             ctx.strokeRect(x, y, w, h);
             // 绘制锚点
             var ps = 10;
-            ctx.fillRect(x + w*nodeOpt.anchorX - ps/2, y + h*nodeOpt.anchorY - ps/2, ps, ps);
+            ctx.fillRect(x + w*nodeOpt.ax - ps/2, y + h*nodeOpt.ay - ps/2, ps, ps);
         }
 
         /**
@@ -451,12 +451,12 @@ module hh{
             // 需要有一个标示来表明当前是否处于cache计算
             var chaching:boolean = transOpt.caching;
 
-            var x = nodeOpt.x, y = nodeOpt.y, w = nodeOpt.width, h = nodeOpt.height;
-            var scaleX = nodeOpt.scaleX, scaleY = nodeOpt.scaleY;
-            var rotation = nodeOpt.rotation;
+            var x = nodeOpt.x, y = nodeOpt.y, w = nodeOpt.w, h = nodeOpt.h;
+            var scaleX = nodeOpt.sx, scaleY = nodeOpt.sy;
+            var rotation = nodeOpt.r;
             var skewX = nodeOpt.skewX, skewY = nodeOpt.skewY;
-            var offsetX = w*nodeOpt.anchorX;
-            var offsetY = h*nodeOpt.anchorY;
+            var offsetX = w*nodeOpt.ax;
+            var offsetY = h*nodeOpt.ay;
 
             var matrix = nodeOpt.matrix;
             var matrix4Render = nodeOpt.matrix4Render;
@@ -465,7 +465,7 @@ module hh{
                 var pNodeOpt = parent._nodeOpt;
                 var pm = pNodeOpt.matrix;
                 matrix.identityMatrix(pm);
-                nodeOpt.worldAlpha = pNodeOpt.worldAlpha * nodeOpt.alpha;
+                nodeOpt.wa = pNodeOpt.wa * nodeOpt.a;
 
                 // 获取到parent的渲染矩阵
                 // 这个获取比较特殊，如果父节点就是一个cache节点，
@@ -516,7 +516,7 @@ module hh{
             var a = matrix.a, b = matrix.b, c = matrix.c, d = matrix.d, tx = matrix.tx, ty = matrix.ty;
             var lx = (c*(wy - ty) - d*(wx-tx))/(b*c - a*d);
             var ly = (a*(wy - ty) - b*(wx - tx))/(a*d-b*c);
-            var w = nodeOpt.width, h = nodeOpt.height;
+            var w = nodeOpt.w, h = nodeOpt.h;
             return lx >= 0 && lx <= w && ly >= 0 && ly <= h;
         }
     }

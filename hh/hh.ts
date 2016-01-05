@@ -314,9 +314,9 @@ module hh.CFG {
     export var frameRate:number = 60;
 
     /** 设计分辨率 */
-    export var design:any = {width:960, height:640};//size
+    export var design:any = {w:960, h:640};//size
     /** 适配，目前没用 */
-    export var resolution:any = {width:960, height:640};//size
+    export var resolution:any = {w:960, h:640};//size
 
     /** 自由选项 */
     export var option:any = {};
@@ -1851,7 +1851,7 @@ module hh {
             transOpt.indexToSplice4TouchQueue = 0;
 
             // 设计分辨率
-            self.design = {width:0, height:0};
+            self.design = {w:0, h:0};
             self.__fpsInfo = {
                 // 次数
                 count : 0,
@@ -2003,8 +2003,8 @@ module hh {
             var canvasId = CFG.canvas;
             var canvas:any = self._canvas = canvasId ? document.getElementById(canvasId) : document.getElementsByTagName('canvas')[0];
             var design = self.design;
-            var w = design.width = CFG.design.width;
-            var h = design.height = CFG.design.height;
+            var w = design.w = CFG.design.w;
+            var h = design.h = CFG.design.h;
             if(!canvas) throw '请添加canvas元素！';
             canvas.width = w;
             canvas.height = h;

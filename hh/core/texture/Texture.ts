@@ -8,8 +8,8 @@ module hh{
         data:any;
         x:number;
         y:number;
-        width:number;
-        height:number;
+        w:number;
+        h:number;
         canvas:any;
         grid:number[];
 
@@ -28,8 +28,8 @@ module hh{
             var canvas = self.canvas;
             self.x = x;
             self.y = y;
-            self.width = width;
-            self.height = height;
+            self.w = width;
+            self.h = height;
             canvas.width = width;
             canvas.height = height;
             var ctx = canvas.getContext('2d');
@@ -39,10 +39,10 @@ module hh{
         }
         setByGrid(texture:Texture, grid:number[], dstW:number, dstH:number){
             var self = this, canvas = self.canvas;
-            self.width = canvas.width = dstW;
-            self.height = canvas.height = dstH;
+            self.w = canvas.width = dstW;
+            self.h = canvas.height = dstH;
             var ctx = self.canvas.getContext('2d');
-            var data = texture.canvas, width = texture.width, height = texture.height;
+            var data = texture.canvas, width = texture.w, height = texture.h;
             var gridType = grid[0];
             var xValues1:number[], xValues2:number[], yValues1:number[], yValues2:number[];
             var dstW2:number, dstH2:number;

@@ -19,9 +19,9 @@ module tc{
         var node = new hh.Node();
         node.name = name;
         node.debug = true;
-        node.width = node.height = size;
+        node.w = node.h = size;
         node.x = node.y = pos;
-        node.touchable = touchable;
+        node.t = touchable;
         _addListeners(node);
         parent.addChild(node);
         return node;
@@ -33,7 +33,7 @@ module tc{
         var node1 = _addTouchNode(stage, 'node1', 200, 200, true);
         var node2 = _addTouchNode(node1, 'node2', 100, 100, true);
         var node3 = _addTouchNode(node2, 'node3', 200, 200, true);
-        node3.scaleX = node2.scaleY = 0.5;
-        node3.rotation = Math.PI/4;
+        node3.sx = node2.sy = 0.5;
+        node3.r = Math.PI/4;
     });
 }

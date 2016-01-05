@@ -8,11 +8,11 @@ module tc{
         unit.addMenuItem('Node4Layout relativeType ' + relativeType, function(){
             var node1 = new hh.Node();
             node1.name = 'node1';
-            node1.width = node1.height = 200;
+            node1.w = node1.h = 200;
             node1.x = node1.y = 200;
 
             var node2 = new hh.Node();
-            node2.width = node2.height = 100;
+            node2.w = node2.h = 100;
             var layout = node2.layout = new hh.Layout();
             layout.relativeType = relativeType;
             layout.x = layout.y = 20;
@@ -31,12 +31,12 @@ module tc{
             layout1.linearType = linearType;
             layout1.padding = [10, 10, 20, 20];
             layout1.x = layout1.y = 200;
-            node1.width = node1.height = 100;
+            node1.w = node1.h = 100;
 
             for(var i = 0; i < 4; ++i){
                 var node2 = new hh.Node();
                 node2.name = 'node_' + i;
-                node2.width = node2.height = 50;
+                node2.w = node2.h = 50;
                 var layout = node2.layout = new hh.Layout();
                 layout.x = layout.y = 20;
                 layout.margin = [10, 10, 20, 20];

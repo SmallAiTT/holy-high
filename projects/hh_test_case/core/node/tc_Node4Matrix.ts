@@ -9,18 +9,16 @@ module tc{
         _initProp(){
             super._initProp();
             var self = this;
-            self._setWidth(100);
-            self._setHeight(100);
-            self._setAnchorX(0);
-            self._setAnchorY(0);
+            self.w = self.h = 100;
+            self.ax = self.ay = 0;
         }
 
         //@override
         _calMatrix(transOpt){
             super._calMatrix(transOpt);
             var matrix:hh.Matrix = this._nodeOpt.matrix;
-            var w = this.width;
-            var h = this.height;
+            var w = this.w;
+            var h = this.h;
             var arr = [[0, 0], [0, h], [w, 0], [w, h], [w/2, h/2]];
             var a = matrix.a, b = matrix.b, c = matrix.c, d = matrix.d, tx = matrix.tx, ty = matrix.ty;
             for (var i = 0, l_i = arr.length; i < l_i; i++) {
@@ -44,7 +42,7 @@ module tc{
         var node = new Node4Matrix1();
         node.x = 100;
         node.y = 100;
-        node.anchorX = node.anchorY = 0.5;
+        node.ax = node.ay = 0.5;
         hh.engine.stage.addChild(node);
     });
 
@@ -52,8 +50,8 @@ module tc{
         var node = new Node4Matrix1();
         node.x = 100;
         node.y = 100;
-        node.anchorX = node.anchorY = 0.5;
-        node.scaleX = node.scaleY = 0.5;
+        node.ax = node.ay = 0.5;
+        node.sx = node.sy = 0.5;
         hh.engine.stage.addChild(node);
     });
 
@@ -61,9 +59,9 @@ module tc{
         var node = new Node4Matrix1();
         node.x = 100;
         node.y = 100;
-        node.anchorX = node.anchorY = 0.5;
-        node.scaleX = node.scaleY = 0.5;
-        node.rotation = Math.PI/4;
+        node.ax = node.ay = 0.5;
+        node.sx = node.sy = 0.5;
+        node.r = Math.PI/4;
         hh.engine.stage.addChild(node);
     });
 }

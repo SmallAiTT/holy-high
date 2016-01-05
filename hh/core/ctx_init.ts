@@ -12,7 +12,7 @@ module hh{
             var cOpt = child._nodeOpt;
             var cMatrix = cOpt.matrix;
             var cfpx = cMatrix.tx, cfpy = cMatrix.ty;
-            var ccx = cOpt.width/2, ccy = cOpt.height/2;
+            var ccx = cOpt.w/2, ccy = cOpt.h/2;
             var ccpx = cMatrix.a * ccx + cMatrix.c * ccy + cMatrix.tx;
             var ccpy = cMatrix.b * ccx + cMatrix.d * ccy + cMatrix.ty;
             var dist2 = Math.sqrt((cfpx-ccpx)*(cfpx-ccpx) + (cfpy-ccpy)*(cfpy-ccpy));
@@ -40,7 +40,7 @@ module hh{
             var children = nodeOpt.children;
             var matrix = nodeOpt.matrix;// 矩阵
             var fpx = matrix.tx, fpy = matrix.ty;
-            var cx = nodeOpt.width/2, cy = nodeOpt.height/2;
+            var cx = nodeOpt.w/2, cy = nodeOpt.h/2;
             var cpx = matrix.a * cx + matrix.c * cy + matrix.tx;
             var cpy = matrix.b * cx + matrix.d * cy + matrix.ty;
             var dist1 = Math.sqrt((fpx-cpx)*(fpx-cpx) + (fpy-cpy)*(fpy-cpy));
@@ -52,15 +52,15 @@ module hh{
         // 将矩阵还原
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         // 擦除整个画布
-        ctx.clearRect(0, 0, engine.design.width, engine.design.height);
+        ctx.clearRect(0, 0, engine.design.w, engine.design.h);
     });
     // 初始化渲染上下文
     engine.once(Eng.__INIT_CTX, function(){
         // 初始化舞台
         var stage = engine.stage = new Node();
-        stage.width = engine.design.width;
-        stage.height = engine.design.height;
-        stage.anchorX = stage.anchorY = 0;
+        stage.w = engine.design.w;
+        stage.h = engine.design.h;
+        stage.ax = stage.ay = 0;
         stage.name = "stage";
 
         // 注册点击事件

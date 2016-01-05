@@ -10,28 +10,28 @@ module hh{
         debugRectColor:any;
 
         name:string;
-        width:number;
-        height:number;
+        w:number;
+        h:number;
         x:number;
         y:number;
-        scaleX:number;
-        scaleY:number;
-        anchorX:number;
-        anchorY:number;
-        rotation:number;
+        sx:number;
+        sy:number;
+        ax:number;
+        ay:number;
+        r:number;
         skewX:number;
         skewY:number;
-        alpha:number;
-        worldAlpha:number;
-        zIndex:number;
-        visible:boolean;
+        a:number;
+        wa:number;
+        z:number;
+        v:boolean;
         resizableByRes:boolean;// 是否根据资源自动调整大小，默认设置为true
 
         parent:Node;
         children:Node[];
 
         drawable:boolean;
-        touchable:boolean;// 是否可点击，默认设置成不可点击，这样可以提升性能
+        t:boolean;// 是否可点击，默认设置成不可点击，这样可以提升性能
         matrix:Matrix;
         // 这个是用来绘制用的矩阵
         matrix4Render:Matrix;
@@ -50,20 +50,20 @@ module hh{
             super._initProp();
             var self = this;
             self.name = self._TargetClass.__n;
-            self.width = 0;
-            self.height = 0;
+            self.w = 0;
+            self.h = 0;
             self.x = 0;
             self.y = 0;
-            self.scaleX = 1;
-            self.scaleY = 1;
-            self.anchorX = 0.5;
-            self.anchorY = 0.5;
-            self.rotation = 0;
+            self.sx = 1;
+            self.sy = 1;
+            self.ax = 0.5;
+            self.ay = 0.5;
+            self.r = 0;
             self.skewX = 0;
             self.skewY = 0;
-            self.alpha = 0;
-            self.worldAlpha = 1;
-            self.visible = true;
+            self.a = 0;
+            self.wa = 1;
+            self.v = true;
             self.resizableByRes = true;
             self.children = [];
             self.drawable = false;

@@ -28,7 +28,7 @@ module hh{
             var a = matrix.a, b = matrix.b, c = matrix.c, d = matrix.d, tx = matrix.tx, ty = matrix.ty;
             var lx = (c*(wy - ty) - d*(wx-tx))/(b*c - a*d);
             var ly = (a*(wy - ty) - b*(wx - tx))/(a*d-b*c);
-            var w = nodeOpt.width, h = nodeOpt.height;
+            var w = nodeOpt.w, h = nodeOpt.h;
             return lx >= 0 && lx <= w && ly >= 0 && ly <= h;
         }
         test(wx:number, wy:number):boolean{
@@ -39,7 +39,7 @@ module hh{
             var a = matrix.a, b = matrix.b, c = matrix.c, d = matrix.d, tx = matrix.tx, ty = matrix.ty;
             var lx = (c*(wy - ty) - d*(wx-tx))/(b*c - a*d);
             var ly = (a*(wy - ty) - b*(wx - tx))/(a*d-b*c);
-            var w = nodeOpt.width, h = nodeOpt.height;
+            var w = nodeOpt.w, h = nodeOpt.h;
             return lx >= 0 && lx <= w && ly >= 0 && ly <= h;
         }
         onBegan(tx:number, ty:number, phase:number){

@@ -7,49 +7,49 @@ module tc{
         hh.Node.debug = true;
         var node1 = new hh.Node();
         node1.name = 'node1';
-        node1.width = node1.height = 100;
+        node1.w = node1.h = 100;
 
         var node2 = new hh.Node();
         node2.name = 'node2';
-        node2.width = node2.height = 100;
+        node2.w = node2.h = 100;
         node2.x = 110;
 
         var node3 = new hh.Node();
         node3.name = 'node3';
-        node3.width = node3.height = 100;
+        node3.w = node3.h = 100;
         node3.x = 220;
-        node3.scaleX = node3.scaleY = 0.5;
+        node3.sx = node3.sy = 0.5;
 
         var node4 = new hh.Node();
         node4.name = 'node4';
-        node4.width = node4.height = 100;
+        node4.w = node4.h = 100;
         node4.x = node4.y = 110;
-        node4.scaleX = node4.scaleY = 0.5;
-        node4.anchorX = node4.anchorY = 0.5;
+        node4.sx = node4.sy = 0.5;
+        node4.ax = node4.ay = 0.5;
 
         var node5 = new hh.Node();
         node5.name = 'node5';
-        node5.width = node5.height = 100;
+        node5.w = node5.h = 100;
         node5.x = 220;
         node5.y = 110;
-        node5.scaleX = node5.scaleY = 0.5;
-        node5.anchorX = node5.anchorY = 0.5;
-        node5.rotation = Math.PI/4;
+        node5.sx = node5.sy = 0.5;
+        node5.ax = node5.ay = 0.5;
+        node5.r = Math.PI/4;
 
         var node6 = new hh.Node();
         node6.name = 'node5';
-        node6.width = node6.height = 100;
+        node6.w = node6.h = 100;
         node6.x = 0;
         node6.y = 100;
-        node6.scaleX = node6.scaleY = 0.5;
-        node6.anchorX = node6.anchorY = 0.5;
+        node6.sx = node6.sy = 0.5;
+        node6.ax = node6.ay = 0.5;
         var distance = 300, speed = 10;
         var rate = 1;
         var mv = function(){
             if(rate == 1 && (node6.x + speed > distance)) rate = -1;
             else if(rate == -1 && (node6.x - speed < 0)) rate = 1;
             node6.x += speed*rate;
-            node6.rotation += 0.1;
+            node6.r += 0.1;
         };
 
         hh.tick(mv);
@@ -71,14 +71,14 @@ module tc{
         var url = res_helper.getItemUrl(11001);
         hh.R.load(url, function(){
             var stage:hh.Node = hh.engine.stage;
-            var w = stage.width, h = stage.height;
+            var w = stage.w, h = stage.h;
             for(var i = 0; i < 200; ++i){
                 var randX = w*(Math.random());
                 var randY = h*(Math.random());
                 var img = new hh.Node();
                 img.x = randX;
                 img.y = randY;
-                img.height = 200;
+                img.h = 200;
                 stage.addChild(img);
             }
         });
@@ -89,14 +89,14 @@ module tc{
         var url = res_helper.getItemUrl(11001);
         hh.R.load(url, function(){
             var stage:hh.Node = hh.engine.stage;
-            var w = stage.width, h = stage.height;
+            var w = stage.w, h = stage.h;
             for(var i = 0; i < 400; ++i){
                 var randX = w*(Math.random());
                 var randY = h*(Math.random());
                 var img = new hh.Node();
                 img.x = randX;
                 img.y = randY;
-                img.height = 200;
+                img.h = 200;
                 stage.addChild(img);
             }
         });
@@ -107,14 +107,14 @@ module tc{
         var url = res_helper.getItemUrl(11001);
         hh.R.load(url, function(){
             var stage:hh.Node = hh.engine.stage;
-            var w = stage.width, h = stage.height;
+            var w = stage.w, h = stage.h;
             for(var i = 0; i < 600; ++i){
                 var randX = w*(Math.random());
                 var randY = h*(Math.random());
                 var img = new hh.Node();
                 img.x = randX;
                 img.y = randY;
-                img.height = 200;
+                img.h = 200;
                 stage.addChild(img);
             }
         });

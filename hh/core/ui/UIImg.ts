@@ -11,7 +11,7 @@ module hh{
         _initProp(){
             super._initProp();
             var self = this, nodeOpt = self._nodeOpt;
-            nodeOpt.anchorX = nodeOpt.anchorY = 0.5;
+            nodeOpt.ax = nodeOpt.ay = 0.5;
             self._imgOpt = new UIImgOpt();
         }
         constructor(urlOrTexture?:any){
@@ -63,10 +63,10 @@ module hh{
                 // 设置成可以绘制
                 nodeOpt.drawable = true;
                 var grid = imgOpt.grid;
-                if((nodeOpt.width && nodeOpt.height) && (texture.grid || !nodeOpt.resizableByRes)) return true;// 不需要重置大小
+                if((nodeOpt.w && nodeOpt.h) && (texture.grid || !nodeOpt.resizableByRes)) return true;// 不需要重置大小
                 if(!grid || grid.length == 0){
-                    self._setWidth(texture.width);
-                    self._setHeight(texture.height);
+                    self._setW(texture.w);
+                    self._setH(texture.h);
                 }else{
                     var type = grid[0];
                     if(type == 1 || type == 2){
@@ -74,11 +74,11 @@ module hh{
                     }else if(type == 3){
                         // 三宫格，只改变一个方向的
                         // 垂直的时候改变width
-                        self._setWidth(texture.width);
+                        self._setW(texture.w);
                     }else if(type == 4){
                         // 三宫格，只改变一个方向的
                         // 水平的时候改变height
-                        self._setHeight(texture.height);
+                        self._setH(texture.h);
                     }
                 }
                 return true;
@@ -95,7 +95,7 @@ module hh{
         }
         _getTextureToDraw():Texture{
             var self = this, textureCode = self._textureCode, nodeOpt = self._nodeOpt;
-            var width = nodeOpt.width, height = nodeOpt.height;
+            var width = nodeOpt.w, height = nodeOpt.h;
             var texture:Texture = self._imgOpt.texture;
             if(self._textureCode){
                 // 如果之前有textureCode，则需要进行移除
@@ -131,15 +131,15 @@ module hh{
             var self = this, imgOpt = self._imgOpt;
             var texture:Texture = self._getTextureToDraw();
             if(!texture) return;// 不用绘制
-            ctx.drawImage(texture.canvas, 0, 0, texture.width, texture.height, x, y, width, height);
-            // texture.render(ctx, 0, 0, nodeOpt.width, nodeOpt.height, imgOpt.grid);
+            ctx.drawImage(texture.canvas, 0, 0, texture.w, texture.h, x, y, width, height);
+            // texture.render(ctx, 0, 0, nodeOpt.w, nodeOpt.h, imgOpt.grid);
 
             if(imgOpt.isBCSH()){
                 var bcsh = imgOpt.bcsh;
                 var colorMatrix:ColorMatrix = new ColorMatrix();
                 colorMatrix.adjustColor(bcsh[0], bcsh[1], bcsh[2], bcsh[3]);
 
-                var imageData = ctx.getImageData(0,0,engine.design.width, engine.design.height);
+                var imageData = ctx.getImageData(0,0,engine.design.w, engine.design.h);
                 var data = imageData.data;
 
                 for (var i = 0; i < data.length; i += 4) {
