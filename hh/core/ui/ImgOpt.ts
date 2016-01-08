@@ -2,7 +2,7 @@
  * Created by SmallAiTT on 2015/7/1.
  */
 module hh{
-    export class UIImgOpt extends Class{
+    export class ImgOpt extends Class{
         texture:Texture;
         bcsh:number[];
         grid:number[];

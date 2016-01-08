@@ -2,31 +2,31 @@
  * Created by SmallAiTT on 2015/7/7.
  */
 module hh{
-    export class UIText extends Node{
+    export class Txt extends Node{
 
-        _textOpt:UITextOpt;
+        _textOpt:TxtOpt;
 
         //@override
         _initProp(){
             super._initProp();
             var self = this;
             self._nodeOpt.drawable = true;
-            self._textOpt = new UITextOpt();
+            self._textOpt = new TxtOpt();
         }
 
         /**
          * 文本内容
          */
-        _setText(text:any){
-            this._textOpt.text = text;
-            var size = hh.engine.canvasCtx.measureText(text);
+        _setValue(value:any){
+            this._textOpt.value = value;
+            var size = hh.engine.canvasCtx.measureText(value);
             console.log(size.width);
         }
-        public set text(text:any){
-            this._setText(text);
+        public set value(value:any){
+            this._setValue(value);
         }
-        public get text():any{
-            return this._textOpt.text;
+        public get value():any{
+            return this._textOpt.value;
         }
 
 
@@ -34,7 +34,7 @@ module hh{
         _render(ctx:IRenderingContext2D, engine:Engine){
             ctx.fillStyle = 'red';
             ctx.font = "30px serif";
-            ctx.fillText(this._textOpt.text, 0, 0);
+            ctx.fillText(this._textOpt.value, 0, 0);
         }
 
     }

@@ -2,8 +2,8 @@
  * Created by SmallAiTT on 2015/7/1.
  */
 module hh{
-    export class UITextOpt extends Class{
-        text:string;
+    export class TxtOpt extends Class{
+        value:string;
         font:string;
         size:number;
 

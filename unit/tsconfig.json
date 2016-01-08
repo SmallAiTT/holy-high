@@ -34,10 +34,10 @@
         "../hh/core/texture/TexturePool.ts",
         "../hh/core/touch/Touch.ts",
         "../hh/core/touch/TouchCtx.ts",
-        "../hh/core/ui/UIImg.ts",
-        "../hh/core/ui/UIImgOpt.ts",
-        "../hh/core/ui/UIText.ts",
-        "../hh/core/ui/UITextOpt.ts",
+        "../hh/core/ui/Img.ts",
+        "../hh/core/ui/ImgOpt.ts",
+        "../hh/core/ui/Txt.ts",
+        "../hh/core/ui/TxtOpt.ts",
         "./unit.ts"
     ]
 }

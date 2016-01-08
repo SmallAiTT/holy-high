@@ -29,9 +29,9 @@
         "./core/texture/TexturePool.ts",
         "./core/touch/Touch.ts",
         "./core/touch/TouchCtx.ts",
-        "./core/ui/UIImg.ts",
-        "./core/ui/UIImgOpt.ts",
-        "./core/ui/UIText.ts",
-        "./core/ui/UITextOpt.ts"
+        "./core/ui/Img.ts",
+        "./core/ui/ImgOpt.ts",
+        "./core/ui/Txt.ts",
+        "./core/ui/TxtOpt.ts"
     ]
 }

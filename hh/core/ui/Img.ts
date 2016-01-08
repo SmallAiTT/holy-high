@@ -2,17 +2,17 @@
  * Created by SmallAiTT on 2015/7/1.
  */
 module hh{
-    export class UIImg extends Node{
-        static NodeOpt:any = UIImgOpt;
+    export class Img extends Node{
+        static NodeOpt:any = ImgOpt;
 
-        _imgOpt:UIImgOpt;
+        _imgOpt:ImgOpt;
 
         //@override
         _initProp(){
             super._initProp();
             var self = this, nodeOpt = self._nodeOpt;
             nodeOpt.ax = nodeOpt.ay = 0.5;
-            self._imgOpt = new UIImgOpt();
+            self._imgOpt = new ImgOpt();
         }
         constructor(urlOrTexture?:any){
             super();
