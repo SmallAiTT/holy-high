@@ -2,8 +2,28 @@
  * Created by SmallAiTT on 2015/7/1.
  */
 module tc{
-    unit.curModuleName = moduleName_ui;
+    unit.curModuleName = moduleName_img;
 
+    var testByNum = function(num:number){
+        unit.addMenuItem('数量'+num, function(){
+            hh.Img.debug = false;
+            var url = res_helper.getItemUrl(11001);
+            hh.R.load(url, function(){
+                var stage:hh.Node = hh.engine.stage;
+                var w = stage.w, h = stage.h;
+                for(var i = 0; i < num; ++i){
+                    var randX = w*(Math.random());
+                    var randY = h*(Math.random());
+                    var img = new hh.Img();
+                    img.x = randX;
+                    img.y = randY;
+                    img.load(url);
+                    stage.addChild(img);
+                }
+            });
+
+        });
+    }
     unit.addMenuItem('Img#load', function(){
         hh.Img.debug = true;
         var url = res_helper.getItemUrl(11001);
@@ -53,81 +73,11 @@ module tc{
         });
 
     });
-
-    unit.addMenuItem('Img 数量测试100', function(){
-        hh.Img.debug = false;
-        var url = res_helper.getItemUrl(11001);
-        hh.R.load(url, function(){
-            var stage:hh.Node = hh.engine.stage;
-            var w = stage.w, h = stage.h;
-            for(var i = 0; i < 100; ++i){
-                var randX = w*(Math.random());
-                var randY = h*(Math.random());
-                var img = new hh.Img();
-                img.x = randX;
-                img.y = randY;
-                img.load(url);
-                stage.addChild(img);
-            }
-        });
-
-    });
-
-    unit.addMenuItem('Img 数量测试200', function(){
-        hh.Img.debug = false;
-        var url = res_helper.getItemUrl(11001);
-        hh.R.load(url, function(){
-            var stage:hh.Node = hh.engine.stage;
-            var w = stage.w, h = stage.h;
-            for(var i = 0; i < 200; ++i){
-                var randX = w*(Math.random());
-                var randY = h*(Math.random());
-                var img = new hh.Img();
-                img.x = randX;
-                img.y = randY;
-                img.load(url);
-                stage.addChild(img);
-            }
-        });
-
-    });
-    unit.addMenuItem('Img 数量测试400', function(){
-        hh.Img.debug = false;
-        var url = res_helper.getItemUrl(11001);
-        hh.R.load(url, function(){
-            var stage:hh.Node = hh.engine.stage;
-            var w = stage.w, h = stage.h;
-            for(var i = 0; i < 400; ++i){
-                var randX = w*(Math.random());
-                var randY = h*(Math.random());
-                var img = new hh.Img();
-                img.x = randX;
-                img.y = randY;
-                img.load(url);
-                stage.addChild(img);
-            }
-        });
-
-    });
-    unit.addMenuItem('Img 数量测试600', function(){
-        hh.Img.debug = false;
-        var url = res_helper.getItemUrl(11001);
-        hh.R.load(url, function(){
-            var stage:hh.Node = hh.engine.stage;
-            var w = stage.w, h = stage.h;
-            for(var i = 0; i < 600; ++i){
-                var randX = w*(Math.random());
-                var randY = h*(Math.random());
-                var img = new hh.Img();
-                img.x = randX;
-                img.y = randY;
-                img.load(url);
-                stage.addChild(img);
-            }
-        });
-
-    });
-    unit.addMenuItem('Img clip 区域测试', function(){
+    testByNum(100);
+    testByNum(200);
+    testByNum(400);
+    testByNum(600);
+    unit.addMenuItem('clip区域测试', function(){
         hh.Img.debug = false;
         var url = res_helper.getItemUrl(11001);
         hh.R.load(url, function(){
@@ -153,7 +103,7 @@ module tc{
         });
 
     });
-    unit.addMenuItem('Img 数量测试 clip1', function(){
+    unit.addMenuItem('clip数量测试1', function(){
         hh.Img.debug = false;
         var url = res_helper.getItemUrl(11001);
         hh.R.load(url, function(){
@@ -171,7 +121,7 @@ module tc{
         });
 
     });
-    unit.addMenuItem('Img 数量测试 clip2', function(){
+    unit.addMenuItem('clip数量测试2', function(){
         hh.Img.debug = false;
         var url = res_helper.getItemUrl(11001);
         hh.R.load(url, function(){
@@ -195,7 +145,7 @@ module tc{
 
     });
 
-    unit.addMenuItem('Img#grid 九宫格', function(){
+    unit.addMenuItem('grid9', function(){
         hh.Img.debug = true;
         var url = res_helper.getS9gUrl(1);
         var img1 = new hh.Img();
@@ -207,7 +157,7 @@ module tc{
         hh.engine.stage.addChild(img1);
     });
 
-    unit.addMenuItem('Img九宫格数量400', function(){
+    unit.addMenuItem('grid9数量400', function(){
         hh.Img.debug = false;
         var url = res_helper.getS9gUrl(1);
         hh.R.load(url, function(){
@@ -229,7 +179,7 @@ module tc{
 
     });
 
-    unit.addMenuItem('Img#grid 三宫格', function(){
+    unit.addMenuItem('grid3', function(){
         hh.Img.debug = true;
         var url = res_helper.getS9gUrl(1);
 
@@ -257,7 +207,7 @@ module tc{
     });
 
 
-    unit.addMenuItem('Img#grid-12宫格', function(){
+    unit.addMenuItem('grid12', function(){
         hh.Img.debug = true;
         var url = res_helper.getS9gUrl(1);
         var img1 = new hh.Img();
@@ -270,7 +220,7 @@ module tc{
         hh.engine.stage.addChild(img1);
     });
 
-    unit.addMenuItem('Img#grid 16宫格', function(){
+    unit.addMenuItem('grid16', function(){
         hh.Img.debug = true;
         var url = res_helper.getS9gUrl(2);
         var img1 = new hh.Img();

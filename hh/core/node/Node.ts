@@ -349,7 +349,7 @@ module hh{
             // 记录该节点所在的起始点渲染下标
             nodeOpt.renderQueueRange[0] = renderQueue.length;
             // 如果该节点是可绘制的或者是出于debug模式的就放到绘制队列中
-            if((nodeOpt.drawable || clazz.debug || self.debug) && nodeOpt.w > 0 && nodeOpt.h > 0) {
+            if(nodeOpt.drawable || clazz.debug || self.debug) {
                 renderQueue.push(self._draw, self);
             }
             if(nodeOpt.clip) {4

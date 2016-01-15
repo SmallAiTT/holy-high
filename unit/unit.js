@@ -84,6 +84,8 @@ var unit;
     hh.engine.once(hh.Engine.AFTER_BOOT, function () {
         if (!unit.htmlMenuEnabled)
             return;
+        if (!document.getElementById('div_menuRoot'))
+            return;
         _menuStr += '<table>';
         for (var moduleName in _moduleMenuMap) {
             _menuStr += hh.STR.placeholder(_menuNameTemp, { moduleName: moduleName });

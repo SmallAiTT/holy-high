@@ -28,7 +28,8 @@
 </table>
 <script src="../hh/hh.js"></script>
 <script>
-    hh.boot(["../unit", "sty_canvas"], function(){
+    hh.boot(["../hh/core", "../unit", "res_helper", "test_canvas"], function(){
+        hh.R.root = 'res';
         console.log("启动完毕!");
     });
 </script>

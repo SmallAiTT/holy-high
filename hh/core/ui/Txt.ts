@@ -20,6 +20,7 @@ module hh{
         _setValue(value:any){
             this._textOpt.value = value;
             var size = hh.engine.canvasCtx.measureText(value);
+            this.w = size.width;
             console.log(size.width);
         }
         public set value(value:any){
@@ -31,10 +32,12 @@ module hh{
 
 
         // @override
-        _render(ctx:IRenderingContext2D, engine:Engine){
-            ctx.fillStyle = 'red';
+        _render(ctx:IRenderingContext2D, engine:Engine, x:number, y:number, w:number, h:number){
+            // ctx.textBaseline = 'top';
+            ctx.fillStyle = 'blue';
             ctx.font = "30px serif";
-            ctx.fillText(this._textOpt.value, 0, 0);
+            ctx.fillText(this._textOpt.value, x, y);
+            engine.__fpsInfo.drawCount++;
         }
 
     }
