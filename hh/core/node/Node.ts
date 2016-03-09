@@ -404,13 +404,13 @@ module hh{
             var a = matrix.a, b = matrix.b, c = matrix.c, d = matrix.d, tx = matrix.tx, ty = matrix.ty;
             var x = 0, y = 0, width = nodeOpt.width, height = nodeOpt.height;
             if(drawInfo[0] == 0) return;// 相当于不画
-            else if (drawInfo[0] == 1) {// 使用转换
-                ctx.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
-                engine.transformed = true;
-            }else if(engine.transformed){// 如果不使用转换，但是之前有使用过，需要先进行复位
-                ctx.setTransform(1,0,0,1,0,0);
-                engine.transformed = false;
-            }
+            // else if (drawInfo[0] == 1) {// 使用转换
+            //     ctx.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+            //     engine.transformed = true;
+            // }else if(engine.transformed){// 如果不使用转换，但是之前有使用过，需要先进行复位
+            //     ctx.setTransform(1,0,0,1,0,0);
+            //     engine.transformed = false;
+            // }
             var dx = drawInfo[1], dy = drawInfo[2], dw = drawInfo[3], dh = drawInfo[4];
             if(nodeOpt.debugRectColor) {
                 ctx.fillStyle = nodeOpt.debugRectColor;

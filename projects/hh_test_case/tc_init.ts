@@ -9,7 +9,7 @@ module tc{
     export var error:Function;
     LOG.initLogger(tc, 'tc');
 
-    export var moduleName_Node:string = "Node 测试";
-    export var moduleName_Res:string = "Res 测试";
-    export var moduleName_ui:string = "UI 测试";
+    export var moduleName_Node:string = "Node";
+    export var moduleName_Res:string = "Res";
+    export var moduleName_ui:string = "UI";
 }

@@ -17,6 +17,26 @@ module hh{
         constructor(urlOrTexture?:any){
             super();
         }
+        
+        //+++++++++++++++++纹理缩放参数 开始++++++++++++++++++++++++++++++++++++++
+        set textureScaleX(textureScaleX:number){
+            this._imgOpt.textureScaleX = textureScaleX;
+        }
+        get textureScaleX():number{
+            return this._imgOpt.textureScaleX;
+        }
+        set textureScaleY(textureScaleY:number){
+            this._imgOpt.textureScaleY = textureScaleY;
+        }
+        get textureScaleY():number{
+            return this._imgOpt.textureScaleY;
+        }
+        setTextureScale(textureScaleX:number, textureScaleY?:number){
+            textureScaleX = textureScaleX == null ? textureScaleY : textureScaleX;
+            this.textureScaleX = textureScaleX;
+            this.textureScaleY = textureScaleY;
+        }
+        //+++++++++++++++++纹理缩放参数 结束++++++++++++++++++++++++++++++++++++++
 
         /**
          * N宫格
@@ -62,25 +82,28 @@ module hh{
                 imgOpt.texture = texture;
                 // 设置成可以绘制
                 nodeOpt.drawable = true;
-                var grid = imgOpt.grid;
+                var grid = self.grid || imgOpt.grid;
                 if((nodeOpt.width && nodeOpt.height) && (texture.grid || !nodeOpt.resizableByRes)) return true;// 不需要重置大小
-                if(!grid || grid.length == 0){
-                    self._setWidth(texture.width);
-                    self._setHeight(texture.height);
-                }else{
-                    var type = grid[0];
-                    if(type == 1 || type == 2){
-                        // 九宫格，改变设定的size，而是外部定义size。
-                    }else if(type == 3){
-                        // 三宫格，只改变一个方向的
-                        // 垂直的时候改变width
-                        self._setWidth(texture.width);
-                    }else if(type == 4){
-                        // 三宫格，只改变一个方向的
-                        // 水平的时候改变height
-                        self._setHeight(texture.height);
-                    }
-                }
+                self._setWidth(texture.width);
+                self._setHeight(texture.height);
+                // if(!grid || grid.length == 0){
+                //     self._setWidth(texture.width);
+                //     self._setHeight(texture.height);
+                // }else{
+                //     // self._setHeight(texture.height);
+                //     // var type = grid[0];
+                //     // if(type == 1 || type == 2){
+                //     //     // 九宫格，改变设定的size，而是外部定义size。
+                //     // }else if(type == 3){
+                //     //     // 三宫格，只改变一个方向的
+                //     //     // 垂直的时候改变width
+                //     //     self._setWidth(texture.width);
+                //     // }else if(type == 4){
+                //     //     // 三宫格，只改变一个方向的
+                //     //     // 水平的时候改变height
+                //     //     self._setHeight(texture.height);
+                //     // }
+                // }
                 return true;
             }
             return false;

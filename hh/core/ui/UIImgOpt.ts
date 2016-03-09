@@ -6,6 +6,8 @@ module hh{
         texture:Texture;
         bcsh:number[];
         grid:number[];
+        textureScaleX:number;
+        textureScaleY:number;
 
         //@override
         _initProp():void{

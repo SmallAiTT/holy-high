@@ -8,5 +8,5 @@ var projDir = path.join(__dirname, "../");
 exports.projDir = projDir;
 exports.clientDir = projDir;
 
-exports.host = "192.168.1.206";
+exports.host = "127.0.0.1";
 exports.port = 3000;

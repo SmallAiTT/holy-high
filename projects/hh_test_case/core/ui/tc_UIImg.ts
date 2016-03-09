@@ -33,7 +33,7 @@ module tc{
         hh.engine.stage.addChild(img);
     });
 
-    unit.addMenuItem('UIImg 缩放', function(){
+    unit.addMenuItem('UIImg-缩放', function(){
         hh.UIImg.debug = true;
         var url = res_helper.getItemUrl(11001);
         hh.RES.load(url, function(){
@@ -50,7 +50,7 @@ module tc{
 
     });
 
-    unit.addMenuItem('UIImg 数量测试100', function(){
+    unit.addMenuItem('UIImg-数量测试100', function(){
         hh.UIImg.debug = false;
         var url = res_helper.getItemUrl(11001);
         hh.RES.load(url, function(){
@@ -69,7 +69,7 @@ module tc{
 
     });
 
-    unit.addMenuItem('UIImg 数量测试200', function(){
+    unit.addMenuItem('UIImg-数量测试200', function(){
         hh.UIImg.debug = false;
         var url = res_helper.getItemUrl(11001);
         hh.RES.load(url, function(){
@@ -87,7 +87,7 @@ module tc{
         });
 
     });
-    unit.addMenuItem('UIImg 数量测试400', function(){
+    unit.addMenuItem('UIImg-数量测试400', function(){
         hh.UIImg.debug = false;
         var url = res_helper.getItemUrl(11001);
         hh.RES.load(url, function(){
@@ -105,7 +105,7 @@ module tc{
         });
 
     });
-    unit.addMenuItem('UIImg 数量测试600', function(){
+    unit.addMenuItem('UIImg-数量测试600', function(){
         hh.UIImg.debug = false;
         var url = res_helper.getItemUrl(11001);
         hh.RES.load(url, function(){
@@ -123,7 +123,7 @@ module tc{
         });
 
     });
-    unit.addMenuItem('UIImg clip 区域测试', function(){
+    unit.addMenuItem('UIImg#clip-区域测试', function(){
         hh.UIImg.debug = false;
         var url = res_helper.getItemUrl(11001);
         hh.RES.load(url, function(){
@@ -149,7 +149,7 @@ module tc{
         });
 
     });
-    unit.addMenuItem('UIImg 数量测试 clip1', function(){
+    unit.addMenuItem('UIImg#clip-数量2000(无clip)', function(){
         hh.UIImg.debug = false;
         var url = res_helper.getItemUrl(11001);
         hh.RES.load(url, function(){
@@ -167,7 +167,7 @@ module tc{
         });
 
     });
-    unit.addMenuItem('UIImg 数量测试 clip2', function(){
+    unit.addMenuItem('UIImg-clip-数量2000', function(){
         hh.UIImg.debug = false;
         var url = res_helper.getItemUrl(11001);
         hh.RES.load(url, function(){
@@ -191,41 +191,7 @@ module tc{
 
     });
 
-    unit.addMenuItem('UIImg#grid 九宫格', function(){
-        hh.UIImg.debug = true;
-        var url = res_helper.getS9gUrl(1);
-        var img1 = new hh.UIImg();
-        img1.x = img1.y = 150;
-        img1.grid = [9, 39, 39, 2, 2];
-        img1.width = img1.height = 200;
-        img1.load(url);
-
-        hh.engine.stage.addChild(img1);
-    });
-
-    unit.addMenuItem('UIImg九宫格数量400', function(){
-        hh.UIImg.debug = false;
-        var url = res_helper.getS9gUrl(1);
-        hh.RES.load(url, function(){
-            var stage:hh.Node = hh.engine.stage;
-            var w = stage.width, h = stage.height;
-            for(var i = 0; i < 400; ++i){
-                var randX = w*(Math.random());
-                var randY = h*(Math.random());
-                var img = new hh.UIImg();
-                img.x = randX;
-                img.y = randY;
-                img.grid = [9, 39, 39, 2, 2];
-                img.width = img.height = 240;
-                img.resizableByRes = false;
-                img.load(url);
-                stage.addChild(img);
-            }
-        });
-
-    });
-
-    unit.addMenuItem('UIImg#grid 三宫格', function(){
+    unit.addMenuItem('UIImg#grid-3宫格', function(){
         hh.UIImg.debug = true;
         var url = res_helper.getS9gUrl(1);
 
@@ -252,6 +218,18 @@ module tc{
         hh.engine.stage.addChild(img2);
     });
 
+    unit.addMenuItem('UIImg#grid-9宫格', function(){
+        hh.UIImg.debug = true;
+        var url = res_helper.getS9gUrl(1);
+        var img1 = new hh.UIImg();
+        img1.x = img1.y = 150;
+        img1.grid = [9, 39, 39, 2, 2];
+        img1.width = img1.height = 200;
+        img1.load(url);
+
+        hh.engine.stage.addChild(img1);
+    });
+
 
     unit.addMenuItem('UIImg#grid-12宫格', function(){
         hh.UIImg.debug = true;
@@ -266,7 +244,7 @@ module tc{
         hh.engine.stage.addChild(img1);
     });
     
-    unit.addMenuItem('UIImg#grid 16宫格', function(){
+    unit.addMenuItem('UIImg#grid-16宫格', function(){
         hh.UIImg.debug = true;
         var url = res_helper.getS9gUrl(2);
         var img1 = new hh.UIImg();
@@ -277,5 +255,27 @@ module tc{
         img1.load(url);
 
         hh.engine.stage.addChild(img1);
+    });
+
+    unit.addMenuItem('UIImg#grid-9宫格-400', function(){
+        hh.UIImg.debug = false;
+        var url = res_helper.getS9gUrl(1);
+        hh.RES.load(url, function(){
+            var stage:hh.Node = hh.engine.stage;
+            var w = stage.width, h = stage.height;
+            for(var i = 0; i < 400; ++i){
+                var randX = w*(Math.random());
+                var randY = h*(Math.random());
+                var img = new hh.UIImg();
+                img.x = randX;
+                img.y = randY;
+                img.grid = [9, 39, 39, 2, 2];
+                img.width = img.height = 240;
+                img.resizableByRes = false;
+                img.load(url);
+                stage.addChild(img);
+            }
+        });
+
     });
 }
